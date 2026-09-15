@@ -3,6 +3,11 @@
 <img src=".github/banner.svg" alt="Dota 2 Mod Manager" width="900">
 
 <p>
+  <img src="https://img.shields.io/badge/English-8b6ff0?style=for-the-badge&labelColor=8b6ff0&logoColor=white" alt="You are reading the English version">
+  <a href="README.ru.md"><img src="https://img.shields.io/badge/%D0%BF%D0%BE%E2%80%91%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8-211f26?style=for-the-badge&labelColor=211f26" alt="Читать по-русски"></a>
+</p>
+
+<p>
   <a href="https://github.com/TheFleece/dota2-mod-manager/releases/latest/download/Dota-2-Mod-Manager-Setup.exe">
     <img src="https://img.shields.io/github/v/release/TheFleece/dota2-mod-manager?style=for-the-badge&color=8b6ff0&label=Download&logo=github&logoColor=white" alt="Download the latest release"></a>
   <img src="https://img.shields.io/github/downloads/TheFleece/dota2-mod-manager/Dota-2-Mod-Manager-Setup.exe?style=for-the-badge&color=4f378b&label=Installs" alt="Installer downloads">
@@ -27,8 +32,7 @@
   <a href="#alongside-dota2-minify">Alongside Minify</a> &nbsp;·&nbsp;
   <a href="#documentation">Docs</a> &nbsp;·&nbsp;
   <a href="#report-a-problem">Report a problem</a> &nbsp;·&nbsp;
-  <a href="#project-activity">Activity</a> &nbsp;·&nbsp;
-  <a href="README.ru.md">Русский</a>
+  <a href="#project-activity">Activity</a>
   </b>
 </p>
 
@@ -186,11 +190,12 @@ is loading a tracker, and nothing has to be committed for the picture to move.
 
 | | |
 |---|---|
-| [Tests](.github/workflows/test.yml) | The full suite with a coverage floor. Includes four checks that hold the project against itself: every IPC channel has a handler, every Russian string has an English twin, the version and both changelogs agree, and `docs/API.md` still matches the source |
+| [Tests](.github/workflows/test.yml) | eslint first, then the full suite with a coverage floor, on Linux and on Windows. Several of the tests hold the project against itself rather than testing a module: every IPC channel has a handler and every handler runs, every renderer import resolves, every Russian string has an English twin, the version and both changelogs agree, `docs/API.md` still matches the source, and `DECISIONS.md` still matches the repository |
 | [CodeQL](.github/workflows/codeql.yml) | Security and quality analysis, plus a weekly scheduled run |
 | [Release](.github/workflows/release.yml) | On a tag only: builds the Windows installer, the portable build and the Linux AppImage from that commit, and publishes them with the changelog section for that version |
-| [Site](.github/workflows/site.yml) | Rebuilds the documentation site so its counts, its version and this card stay true |
+| [Site](.github/workflows/site.yml) | Rebuilds the documentation site so its counts, its version and this card stay true. On a pull request it only builds the site and checks the output |
 | [Mirror](.github/workflows/mirror.yml) | Pushes the same history to [GitLab](https://gitlab.com/TheFleece/dota2-mod-manager), so the code outlives this repository |
+| [Search report](.github/workflows/seo.yml) | Weekly, not per push: downloads, update checks, and visits from Google, Bing and Yandex, posted to [one public issue](https://github.com/TheFleece/dota2-mod-manager/issues/3) with every earlier week above it |
 
 Nothing here commits back to `main`. Workflows that need to remember something between runs
 keep it in the Actions cache, because a bot commit per run is how a log stops being readable.
@@ -209,13 +214,29 @@ npm run sandbox:seed      # a throwaway game tree with real mods in it
 npm run start:sandbox     # the app against it, never your own game
 ```
 
-Node 24, Electron 43, no bundler — the renderer is plain HTML, CSS and JavaScript. Every release
+Node 24, Electron 44, no bundler — the renderer is plain HTML, CSS and JavaScript. Every release
 is produced by [`release.yml`](.github/workflows/release.yml) from the commit its tag names.
 
 **Open an issue before building anything larger than a fix.** It costs one message and saves the
 case where two people solve the same thing twice, or where the answer was "that is deliberate,
 and here is why". [CONTRIBUTING.md](CONTRIBUTING.md) has the rest;
 [AGENTS.md](AGENTS.md) is the same ground for anyone working with a coding assistant.
+
+<br>
+
+## Written with Claude Code
+
+This project has been written with [Claude Code](https://claude.com/claude-code) since its first
+commit on 20 July 2026, and still is. Commits carry a `Co-Authored-By` trailer saying so.
+
+It says so here because guessing is worse. Everything that would tell you whether the code is any
+good is already in the open: every commit, more than forty test files, a linter and a coverage
+floor that CI enforces on two operating systems, and
+[DECISIONS.md](DECISIONS.md), which answers the questions reviewers keep asking with a command
+you can run yourself.
+
+Send a change written with an assistant and keep the trailer on it. [AGENTS.md](AGENTS.md) is
+what the project asks for in return.
 
 <br>
 

@@ -52,6 +52,9 @@ const MIRRORED = {
   'h6rd/Dota2PornFxWeb/main/assets/data/constants.json': 'constants.json',
   'h6rd/Dota2PornFxWeb/main/assets/data/guides.json': 'guides.json',
   'TheFleece/dota2-mod-manager/main/fingerprints.json': 'fingerprints.json',
+  // the switches and notices, which matter most on the day GitHub is the thing that is down
+  'TheFleece/dota2-mod-manager/main/config/app.json': 'app.json',
+  'TheFleece/dota2-mod-manager/main/config/app.json.sig': 'app.json.sig',
   // and the signatures, or this mirror stops being one the day the catalog's key is pinned:
   // a data file whose signature cannot be fetched is a data file the app refuses.
   'h6rd/Dota2PornFxWeb/main/assets/signatures/mods.json.sig': 'mods.json.sig',
@@ -79,7 +82,12 @@ const bucket = (url) => (url.startsWith(CATALOG_FILES)
   : null);
 
 const DEFAULT_MIRRORS = [
-  { host: 'raw.githubusercontent.com', map: (url) => url },
+  /* `origin: true` marks the host the catalog's own URLs name, and exactly one entry may carry
+     it. It is not a preference - the order already says that - it is who gets believed when a
+     published hash matches nothing: see downloadFile. Marked rather than recognised by its
+     hostname, so a test can stand a server in its place and so a second GitHub host later
+     cannot quietly inherit the privilege. */
+  { host: 'raw.githubusercontent.com', map: (url) => url, origin: true },
   { host: 'dota2modmanager.com', map: ourSite, smallOnly: true },
   { host: 'cdn.dota2modmanager.com', map: bucket },
   { host: 'cdn.jsdelivr.net', map: jsdelivr, smallOnly: true },
@@ -119,31 +127,41 @@ function noteSuccess(host) {
  * @param {object} [opts]
  * @param {boolean} [opts.small] the file is JSON-sized, so size-capped mirrors may be used
  */
-function mirrorsFor(url, { small = false, trustedOnly = false } = {}) {
+function mirrorsFor(url, opts = {}) {
+  return entriesFor(url, opts).map((e) => e.url);
+}
+
+/** The same list, each entry still knowing which mirror it came from. */
+function entriesFor(url, { small = false, trustedOnly = false } = {}) {
   const isRaw = url.startsWith(RAW_HOST);
   const isRelease = RELEASE_RE.test(url);
   // A mirror is a stranger who hands over bytes claiming they are GitHub's. That is a fair
   // trade for a mod archive - it is checked against a digest, and a wrong one costs a broken
   // hero model. It is not a fair trade for a file that decides which binary this app
   // downloads and runs, so that one asks GitHub itself or does without.
-  if (trustedOnly) return [url];
-  if (!isRaw && !isRelease) return [url];
+  /* Not the origin, either of them. `origin` means the host the catalog itself is published
+     from - the one place that also holds mod-hashes.json, and so the one host the list cannot
+     prove anything about. A mod the catalog keeps on Hugging Face is somewhere else entirely,
+     and there the published hash is the only thing tying those bytes to the catalog at all: it
+     has to be the last word, not the first draft. A test caught this being waived. */
+  if (trustedOnly) return [{ url, host: hostOf(url), origin: false }];
+  if (!isRaw && !isRelease) return [{ url, host: hostOf(url), origin: false }];
   const out = [];
   for (const m of MIRRORS) {
     if (m.smallOnly && !small) continue;
     // a release asset is only reachable through the plain proxies, and github.com itself
     if (isRelease && m.smallOnly) continue;
     const mapped = isRelease && m.host === 'raw.githubusercontent.com' ? url : m.map(url);
-    if (mapped) out.push(mapped);
+    if (mapped) out.push({ url: mapped, host: m.host, origin: !!m.origin });
   }
   return out;
 }
 
 /** The mirrors in the order they should actually be tried right now: rested hosts first. */
-function liveOrder(urls) {
-  const ready = urls.filter((u) => !stoodDown(hostOf(u)));
+function liveOrder(entries) {
+  const ready = entries.filter((e) => !stoodDown(e.host));
   // everything is standing down: rather than fail outright, try them anyway, best first
-  return ready.length ? ready : urls;
+  return ready.length ? ready : entries;
 }
 
 /**
@@ -152,23 +170,33 @@ function liveOrder(urls) {
  * @param {object} [opts]
  * @param {boolean} [opts.small]  allow size-capped mirrors
  * @param {object} [opts.headers]
+ * @param {string[]} [opts.exclude] hosts already tried for this file and found wanting; a
+ *   mirror that answered with the wrong bytes must not be offered again on the retry
+ * @param {(m: {host: string, origin: boolean}) => void} [opts.onMirror] which mirror is
+ *   answering, called just before the response is handed back
  * @param {(msg: string) => void} [opts.log]
  */
-async function fetchMirrored(url, { small = false, trustedOnly = false, headers = {}, log = () => {} } = {}) {
-  const candidates = liveOrder(mirrorsFor(url, { small, trustedOnly }));
+async function fetchMirrored(url, {
+  small = false, trustedOnly = false, headers = {}, exclude = [], onMirror = () => {}, log = () => {},
+} = {}) {
+  // filtered before liveOrder, so the "everything is standing down, try them anyway" path
+  // cannot hand back a host this file has already been refused by
+  const usable = entriesFor(url, { small, trustedOnly }).filter((e) => !exclude.includes(e.host));
+  const candidates = liveOrder(usable);
   let last = null;
   for (let pass = 0; pass < ATTEMPTS_PER_MIRROR; pass++) {
     for (const candidate of candidates) {
-      const host = hostOf(candidate);
+      const host = candidate.host;
       if (stoodDown(host)) continue;
       try {
-        const res = await fetch(candidate, { headers, signal: AbortSignal.timeout(HEAD_TIMEOUT_MS) });
+        const res = await fetch(candidate.url, { headers, signal: AbortSignal.timeout(HEAD_TIMEOUT_MS) });
         if (!res.ok && res.status !== 206) {
           // 404 is the file, not the mirror: another mirror of the same repo will not have it
-          if (res.status === 404) return res;
+          if (res.status === 404) { onMirror(candidate); return res; }
           throw new Error(`HTTP ${res.status}`);
         }
         noteSuccess(host);
+        onMirror(candidate);
         return res;
       } catch (err) {
         last = err;
@@ -177,7 +205,17 @@ async function fetchMirrored(url, { small = false, trustedOnly = false, headers 
       }
     }
   }
-  throw last || new Error('no mirror answered');
+  /* Say which kind of failure this was, so the interface can say something a player
+   * understands. "fetch failed" is what Node calls being unable to open a socket, and it is
+   * what the catalog screen printed at somebody who had simply turned their wifi off.
+   *
+   * Every mirror having failed to connect is one thing (no network, or all of them blocked
+   * at once, which for this userbase is the same afternoon). A mirror answering with an HTTP
+   * status is another, and the app should not tell that person to check their connection.
+   */
+  const err = last || new Error('no mirror answered');
+  err.offline = !/HTTP \d/.test(String(err.message || ''));
+  throw err;
 }
 
 /** Text from the first mirror that answers (catalog JSON, fingerprint map). */
@@ -206,56 +244,132 @@ const sha256 = (file) => new Promise((resolve, reject) => {
  * @param {string} dest
  * @param {object} [opts]
  * @param {(loaded: number, total: number) => void} [opts.onProgress]
- * @param {string} [opts.expectSha256] what this file hashed to last time it was downloaded;
- *   a mirror handing over something else is refused rather than installed
+ * @param {string} [opts.expectSha256] what this file should hash to; a mirror handing over
+ *   something else is dropped and the next one is asked
+ * @param {boolean} [opts.fromPublishedList] the expectation above came from a list somebody
+ *   else maintains (the catalog's `mod-hashes.json`, or what this machine saw last time),
+ *   rather than from a hash pinned in this project. Such a list can simply be wrong, and when
+ *   it is, the file it names outranks it. Never pass this for the app's own update or for the
+ *   toolchain: those hashes are pinned here and a mismatch there is the thing being guarded.
  * @param {(msg: string) => void} [opts.log]
- * @returns {Promise<{ path: string, bytes: number, sha256: string, resumedFrom: number }>}
+ * @returns {Promise<{ path: string, bytes: number, sha256: string, resumedFrom: number, unverified?: boolean }>}
  */
-async function downloadFile(url, dest, { onProgress = () => {}, expectSha256 = null, log = () => {} } = {}) {
+async function downloadFile(url, dest, {
+  onProgress = () => {}, expectSha256 = null, fromPublishedList = false, log = () => {},
+} = {}) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   const part = `${dest}.part`;
-  let have = 0;
-  try { have = fs.statSync(part).size; } catch { /* nothing to resume */ }
+  /* A mirror that answers with bytes we cannot use has failed, exactly like one that does not
+   * answer at all - and until 2026-09-10 only the second kind was treated that way. The whole
+   * download was abandoned on the first wrong checksum, so a single stale copy on one mirror
+   * took the mod away from everybody who reaches that mirror first.
+   *
+   * That is not hypothetical: the bucket skipped an archive it already had under the same
+   * name, so 24 mods that upstream had replaced still sat there in their old versions. Anybody
+   * who cannot reach GitHub got those bytes, the checksum said no, and the install stopped -
+   * while three proxies that had the current file were never asked.
+   *
+   * So a wrong checksum costs that mirror its turn, not the mod.
+   */
+  const refused = [];
+  const mirrorCount = Math.max(1, mirrorsFor(url).length);
 
-  const headers = have > 0 ? { Range: `bytes=${have}-` } : {};
-  const res = await fetchMirrored(url, { headers, log });
-  if (!res.ok && res.status !== 206) throw new Error(`HTTP ${res.status}`);
+  /* And the other half of it: the list can be wrong about the file.
+   *
+   * `mod-hashes.json` is rebuilt by a bot in the catalog's repository, beside the archives it
+   * describes. On 2026-09-10 it named a hash for heroes/Axe Kratos.zip that no copy of that
+   * file has ever had - not GitHub's, not the API's, not any proxy's - so the mod was refused
+   * for everybody, including people whose GitHub works perfectly.
+   *
+   * A published hash is worth having because a proxy is a stranger and the hash proves the
+   * bytes are the ones the catalog's author signed for. It cannot prove anything about GitHub
+   * itself: the list lives in the same repository as the archives, so whoever could rewrite
+   * one could rewrite the other. When every mirror disagrees with the list and the catalog's
+   * own host is among them, the list is the thing that is out of date.
+   *
+   * So the origin's copy is kept aside rather than deleted, and used if nothing verifies. The
+   * guarantee that survives: no proxy can get bytes installed that GitHub did not serve.
+   */
+  const kept = `${dest}.origin`;
+  let haveOriginCopy = false;
+  const dropKept = () => { if (haveOriginCopy) fs.rmSync(kept, { force: true }); haveOriginCopy = false; };
 
-  // A mirror that ignores Range (or a file that changed upstream) answers 200 with the whole
-  // thing: start over rather than glue two halves of different files together.
-  const resuming = res.status === 206 && have > 0;
-  if (!resuming && have > 0) {
-    log(`resume refused by ${hostOf(res.url || url)}, starting over`);
-    have = 0;
-  }
-  const totalHeader = Number(res.headers.get('content-length')) || 0;
-  const total = totalHeader ? totalHeader + (resuming ? have : 0) : 0;
+  for (let attempt = 0; ; attempt++) {
+    let have = 0;
+    try { have = fs.statSync(part).size; } catch { /* nothing to resume */ }
 
-  const out = fs.createWriteStream(part, { flags: resuming ? 'a' : 'w' });
-  let loaded = have;
-  const reader = res.body.getReader();
-  try {
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      loaded += value.length;
-      onProgress(loaded, total);
-      await new Promise((resolve, reject) => {
-        out.write(Buffer.from(value), (err) => (err ? reject(err) : resolve()));
-      });
+    const headers = have > 0 ? { Range: `bytes=${have}-` } : {};
+    let answered = { host: hostOf(url), origin: false };
+    const res = await fetchMirrored(url, {
+      headers, exclude: refused, log, onMirror: (m) => { answered = m; },
+    });
+    if (!res.ok && res.status !== 206) throw new Error(`HTTP ${res.status}`);
+    const host = answered.host;
+
+    // A mirror that ignores Range (or a file that changed upstream) answers 200 with the whole
+    // thing: start over rather than glue two halves of different files together.
+    const resuming = res.status === 206 && have > 0;
+    if (!resuming && have > 0) {
+      log(`resume refused by ${host}, starting over`);
+      have = 0;
     }
-  } finally {
-    await new Promise((resolve) => out.end(resolve));
-  }
+    const totalHeader = Number(res.headers.get('content-length')) || 0;
+    const total = totalHeader ? totalHeader + (resuming ? have : 0) : 0;
 
-  const digest = await sha256(part);
-  if (expectSha256 && digest !== expectSha256) {
-    fs.rmSync(part, { force: true });
-    throw new Error(`checksum mismatch for ${path.basename(dest)}`);
+    const out = fs.createWriteStream(part, { flags: resuming ? 'a' : 'w' });
+    let loaded = have;
+    const reader = res.body.getReader();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        loaded += value.length;
+        onProgress(loaded, total);
+        await new Promise((resolve, reject) => {
+          out.write(Buffer.from(value), (err) => (err ? reject(err) : resolve()));
+        });
+      }
+    } finally {
+      await new Promise((resolve) => out.end(resolve));
+    }
+
+    const digest = await sha256(part);
+    if (expectSha256 && digest !== expectSha256) {
+      // half a file resumed from a mirror that turned out to be wrong is worth nothing, and
+      // leaving it behind would poison the Range request of whichever mirror answers next
+      if (fromPublishedList && answered.origin) {
+        dropKept();
+        fs.renameSync(part, kept);
+        haveOriginCopy = true;
+      } else {
+        fs.rmSync(part, { force: true });
+      }
+      noteFailure(host, 'checksum mismatch');
+      refused.push(host);
+      log(`mirror ${host} served ${path.basename(dest)} with the wrong checksum`);
+      if (attempt + 1 < mirrorCount) continue;
+
+      // Nothing verified. If the catalog's own host handed over a copy, it is the file and the
+      // list is stale; anything else here is a mod nobody can vouch for.
+      if (haveOriginCopy) {
+        const kind = await sha256(kept);
+        fs.rmSync(dest, { force: true });
+        fs.renameSync(kept, dest);
+        haveOriginCopy = false;
+        log(`${path.basename(dest)}: no copy matches the published hash; taking the one from the host the catalog names, which is where the list is built`);
+        return { path: dest, bytes: fs.statSync(dest).size, sha256: kind, resumedFrom: 0, unverified: true };
+      }
+      // flagged rather than matched on its wording: the caller turns this into a sentence in
+      // the user's language, and it should not have to recognise it by its English
+      const bad = new Error(`checksum mismatch for ${path.basename(dest)}`);
+      bad.checksum = true;
+      throw bad;
+    }
+    dropKept();
+    fs.rmSync(dest, { force: true });
+    fs.renameSync(part, dest);
+    return { path: dest, bytes: fs.statSync(dest).size, sha256: digest, resumedFrom: resuming ? have : 0 };
   }
-  fs.rmSync(dest, { force: true });
-  fs.renameSync(part, dest);
-  return { path: dest, bytes: fs.statSync(dest).size, sha256: digest, resumedFrom: resuming ? have : 0 };
 }
 
 /** For the diagnostics report: which mirrors are currently standing down, and why. */

@@ -330,10 +330,26 @@ export async function renderPresets() {
 
   list.querySelectorAll('[data-apply]').forEach((b) => {
     b.addEventListener('click', async () => {
-      const r = await window.api.presets.apply(b.dataset.apply);
+      // Applying can now download the members that are not installed, which takes long enough
+      // to press twice. And a channel that rejects must not leave the button lying about it:
+      // that is the shape of the bug that made Install look like a hang for two releases.
+      b.disabled = true;
+      let r;
+      try {
+        r = await window.api.presets.apply(b.dataset.apply);
+      } catch (err) {
+        r = { error: String(err?.message || err) };
+      }
       if (r.error) toast(r.error, 'error', 6000);
-      else toast(L`Пресет применён`);
-      refreshInstalledIndex();
+      else {
+        toast(r.installed
+          ? L`Пресет применён · доустановлено ${r.installed} ${plural(r.installed, 'мод', 'мода', 'модов')}`
+          : L`Пресет применён`);
+        if (r.missing?.length) toast(L`Своих модов нет на этом компьютере, из каталога их не вернуть: ${r.missing.join(', ')}`, 'warn', 8000);
+        for (const err of (r.errors || []).slice(0, 3)) toast(err, 'warn', 7000);
+      }
+      await refreshInstalledIndex();
+      renderPresets();
     });
   });
   // the rest of what a preset can do, one right-click away as everywhere else

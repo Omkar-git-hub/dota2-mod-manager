@@ -18,6 +18,7 @@ the code, not in this page.
 | [`src/diagnostics.js`](#srcdiagnosticsjs) | A support report a user can send instead of a round of screenshots: Dota's own path and |
 | [`src/discord-auth.js`](#srcdiscord-authjs) | Sign in with Discord, without a server of our own. |
 | [`src/discord-presence.js`](#srcdiscord-presencejs) | "Playing Dota 2 Mod Manager" in Discord, via Discord's local IPC socket. |
+| [`src/feature-gate.js`](#srcfeature-gatejs) | Is this feature switched off right now? |
 | [`src/file-tx.js`](#srcfile-txjs) | All of it, or none of it. |
 | [`src/fingerprints.js`](#srcfingerprintsjs) | Fingerprint index: fetch + cache the fp -> mod identity map published alongside the |
 | [`src/game-icons.js`](#srcgame-iconsjs) | Item pictures taken from the installed game instead of scraped off a wiki. |
@@ -62,9 +63,9 @@ the files with a key only he holds, publishes <name>.sig next to each, and the a
 against a public key baked into this file. A rewritten mods.json then fails here rather than
 at the point where somebody's machine does what it says.
 
-Until that key exists this module answers "no key pinned, carry on". That is deliberate:
-refusing every fetch because a signature has not been arranged yet would take the app down
-for everybody and protect nobody.
+Without a key this module answers "nothing pinned, carry on", which is what it did from the
+day it was written until 2026-09-10. Refusing every fetch because a signature had not been
+arranged yet would have taken the app down for everybody and protected nobody.
 
 ### `verify`
 
@@ -90,11 +91,20 @@ Is there a key to check against at all?
 ### `CATALOG_PUBLIC_KEY`
 
 ```js
-const CATALOG_PUBLIC_KEY = ''
+const CATALOG_PUBLIC_KEY = 'MCowBQYDK2VwAyEAkzP+iIJLaFlc20Uj3OyLnDX4arckiBuSpPk1BcRKUsk='
 ```
 
 Base64 SPKI of the catalog author's ed25519 public key. `tools/sign-catalog.js --keygen`
 prints one in exactly this form. Empty means verification is off.
+
+Pinned on 2026-09-10, and not the day the key arrived. A signature is only good for the
+bytes it was made from, and the catalog was publishing data and signature in separate
+commits: for the one to eight minutes between them the published files disagreed with their
+own signatures, which reads here as an attack and is really a bot that has not run yet.
+Anybody already using the app would have kept their cached catalog; anybody installing it in
+those minutes would have had no catalog at all, and the catalog moves about five times a day.
+The author now writes the data and the signatures in one commit, so there is no moment when
+what is published disagrees with what is signed.
 
 ### `SIG_DIR`
 
@@ -336,6 +346,36 @@ class DiscordPresence
 ```
 
 _No description in the source._
+
+## src/feature-gate.js
+
+Is this feature switched off right now?
+
+`config/app.json` can turn a feature off after a release (see remote-config.js). The check
+belongs on the main-process side of every channel it guards, because that is the boundary a
+stale window, an old screen and a replayed click all have to come through.
+
+It lives here, on its own, for a duller reason. It used to be a local helper inside
+ipc-game.js, and when registerIpc was split into modules on 2026-09-06 the call went to
+ipc-mods.js while the helper stayed behind. `mods:install` then threw "blocked is not
+defined" on every single click: no mod could be installed at all, in 2.6.5 and 2.6.6, and
+the app said nothing - the renderer awaited a promise that rejected, so the button sat on
+"Installing…" forever.
+
+One definition, handed to whoever needs it, so there is no second copy to leave behind.
+
+### `createGate`
+
+```js
+function createGate({ remoteConfig, settings })
+```
+
+```
+@param {object} deps
+@param {{feature: (name: string, lang: string) => {off: boolean, note?: string}}} deps.remoteConfig
+@param {{get: (key: string) => any}} deps.settings
+@returns {(name: string) => {error: string}|null} the answer to send back, or null to carry on
+```
 
 ## src/file-tx.js
 
@@ -883,6 +923,19 @@ const RESERVED_PAKS = [65, 66, 67]
 
 _No description in the source._
 
+### `RESERVED_LABEL`
+
+```js
+const RESERVED_LABEL = RESERVED_PAKS.length > 1
+```
+
+The reserved range as the interface says it out loud.
+
+The Library told people "pak65-67 and pak99 are left to it" for a release after pak99 stopped
+being reserved, because the sentence carried its own copy of the numbers. Built from the list
+instead, so the promise on screen and the slots the allocator actually skips cannot disagree
+again.
+
 ### `MINIFY_PAKS`
 
 ```js
@@ -1119,7 +1172,7 @@ _No description in the source._
 ### `mirrorsFor`
 
 ```js
-function mirrorsFor(url, { small = false, trustedOnly = false } = {})
+function mirrorsFor(url, opts = {})
 ```
 
 Every URL worth trying for this one, best first. A URL that is not on GitHub raw (a mod
@@ -1133,7 +1186,7 @@ whose catalog entry points somewhere else entirely) has no mirrors - it is itsel
 ### `fetchMirrored`
 
 ```js
-async function fetchMirrored(url, { small = false, trustedOnly = false, headers = {}, log = () => {} } = {})
+async function fetchMirrored(url, { small = false, trustedOnly = false, headers = {}, exclude = [], onMirror = () => {}, log = () => {}, } = {})
 ```
 
 Fetch, walking the mirrors. Returns the Response of the first mirror that answers.
@@ -1143,6 +1196,10 @@ Fetch, walking the mirrors. Returns the Response of the first mirror that answer
 @param {object} [opts]
 @param {boolean} [opts.small]  allow size-capped mirrors
 @param {object} [opts.headers]
+@param {string[]} [opts.exclude] hosts already tried for this file and found wanting; a
+mirror that answered with the wrong bytes must not be offered again on the retry
+@param {(m: {host: string, origin: boolean}) => void} [opts.onMirror] which mirror is
+answering, called just before the response is handed back
 @param {(msg: string) => void} [opts.log]
 ```
 
@@ -1157,7 +1214,7 @@ Text from the first mirror that answers (catalog JSON, fingerprint map).
 ### `downloadFile`
 
 ```js
-async function downloadFile(url, dest, { onProgress = () => {}, expectSha256 = null, log = () => {} } = {})
+async function downloadFile(url, dest, { onProgress = () => {}, expectSha256 = null, fromPublishedList = false, log = () => {}, } = {})
 ```
 
 Download to a file, resuming where an interrupted attempt stopped.
@@ -1171,10 +1228,15 @@ over because a train went into a tunnel is the difference between a mod and a sh
 @param {string} dest
 @param {object} [opts]
 @param {(loaded: number, total: number) => void} [opts.onProgress]
-@param {string} [opts.expectSha256] what this file hashed to last time it was downloaded;
-a mirror handing over something else is refused rather than installed
+@param {string} [opts.expectSha256] what this file should hash to; a mirror handing over
+something else is dropped and the next one is asked
+@param {boolean} [opts.fromPublishedList] the expectation above came from a list somebody
+else maintains (the catalog's `mod-hashes.json`, or what this machine saw last time),
+rather than from a hash pinned in this project. Such a list can simply be wrong, and when
+it is, the file it names outranks it. Never pass this for the app's own update or for the
+toolchain: those hashes are pinned here and a mismatch there is the thing being guarded.
 @param {(msg: string) => void} [opts.log]
-@returns {Promise<{ path: string, bytes: number, sha256: string, resumedFrom: number }>}
+@returns {Promise<{ path: string, bytes: number, sha256: string, resumedFrom: number, unverified?: boolean }>}
 ```
 
 ### `sha256`
@@ -1441,8 +1503,13 @@ function state(gamePath, folder)
 
 What the install looks like right now.
 
+`signable` says whether this installation has a signature list at all. Valve's Linux build
+ships no `dota.signatures`, so on Linux there is nothing to sign the patch into and nothing
+to check it against - which is not the same as an unsigned patch, and callers have to tell
+the two apart or a Linux user gets a permanent warning about a file that was never there.
+
 ```
-@returns {{ patched: boolean, signed: boolean, folder: string|null, foreign: string|null }}
+@returns {{ patched: boolean, signed: boolean, signable: boolean, folder: string|null, foreign: string|null, vanillaOk: boolean }}
 ```
 
 ### `apply`
@@ -1515,7 +1582,7 @@ file this project writes itself. Anything missing or malformed is a manifest we 
 ### `fetchBeside`
 
 ```js
-async function fetchBeside(version, { onProgress = () => {}, dir = portableDir(), log = () => {} } = {})
+async function fetchBeside(version, { onProgress = () => {}, dir = portableDir(), log = () => {}, sources = SOURCES } = {})
 ```
 
 Fetch the new build and leave it beside the current one.
@@ -1525,6 +1592,7 @@ Fetch the new build and leave it beside the current one.
 @param {object} [opts]
 @param {(loaded: number, total: number) => void} [opts.onProgress]
 @param {string} [opts.dir]        where to put it; defaults to the folder holding the exe
+@param {Array} [opts.sources]     where to look and in what order; SOURCES unless a test says
 @returns {Promise<{ path: string, name: string, bytes: number }>}
 ```
 
@@ -1551,6 +1619,34 @@ const MANIFEST = 'portable.yml'
 ```
 
 _No description in the source._
+
+### `MIRROR`
+
+```js
+const MIRROR = 'https://cdn.dota2modmanager.com/updates/'
+```
+
+The bucket the mods already come from, carrying the current release as well since
+2026-09-10 (tools/r2-release.mjs). It holds one version, which is why the manifest's own
+version is checked below rather than assumed.
+
+### `SOURCES`
+
+```js
+const SOURCES = [
+```
+
+Where to look, in order.
+
+GitHub first and without mirrors: the manifest carries the hash everything else is checked
+against, so a public proxy must not be able to touch it. That rule cost the portable build
+its update entirely whenever GitHub was unreachable, which for part of the userbase is every
+day and for everybody was three hours on 2026-08-17.
+
+The second entry is not a proxy. It is this project's own bucket, reached with credentials
+only this project holds, which is the same trust as the release page itself - and the same
+reasoning as the update feed fallback in main.js. Manifest and binary both come from
+whichever source answered, so the hash and the file it describes are always from one place.
 
 ## src/preset-link.js
 
@@ -1749,14 +1845,16 @@ Shape:
 ### `createRemoteConfig`
 
 ```js
-function createRemoteConfig({ userDataDir, appVersion, log = () => {} })
+function createRemoteConfig({ userDataDir, appVersion, log = () => {}, publicKey = CONFIG_PUBLIC_KEY })
 ```
 
 ```
-@param {object} deps
-@param {string} deps.userDataDir
-@param {() => string} deps.appVersion   so a notice can be aimed at the builds it is about
-@param {(msg: string) => void} [deps.log]
+@param {object} opts
+@param {string} opts.userDataDir  where the last good copy is kept between starts
+@param {() => string} opts.appVersion  used to decide which notices apply
+@param {(msg: string) => void} [opts.log]
+@param {string} [opts.publicKey]  whose signature to accept; the pinned one unless a test
+wants to sign its own fixture, which it cannot do with a private key that is not here
 ```
 
 ### `normalize`
@@ -1792,6 +1890,38 @@ const CONFIG_URL = 'https://raw.githubusercontent.com/TheFleece/dota2-mod-manage
 ```
 
 _No description in the source._
+
+### `CONFIG_SIG_URL`
+
+```js
+const CONFIG_SIG_URL = `${CONFIG_URL}.sig`
+```
+
+The signature, always the config's own address with .sig on the end.
+
+### `CONFIG_PUBLIC_KEY`
+
+```js
+const CONFIG_PUBLIC_KEY = 'MCowBQYDK2VwAyEA8M9IOVLfxK6V1n2fHAHlE9zzCsXFoUAJki8RdqLPBdA='
+```
+
+This file is signed, and by us rather than by the catalog's author.
+
+It travels the same public proxies as everything else (see net.js), and it is the file that
+can switch a feature off after a release and put a notice in front of people. A proxy
+operator rewriting it means taking a feature away from somebody, or saying something in this
+project's name. Both halves of this key are ours, so unlike the catalog there was nobody to
+wait for.
+
+A failed check is treated as no file at all, which is what the rest of this module already
+does with every other kind of failure. That is not a weaker choice than refusing to start:
+the worst an attacker gets from breaking the signature is that the notices stop arriving,
+and they could already do that by dropping the request. What they no longer get is to put
+words on the screen.
+
+Signed with tools/sign-catalog.js. The private half is not in this repository and never will
+be; test/remote-config-signature.test.js fails the build if the committed file and its
+signature ever stop agreeing.
 
 ## src/safe-zip.js
 
@@ -2283,6 +2413,30 @@ const PINS_URL = 'https://raw.githubusercontent.com/TheFleece/dota2-mod-manager/
 ```
 
 _No description in the source._
+
+### `FALLBACK_BASE`
+
+```js
+const FALLBACK_BASE = 'https://cdn.dota2modmanager.com/tools/'
+```
+
+A copy of the pinned archive in this project's own bucket.
+
+The primary URL is a GitHub release, and every mirror src/net.js knows is a proxy standing
+in front of GitHub, so all of them go down together. This one does not: tools/r2-toolchain.mjs
+copies the pinned archive there, byte for byte, after checking it against the same digest.
+
+Safe from anywhere, and that is the point of a pin: the digest lives in this file rather than
+travelling with the URL, so whoever hands the bytes over cannot also decide what they should
+hash to. The address is written here for the same reason the owner allowlist below is.
+
+### `fallbackUrl`
+
+```js
+const fallbackUrl = (name, version) => `${FALLBACK_BASE}${name}-${version}.zip`
+```
+
+Where the copy of a pinned archive lives, keyed by the tool and the version pinned to it.
 
 ## src/vpk.js
 

@@ -373,6 +373,16 @@
           "date": 1786154739
         },
         {
+          "name": "Shadow Fiend Lightning Soul",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","wings","shoulder","arms"],
+          "image": {"src":"/mods/shadow-fiend-lightning-soul.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1789395409
+        },
+        {
           "name": "Shadow Fiend Sundered Souls",
           "categoryId": "heroes",
           "styleLabel": null,
@@ -1558,6 +1568,16 @@
           "date": 1777751902
         },
         {
+          "name": "Black Huskar",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","shoulder"],
+          "image": {"src":"/mods/black-huskar.webp","width":854,"height":480},
+          "author": "ibcsz",
+          "authorUrl": "http://t.me/nixwaretop",
+          "date": 1789184752
+        },
+        {
           "name": "Blue Soul Huskar",
           "categoryId": "heroes",
           "styleLabel": null,
@@ -1766,6 +1786,16 @@
           "author": null,
           "authorUrl": null,
           "date": 1775454991
+        },
+        {
+          "name": "Keeper of the Light Waitureally",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","mount","legs","weapon"],
+          "image": {"src":"/mods/keeper-of-the-light-waitureally.webp","width":854,"height":480},
+          "author": "keeper",
+          "authorUrl": "https://t.me/eternalsadism",
+          "date": 1789234312
         },
         {
           "name": "Scarlet Keeper of the Light",
@@ -2917,7 +2947,7 @@
           "image": {"src":"/mods/devotions-of-dragonus-atos.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783628721
+          "date": 1789310506
         },
         {
           "name": "Devotions of Dragonus Atos II",
@@ -2927,7 +2957,7 @@
           "image": {"src":"/mods/devotions-of-dragonus-atos-ii.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783697952
+          "date": 1789310506
         },
         {
           "name": "Devotions of Dragonus Phylactery",
@@ -2937,7 +2967,7 @@
           "image": {"src":"/mods/devotions-of-dragonus-phylactery.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783594076
+          "date": 1789310506
         },
         {
           "name": "Devotions of Dragonus Phylactery II",
@@ -2947,7 +2977,7 @@
           "image": {"src":"/mods/devotions-of-dragonus-phylactery-ii.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783594076
+          "date": 1789310506
         },
         {
           "name": "Green Diretide Ranged Attack",
@@ -4292,6 +4322,144 @@
       ]
     },
     {
+      "id": "brewmaster",
+      "name": "Brewmaster",
+      "slug": "brewmaster",
+      "mods": [
+        {
+          "name": "Brewmaster Jousting Panda",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","misc","arms","shoulder","weapon","head"],
+          "image": {"src":"/mods/brewmaster-jousting-panda.webp","width":854,"height":480},
+          "author": "Kisilev",
+          "authorUrl": "https://vk.com/id363951132",
+          "date": 1756539017
+        },
+        {
+          "name": "Brewmaster Military Saint",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","misc","arms","shoulder","weapon","head"],
+          "image": {"src":"/mods/brewmaster-military-saint.webp","width":854,"height":480},
+          "author": "Kisilev",
+          "authorUrl": "https://vk.com/id363951132",
+          "date": 1775454991
+        },
+        {
+          "name": "Brewmaster Wilding Tiger",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","misc","arms","head","shoulder","weapon"],
+          "image": {"src":"/mods/brewmaster-wilding-tiger.webp","width":854,"height":480},
+          "author": "ibcsz",
+          "authorUrl": "http://t.me/nixwaretop",
+          "date": 1789322607
+        },
+        {
+          "name": "Brewmaster Aghanim",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","misc","arms","shoulder","weapon"],
+          "image": {"src":"/mods/brewmaster-aghanim.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1788902445
+        },
+        {"name":"Bare Brewmaster","categoryId":"heroes","styleLabel":null,"slots":[],"image":{"src":"/mods/bare-brewmaster.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756537726},
+        {
+          "name": "Aghanim Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Blue Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Green Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Nemestice Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Red Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI10 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI12 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI9 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Yellow Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        }
+      ]
+    },
+    {
       "id": "enigma",
       "name": "Enigma",
       "slug": "enigma",
@@ -5174,41 +5342,50 @@
       ]
     },
     {
-      "id": "brewmaster",
-      "name": "Brewmaster",
-      "slug": "brewmaster",
+      "id": "chen",
+      "name": "Chen",
+      "slug": "chen",
       "mods": [
         {
-          "name": "Brewmaster Jousting Panda",
+          "name": "Chen Lelouch",
           "categoryId": "heroes",
           "styleLabel": null,
-          "slots": ["back","misc","arms","shoulder","weapon","head"],
-          "image": {"src":"/mods/brewmaster-jousting-panda.webp","width":854,"height":480},
-          "author": "Kisilev",
-          "authorUrl": "https://vk.com/id363951132",
-          "date": 1756539017
+          "slots": ["arms","misc","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/chen-lelouch.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1769918269
         },
         {
-          "name": "Brewmaster Military Saint",
+          "name": "Chen Infernal Psychic",
           "categoryId": "heroes",
           "styleLabel": null,
-          "slots": ["back","misc","arms","shoulder","weapon","head"],
-          "image": {"src":"/mods/brewmaster-military-saint.webp","width":854,"height":480},
-          "author": "Kisilev",
-          "authorUrl": "https://vk.com/id363951132",
-          "date": 1775454991
+          "slots": ["arms","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/chen-infernal-psychic.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1763705444
         },
         {
-          "name": "Brewmaster Aghanim",
+          "name": "Chen Seed of Strife",
           "categoryId": "heroes",
           "styleLabel": null,
-          "slots": ["back","misc","arms","shoulder","weapon"],
-          "image": {"src":"/mods/brewmaster-aghanim.webp","width":854,"height":480},
-          "author": "Миша Талант",
-          "authorUrl": "https://t.me/madberserker",
-          "date": 1788902445
+          "slots": ["arms","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/chen-seed-of-strife.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1765893248
         },
-        {"name":"Bare Brewmaster","categoryId":"heroes","styleLabel":null,"slots":[],"image":{"src":"/mods/bare-brewmaster.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756537726},
+        {
+          "name": "Chen Green Infernal",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["weapon"],
+          "image": {"src":"/mods/chen-green-infernal.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1789398422
+        },
         {
           "name": "Aghanim Ranged Attack",
           "categoryId": "ranged-attack",
@@ -5974,6 +6151,143 @@
           "author": null,
           "authorUrl": null,
           "date": 1764003644
+        }
+      ]
+    },
+    {
+      "id": "monkey_king",
+      "name": "Monkey King",
+      "slug": "monkey-king",
+      "mods": [
+        {
+          "name": "Ifrit Monkey King",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","weapon","head","shoulder"],
+          "image": {"src":"/mods/ifrit-monkey-king.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1758312287
+        },
+        {
+          "name": "Monkey King Immortal",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","weapon","head","shoulder"],
+          "image": {"src":"/mods/monkey-king-immortal.webp","width":854,"height":480},
+          "author": "ibcsz",
+          "authorUrl": "http://t.me/nixwaretop",
+          "date": 1789001882
+        },
+        {
+          "name": "Monkey King Simian Sovereign",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","weapon","head","shoulder"],
+          "image": {"src":"/mods/monkey-king-simian-sovereign.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1766284079
+        },
+        {
+          "name": "Monkey King Water Demon",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","weapon","head","shoulder"],
+          "image": {"src":"/mods/monkey-king-water-demon.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1784176630
+        },
+        {
+          "name": "Red Monkey King",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","weapon","head","shoulder"],
+          "image": {"src":"/mods/red-monkey-king.webp","width":854,"height":480},
+          "author": "Defiree",
+          "authorUrl": "https://vk.com/defiree2mods",
+          "date": 1769787537
+        },
+        {
+          "name": "Monkey King Arcana",
+          "categoryId": "heroes",
+          "styleLabel": "Death",
+          "slots": ["head"],
+          "image": {"src":"/mods/monkey-king-arcana-death.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781270968
+        },
+        {
+          "name": "Monkey King Arcana",
+          "categoryId": "heroes",
+          "styleLabel": "Fire",
+          "slots": ["head"],
+          "image": {"src":"/mods/monkey-king-arcana-fire.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781270968
+        },
+        {
+          "name": "Monkey King Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head"],
+          "image": {"src":"/mods/monkey-king-arcana.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781270968
+        },
+        {
+          "name": "Monkey King Arcana",
+          "categoryId": "heroes",
+          "styleLabel": "Water",
+          "slots": ["head"],
+          "image": {"src":"/mods/monkey-king-arcana-water.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781270968
+        },
+        {
+          "name": "Monkey King Staff of Gun-Yu",
+          "categoryId": "hero-items",
+          "styleLabel": "Anniversary",
+          "slots": ["weapon"],
+          "image": {"src":"/mods/monkey-king-staff-of-gun-yu-anniversary.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781348535
+        },
+        {
+          "name": "Monkey King Staff of Gun-Yu",
+          "categoryId": "hero-items",
+          "styleLabel": "Crimson",
+          "slots": ["weapon"],
+          "image": {"src":"/mods/monkey-king-staff-of-gun-yu-crimson.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781348535
+        },
+        {
+          "name": "Monkey King Staff of Gun-Yu",
+          "categoryId": "hero-items",
+          "styleLabel": "Golden",
+          "slots": ["weapon"],
+          "image": {"src":"/mods/monkey-king-staff-of-gun-yu-golden.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781348535
+        },
+        {
+          "name": "Monkey King Staff of Gun-Yu",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["weapon"],
+          "image": {"src":"/mods/monkey-king-staff-of-gun-yu.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1781348535
         }
       ]
     },
@@ -6790,133 +7104,6 @@
       ]
     },
     {
-      "id": "chen",
-      "name": "Chen",
-      "slug": "chen",
-      "mods": [
-        {
-          "name": "Chen Lelouch",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/chen-lelouch.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1769918269
-        },
-        {
-          "name": "Chen Infernal Psychic",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/chen-infernal-psychic.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1763705444
-        },
-        {
-          "name": "Chen Seed of Strife",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/chen-seed-of-strife.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1765893248
-        },
-        {
-          "name": "Aghanim Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Blue Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Green Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Nemestice Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Red Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI10 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI12 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI9 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Yellow Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        }
-      ]
-    },
-    {
       "id": "dark_willow",
       "name": "Dark Willow",
       "slug": "dark-willow",
@@ -7548,133 +7735,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1764003644
-        }
-      ]
-    },
-    {
-      "id": "monkey_king",
-      "name": "Monkey King",
-      "slug": "monkey-king",
-      "mods": [
-        {
-          "name": "Ifrit Monkey King",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","weapon","head","shoulder"],
-          "image": {"src":"/mods/ifrit-monkey-king.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1758312287
-        },
-        {
-          "name": "Monkey King Simian Sovereign",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","weapon","head","shoulder"],
-          "image": {"src":"/mods/monkey-king-simian-sovereign.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1766284079
-        },
-        {
-          "name": "Monkey King Water Demon",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","weapon","head","shoulder"],
-          "image": {"src":"/mods/monkey-king-water-demon.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1784176630
-        },
-        {
-          "name": "Red Monkey King",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","weapon","head","shoulder"],
-          "image": {"src":"/mods/red-monkey-king.webp","width":854,"height":480},
-          "author": "Defiree",
-          "authorUrl": "https://vk.com/defiree2mods",
-          "date": 1769787537
-        },
-        {
-          "name": "Monkey King Arcana",
-          "categoryId": "heroes",
-          "styleLabel": "Death",
-          "slots": ["head"],
-          "image": {"src":"/mods/monkey-king-arcana-death.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781270968
-        },
-        {
-          "name": "Monkey King Arcana",
-          "categoryId": "heroes",
-          "styleLabel": "Fire",
-          "slots": ["head"],
-          "image": {"src":"/mods/monkey-king-arcana-fire.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781270968
-        },
-        {
-          "name": "Monkey King Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["head"],
-          "image": {"src":"/mods/monkey-king-arcana.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781270968
-        },
-        {
-          "name": "Monkey King Arcana",
-          "categoryId": "heroes",
-          "styleLabel": "Water",
-          "slots": ["head"],
-          "image": {"src":"/mods/monkey-king-arcana-water.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781270968
-        },
-        {
-          "name": "Monkey King Staff of Gun-Yu",
-          "categoryId": "hero-items",
-          "styleLabel": "Anniversary",
-          "slots": ["weapon"],
-          "image": {"src":"/mods/monkey-king-staff-of-gun-yu-anniversary.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781348535
-        },
-        {
-          "name": "Monkey King Staff of Gun-Yu",
-          "categoryId": "hero-items",
-          "styleLabel": "Crimson",
-          "slots": ["weapon"],
-          "image": {"src":"/mods/monkey-king-staff-of-gun-yu-crimson.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781348535
-        },
-        {
-          "name": "Monkey King Staff of Gun-Yu",
-          "categoryId": "hero-items",
-          "styleLabel": "Golden",
-          "slots": ["weapon"],
-          "image": {"src":"/mods/monkey-king-staff-of-gun-yu-golden.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781348535
-        },
-        {
-          "name": "Monkey King Staff of Gun-Yu",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["weapon"],
-          "image": {"src":"/mods/monkey-king-staff-of-gun-yu.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1781348535
         }
       ]
     },
@@ -11329,7 +11389,7 @@
           "image": {"src":"/mods/earthshaker-blink-dagger.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783547273
+          "date": 1789310506
         },
         {
           "name": "Earthshaker Gold Blink Dagger",
@@ -11339,7 +11399,104 @@
           "image": {"src":"/mods/earthshaker-gold-blink-dagger.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783547273
+          "date": 1789310506
+        }
+      ]
+    },
+    {
+      "id": "juggernaut",
+      "name": "Juggernaut",
+      "slug": "juggernaut",
+      "mods": [
+        {
+          "name": "Juggernaut Okita Souji",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon","legs"],
+          "image": {"src":"/mods/juggernaut-okita-souji.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1771195327
+        },
+        {
+          "name": "Juggernaut Ancient Exile",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-ancient-exile.webp","width":854,"height":480},
+          "author": "Dota2VPK",
+          "authorUrl": "https://t.me/dota2freevpk",
+          "date": 1779803304
+        },
+        {
+          "name": "Juggernaut Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-arcana.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1787381478
+        },
+        {
+          "name": "Juggernaut Arcana Purple",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","misc","weapon","back","arms"],
+          "image": {"src":"/mods/juggernaut-arcana-purple.webp","width":854,"height":480},
+          "author": "CeoMods",
+          "authorUrl": "https://t.me/modsceo",
+          "date": 1787156742
+        },
+        {
+          "name": "Juggernaut Bladeform Aesthete",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-bladeform-aesthete.webp","width":854,"height":480},
+          "author": "Tenkay",
+          "authorUrl": "https://t.me/dota2Tenkay",
+          "date": 1786848392
+        },
+        {
+          "name": "Juggernaut Ice and Fire",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","back","arms","head","weapon"],
+          "image": {"src":"/mods/juggernaut-ice-and-fire.webp","width":854,"height":480},
+          "author": "Kisilev",
+          "authorUrl": "https://vk.com/id363951132",
+          "date": 1763212289
+        },
+        {
+          "name": "Juggernaut Samurai of Wind",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","head","back","weapon","arms"],
+          "image": {"src":"/mods/juggernaut-samurai-of-wind.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1763624686
+        },
+        {
+          "name": "Lollipop Juggernaut",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/lollipop-juggernaut.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1768632223
+        },
+        {
+          "name": "Juggernaut Fireborn Assault",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["weapon"],
+          "image": {"src":"/mods/juggernaut-fireborn-assault.webp","width":854,"height":480},
+          "author": "ibcsz",
+          "authorUrl": "http://t.me/nixwaretop",
+          "date": 1789278465
         }
       ]
     },
@@ -11523,7 +11680,7 @@
           "image": {"src":"/mods/phantom-adven-blademail-red.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783594076
+          "date": 1789310506
         },
         {
           "name": "Phantom Adven Blademail White",
@@ -11533,7 +11690,7 @@
           "image": {"src":"/mods/phantom-adven-blademail-white.webp","width":854,"height":480},
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
-          "date": 1783594076
+          "date": 1789310506
         }
       ]
     },
@@ -11718,93 +11875,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1779535888
-        }
-      ]
-    },
-    {
-      "id": "juggernaut",
-      "name": "Juggernaut",
-      "slug": "juggernaut",
-      "mods": [
-        {
-          "name": "Juggernaut Okita Souji",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon","legs"],
-          "image": {"src":"/mods/juggernaut-okita-souji.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1771195327
-        },
-        {
-          "name": "Juggernaut Ancient Exile",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-ancient-exile.webp","width":854,"height":480},
-          "author": "Dota2VPK",
-          "authorUrl": "https://t.me/dota2freevpk",
-          "date": 1779803304
-        },
-        {
-          "name": "Juggernaut Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-arcana.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1787381478
-        },
-        {
-          "name": "Juggernaut Arcana Purple",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["head","misc","weapon","back","arms"],
-          "image": {"src":"/mods/juggernaut-arcana-purple.webp","width":854,"height":480},
-          "author": "CeoMods",
-          "authorUrl": "https://t.me/modsceo",
-          "date": 1787156742
-        },
-        {
-          "name": "Juggernaut Bladeform Aesthete",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-bladeform-aesthete.webp","width":854,"height":480},
-          "author": "Tenkay",
-          "authorUrl": "https://t.me/dota2Tenkay",
-          "date": 1786848392
-        },
-        {
-          "name": "Juggernaut Ice and Fire",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","back","arms","head","weapon"],
-          "image": {"src":"/mods/juggernaut-ice-and-fire.webp","width":854,"height":480},
-          "author": "Kisilev",
-          "authorUrl": "https://vk.com/id363951132",
-          "date": 1763212289
-        },
-        {
-          "name": "Juggernaut Samurai of Wind",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","head","back","weapon","arms"],
-          "image": {"src":"/mods/juggernaut-samurai-of-wind.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1763624686
-        },
-        {
-          "name": "Lollipop Juggernaut",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/lollipop-juggernaut.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1768632223
         }
       ]
     },
@@ -12142,7 +12212,7 @@
           "image": {"src":"/mods/axe-kratos.webp","width":854,"height":480},
           "author": "Defiree",
           "authorUrl": "https://vk.com/defiree2mods",
-          "date": 1788956725
+          "date": 1789090758
         }
       ]
     },

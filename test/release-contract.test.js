@@ -59,8 +59,11 @@ test('a section has something in it', () => {
   /* An empty section is worse than a missing one: CI finds it, publishes nothing, and the
    * release page looks like the release did nothing. */
   const v = version();
+  // every metacharacter, not just the dot: a version is only digits and dots today, and a
+  // pre-release tag with a "+" in it would otherwise stop matching its own heading
+  const heading = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   for (const file of ['CHANGELOG.md', 'CHANGELOG.ru.md']) {
-    const body = read(file).split(new RegExp(`^## ${v.replace(/\./g, '\\.')}\\s*$`, 'm'))[1] || '';
+    const body = read(file).split(new RegExp(`^## ${heading}\\s*$`, 'm'))[1] || '';
     const untilNext = body.split(/^## \d+\.\d+\.\d+\s*$/m)[0].trim();
     assert.ok(untilNext.length > 80, `${file}: the ${v} section is ${untilNext.length} characters`);
   }

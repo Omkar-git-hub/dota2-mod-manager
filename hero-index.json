@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1312,
+  "mods": 1319,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -162,6 +162,7 @@
         {"name":"Brewmaster Aghanim","categoryId":"heroes","styleLabel":null,"slots":["back","misc","arms","shoulder","weapon"]},
         {"name":"Brewmaster Jousting Panda","categoryId":"heroes","styleLabel":null,"slots":["back","misc","arms","shoulder","weapon","head"]},
         {"name":"Brewmaster Military Saint","categoryId":"heroes","styleLabel":null,"slots":["back","misc","arms","shoulder","weapon","head"]},
+        {"name":"Brewmaster Wilding Tiger","categoryId":"heroes","styleLabel":null,"slots":["back","misc","arms","head","shoulder","weapon"]},
         {"name":"Green Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Nemestice Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Red Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
@@ -224,6 +225,7 @@
       "mods": [
         {"name":"Aghanim Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Blue Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
+        {"name":"Chen Green Infernal","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Chen Infernal Psychic","categoryId":"heroes","styleLabel":null,"slots":["arms","head","mount","shoulder","weapon"]},
         {"name":"Chen Lelouch","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","mount","shoulder","weapon"]},
         {"name":"Chen Seed of Strife","categoryId":"heroes","styleLabel":null,"slots":["arms","head","mount","shoulder","weapon"]},
@@ -584,6 +586,7 @@
       "mods": [
         {"name":"Aghanim Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Bedrock","categoryId":"terrains","styleLabel":null,"slots":["misc"]},
+        {"name":"Black Huskar","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","shoulder"]},
         {"name":"Blue Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Blue Soul Huskar","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","shoulder"]},
         {"name":"Dark Terrain Minify","categoryId":"terrains","styleLabel":null,"slots":["misc"]},
@@ -669,6 +672,7 @@
         {"name":"Juggernaut Arcana","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon"]},
         {"name":"Juggernaut Arcana Purple","categoryId":"heroes","styleLabel":null,"slots":["head","misc","weapon","back","arms"]},
         {"name":"Juggernaut Bladeform Aesthete","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon"]},
+        {"name":"Juggernaut Fireborn Assault","categoryId":"heroes","styleLabel":null,"slots":["weapon"]},
         {"name":"Juggernaut Ice and Fire","categoryId":"heroes","styleLabel":null,"slots":["misc","back","arms","head","weapon"]},
         {"name":"Juggernaut Okita Souji","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon","legs"]},
         {"name":"Juggernaut Samurai of Wind","categoryId":"heroes","styleLabel":null,"slots":["misc","head","back","weapon","arms"]},
@@ -688,6 +692,7 @@
         {"name":"Keeper of the Light Prominence","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Keeper of the Light Renegade","categoryId":"heroes","styleLabel":null,"slots":["head","mount","legs","weapon"]},
         {"name":"Keeper of the Light Tamamo","categoryId":"heroes","styleLabel":null,"slots":["head","misc","mount","legs","weapon","arms","belt"]},
+        {"name":"Keeper of the Light Waitureally","categoryId":"heroes","styleLabel":null,"slots":["head","mount","legs","weapon"]},
         {"name":"Keeper of the Light Wings of Daybreak","categoryId":"hero-items","styleLabel":null,"slots":["mount"]},
         {"name":"Nemestice Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Red Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
@@ -985,6 +990,7 @@
         {"name":"Monkey King Arcana","categoryId":"heroes","styleLabel":"Fire","slots":["head"]},
         {"name":"Monkey King Arcana","categoryId":"heroes","styleLabel":null,"slots":["head"]},
         {"name":"Monkey King Arcana","categoryId":"heroes","styleLabel":"Water","slots":["head"]},
+        {"name":"Monkey King Immortal","categoryId":"heroes","styleLabel":null,"slots":["arms","weapon","head","shoulder"]},
         {"name":"Monkey King Simian Sovereign","categoryId":"heroes","styleLabel":null,"slots":["arms","weapon","head","shoulder"]},
         {"name":"Monkey King Staff of Gun-Yu","categoryId":"hero-items","styleLabel":"Anniversary","slots":["weapon"]},
         {"name":"Monkey King Staff of Gun-Yu","categoryId":"hero-items","styleLabel":"Crimson","slots":["weapon"]},
@@ -1063,6 +1069,7 @@
         {"name":"Red Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Shadow Fiend King of Vipers","categoryId":"heroes","styleLabel":"Style II","slots":["arms","head","shoulder"]},
         {"name":"Shadow Fiend King of Vipers","categoryId":"heroes","styleLabel":"Style III","slots":["arms","head","shoulder"]},
+        {"name":"Shadow Fiend Lightning Soul","categoryId":"heroes","styleLabel":null,"slots":["head","wings","shoulder","arms"]},
         {"name":"Shadow Fiend White","categoryId":"heroes","styleLabel":null,"slots":["shoulder","head","arms","misc"]},
         {"name":"TI10 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI12 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},

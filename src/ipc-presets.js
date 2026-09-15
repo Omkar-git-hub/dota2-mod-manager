@@ -37,6 +37,28 @@ function registerPresetsIpc({
   // `win` arrives as a getter, not as the window. These are registered before the window
   // is created, so a value captured here would be undefined forever - which is exactly
   // what win:isMaximized did on the first run after this file was split out.
+
+  /* One mod out of the catalog, by the name a preset remembers it under, into the library.
+   * Answers the record, or null with the reason pushed onto `errors`.
+   *
+   * A received preset being installed and an own preset whose mods have gone both need this,
+   * and it was written once, inside the first of them. Two copies of "install from the
+   * catalog" is how one of them ends up without the rule that only one cursor set is live. */
+  async function installFromCatalog({ categoryId, name, styleLabel }, cat, errors) {
+    const have = library.findByKey(categoryId, name, styleLabel);
+    if (have) return have;
+    const hit = cat.lookup(categoryId, name, styleLabel);
+    if (!hit) { errors.push(`${name}: ${t('нет в каталоге')}`); return null; }
+    if (hit.categoryId === 'cursors') disableOtherCursors(null); // one cursor at a time
+    const files = await installer.install({ categoryId: hit.categoryId, modName: hit.name, fileRef: hit.fileRef });
+    const rec = library.add({
+      categoryId: hit.categoryId, name: hit.name, styleLabel: hit.styleLabel,
+      fileRef: hit.fileRef, preview: hit.preview, files,
+    });
+    if (hit.categoryId === 'cursors') { try { installer.ensureCursorStore(rec.id, files); } catch { /* noop */ } }
+    return rec;
+  }
+
   ipcMain.handle('presets:list', async () => {
     const cat = await presets.catalogIndex();
     return Promise.all(library.listPresets().map(async (p) => {
@@ -81,11 +103,43 @@ function registerPresetsIpc({
     library.deletePreset(id);
     return library.listPresets();
   });
-  ipcMain.handle('presets:apply', (e, id) => {
+  /* A build remembers its mods by name, so some of them may not be installed any more: deleted
+   * since, or saved on another machine. Applying used to switch every other mod off, switch on
+   * only the members that happened to be here, and answer "Preset applied" - so pressing it on
+   * a build whose mods had gone left somebody with fewer mods than before, nothing installed,
+   * and a message saying it had worked. The card had been saying "3 not installed" the whole
+   * time; the button just never acted on it.
+   *
+   * Now whatever the catalog still has is installed first. A mod of the user's own cannot be
+   * fetched back from anywhere, so it is left out and named, rather than silently. */
+  ipcMain.handle('presets:apply', async (e, id) => {
     const preset = library.getPreset(id);
     if (!preset) return { error: t('Пресет не найден') };
-    const errors = presets.applyPreset(preset);
-    return errors.length ? { error: errors.join('\n') } : { ok: true };
+    const absent = library.presetMembers(preset).filter((m) => !m.rec).map((m) => m.identity);
+    const missing = [];
+    const errors = [];
+    let installed = 0;
+    if (absent.length) {
+      const cat = await presets.catalogIndex();
+      for (const identity of absent) {
+        if (identity.categoryId === 'imported') { missing.push(identity.name); continue; }
+        try {
+          sendProgress({ type: 'stage', label: identity.name, stage: t('установка') });
+          if (await installFromCatalog(identity, cat, errors)) installed++;
+        } catch (err) {
+          errors.push(`${identity.name}: ${String(err.message || err)}`);
+        }
+      }
+    }
+    const toggleErrors = presets.applyPreset(preset);
+    if (installed) {
+      afterDeployMaster();
+      sendProgress({ type: 'done', label: preset.name });
+    }
+    // A mod that could not be switched is the preset failing, exactly as before. A member that
+    // could not be fetched is the preset applying without it, and is said as a warning.
+    if (toggleErrors.length) return { error: [...errors, ...toggleErrors].join('\n') };
+    return { ok: true, installed, missing, errors };
   });
 
   // ----- sharing presets as .d2mm -----
@@ -181,18 +235,8 @@ function registerPresetsIpc({
     const resolveEntry = async (entry) => {
       try {
         if (entry.kind === 'catalog') {
-          const have = library.findByKey(entry.categoryId, entry.name, entry.styleLabel);
-          if (have) return [have.id];
-          const hit = cat.lookup(entry.categoryId, entry.name, entry.styleLabel);
-          if (!hit) { errors.push(`${entry.name}: ${t('нет в каталоге')}`); return []; }
-          if (hit.categoryId === 'cursors') disableOtherCursors(null); // one cursor at a time
-          const files = await installer.install({ categoryId: hit.categoryId, modName: hit.name, fileRef: hit.fileRef });
-          const rec = library.add({
-            categoryId: hit.categoryId, name: hit.name, styleLabel: hit.styleLabel,
-            fileRef: hit.fileRef, preview: hit.preview, files,
-          });
-          if (hit.categoryId === 'cursors') { try { installer.ensureCursorStore(rec.id, files); } catch { /* noop */ } }
-          return [rec.id];
+          const rec = await installFromCatalog(entry, cat, errors);
+          return rec ? [rec.id] : [];
         }
         if (entry.kind === 'embedded') {
           if (entry.fp && fpIndex.has(entry.fp)) return [fpIndex.get(entry.fp)]; // already on disk
@@ -240,7 +284,7 @@ function registerPresetsIpc({
     library.save();
     if (stash) { try { fs.rmSync(stash, { force: true }); } catch { /* noop */ } }
 
-    errors.push(...applyPreset(preset));
+    errors.push(...presets.applyPreset(preset));
     // a mod that arrived already enabled never passes through applyPreset's own switch, so
     // its freshly lifted blocks would sit in the library without ever reaching the build
     if (schemaTouched) schemaService.refresh();

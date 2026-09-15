@@ -12,7 +12,6 @@
  * Bodies unchanged from main.js.
  */
 const fs = require('fs');
-const path = require('path');
 const AdmZip = require('adm-zip');
 const { app, BrowserWindow, dialog, ipcMain, screen, shell } = require('electron');
 
@@ -92,7 +91,26 @@ function registerDiagnosticsIpc({
               }));
             } catch (err) { return { error: String(err.message || err) }; }
           })(),
-          uiScale: settings.get('uiScale'),
+          // The UI scale is not gathered here: the report already carries it under settings,
+          // and a second copy under extra was one more field for buildReport to drop.
+          /* The graphics card, because a picture can be wrong while the page is right.
+           * On 2026-09-15 a user sent a catalog where cards were drawn over one another and cut
+           * off mid-tile. Measured in the same category here: no two cards overlapping in the
+           * layout, none skipped while on screen, frames under 6 ms - so the document was fine
+           * and whatever painted it was not. That is a GPU and driver question, and the report
+           * had no way to answer it. */
+          gpu: await (async () => {
+            try {
+              const info = await app.getGPUInfo('basic');
+              return {
+                featureStatus: app.getGPUFeatureStatus(),
+                devices: (info.gpuDevice || []).map((d) => ({
+                  active: !!d.active, vendorId: d.vendorId, deviceId: d.deviceId,
+                  driverVendor: d.driverVendor, driverVersion: d.driverVersion,
+                })),
+              };
+            } catch (err) { return { error: String(err.message || err) }; }
+          })(),
           updater: { available: !!autoUpdater, lastError: lastUpdateError() },
           remoteConfig: (() => {
             try {

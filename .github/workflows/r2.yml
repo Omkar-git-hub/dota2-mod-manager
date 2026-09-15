@@ -21,6 +21,10 @@ on:
         description: 'Say what it would do and touch nothing'
         type: boolean
         default: false
+      release:
+        description: 'Also publish this release version to updates/ (e.g. 2.6.4), blank to skip'
+        required: false
+        default: ''
 
 concurrency:
   group: r2-mirror
@@ -37,11 +41,25 @@ jobs:
         with:
           node-version: 24
 
+      # The sync itself needs nothing but Node. The toolchain step below reaches into
+      # src/toolchain.js, which unpacks a zip through src/safe-zip.js, which needs adm-zip -
+      # so without this the run copied every archive and then went red on its last step. It
+      # had been failing that way since the step was added, and a job that always fails is a
+      # job nobody reads: that is how the bucket went a night without anybody noticing.
+      - name: Install what the toolchain step needs
+        run: npm ci --omit=dev --ignore-scripts
+
       - name: Copy what is missing
         env:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_PUBLIC_BASE: ${{ secrets.R2_PUBLIC_BASE }}
+          # Replacing an object does not replace what the cache in front of it already handed
+          # out, and .zip and .vpk are cached by default. Without these two the run says which
+          # objects wanted purging and carries on: a cache is not worth failing a sync over.
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
           LIMIT: ${{ inputs.limit }}
           DRY: ${{ inputs.dry }}
         run: |
@@ -50,3 +68,23 @@ jobs:
           [ -n "${LIMIT:-}" ] && argv="--limit $LIMIT"
           [ "${DRY:-false}" = "true" ] && argv="$argv --dry"
           node tools/r2-sync.mjs $argv
+
+      # The pinned toolchain, so the one feature that needs a 50 MB download from somebody
+      # else's GitHub release keeps working when GitHub is the thing that is down. Cheap: it
+      # only moves bytes when a pin changes.
+      - name: Copy the pinned toolchain
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: node tools/r2-toolchain.mjs
+
+      # Normally the release workflow does this as part of publishing. Here by hand for the
+      # first fill, and for the day a release went out while the bucket was unreachable.
+      - name: Publish a release to the update mirror
+        if: inputs.release != ''
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: node tools/r2-release.mjs '${{ inputs.release }}'

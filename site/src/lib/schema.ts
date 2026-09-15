@@ -10,7 +10,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { REPO_ROOT } from './paths';
 import { landing } from '../i18n/landing';
 import { facts } from '../i18n/facts';
 import { heroCopy } from '../i18n/heroes';
@@ -35,9 +35,11 @@ import {
 
 /** The app's version, read from the repository at build time so it cannot go stale. */
 export function appVersion(): string {
-  const here = path.dirname(fileURLToPath(import.meta.url));
-  const pkg = path.resolve(here, '..', '..', '..', 'package.json');
-  return JSON.parse(fs.readFileSync(pkg, 'utf-8')).version;
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf-8'));
+  // site/package.json says 0.0.0 one folder away, so a wrong path reads a real file and prints a
+  // plausible number instead of failing. The name is what tells the two apart.
+  if (pkg.name !== 'dota2-mod-manager') throw new Error(`appVersion: ${REPO_ROOT} is not the app's repository`);
+  return pkg.version;
 }
 
 /**

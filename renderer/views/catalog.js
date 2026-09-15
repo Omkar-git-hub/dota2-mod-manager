@@ -393,10 +393,26 @@ async function renderCatalog() {
     return;
   }
   if (state.catalog.error) {
+    /* Two failures that need different sentences.
+     *
+     * Not being able to open a socket is what happens when the wifi is off or the whole route
+     * to the catalog is blocked, and it used to print "fetch failed" - Node's words, at a
+     * player, on the screen where the mods should be. Anything else is a server that answered
+     * with something, and telling that person to check their connection sends them to fix
+     * what is not broken.
+     *
+     * Either way the app itself is fine and the mods already installed are still installed,
+     * which is the part worth saying out loud on an otherwise empty screen. */
+    const offline = state.catalog.offline;
     await paint(() => { viewRoot.innerHTML = `
-      <div class="empty-note">
-        ${L`Не удалось загрузить каталог: ${esc(state.catalog.error)}`}<br><br>
+      <div class="empty-note offline-note">
+        <span class="ms offline-icon">${offline ? 'wifi_off' : 'cloud_off'}</span>
+        <b>${offline ? L`Нет соединения с интернетом` : L`Каталог сейчас недоступен`}</b>
+        <span>${offline
+          ? L`Моды, которые уже стоят, работают. Каталог появится, как только связь вернётся.`
+          : L`Моды, которые уже стоят, работают. Попробуй ещё раз через минуту.`}</span>
         <button class="btn btn-primary" id="retryCat">${L`Повторить`}</button>
+        <span class="offline-detail">${esc(state.catalog.error)}</span>
       </div>`; });
     $('#retryCat').addEventListener('click', () => loadCatalog(true));
     return;
@@ -1390,7 +1406,17 @@ async function doInstall(categoryId, mod, styleLabel, fileRef, preview, { batch 
   }
   installing.add(k);
   if (modalState) drawModal();
-  const r = await window.api.mods.install({ categoryId, name: mod.name, styleLabel, fileRef, preview });
+  /* A channel can reject rather than answer, and then this line used to throw: `installing`
+     kept the key, the button stayed on "Installing..." for as long as the window was open, and
+     the only trace was an unhandled rejection in the log. That is how a broken mods:install
+     read as a hang for two releases instead of as an error. Whatever went wrong, the button
+     comes back and says something. */
+  let r;
+  try {
+    r = await window.api.mods.install({ categoryId, name: mod.name, styleLabel, fileRef, preview });
+  } catch (err) {
+    r = { error: String(err?.message || err) };
+  }
   installing.delete(k);
   if (r.error && !r.already) toast(`${mod.name}: ${r.error}`, 'error', 6000);
   else if (r.replaced?.length) toast(L`${mod.name} установлен — «${r.replaced.join(', ')}» выключен: курсор в игре может быть только один`, 'warn', 7000);
@@ -1577,9 +1603,14 @@ async function pickCosmetic(slot, o, remove) {
   const live = pickedIn(slot);
   installing.add(k);
   if (cosModalState) drawCosmeticModal();
-  const r = remove
-    ? (live ? await window.api.mods.remove(live.id) : { ok: true })
-    : await window.api.cosmetics.pick(slot, o.id, o.name);
+  let r;
+  try {
+    r = remove
+      ? (live ? await window.api.mods.remove(live.id) : { ok: true })
+      : await window.api.cosmetics.pick(slot, o.id, o.name);
+  } catch (err) {
+    r = { error: String(err?.message || err) };
+  }
   installing.delete(k);
   if (r.error) { toast(r.error, 'error'); if (cosModalState) drawCosmeticModal(); return; }
   toast(remove ? L`Вернули как в игре` : L`Выбрано: ${o.name}`);

@@ -257,11 +257,22 @@ class Installer {
         // the catalog's published hash when it has one, and otherwise what this file was the
         // first time it arrived here
         expectSha256: published || (known ? known.sha256 : null),
+        /* Neither of those is a hash this project pinned. One is a list somebody else's bot
+           rebuilds, the other is a note about a file this machine saw weeks ago, and both go
+           out of date the moment a mod's author replaces the archive. So they outrank every
+           proxy and nothing else: see downloadFile. */
+        fromPublishedList: true,
         onProgress: (loaded, total) => this.onProgress({ type: 'download', label: label || safeName, loaded, total }),
       });
       this.rememberDownload(key, { size: res.bytes, sha256: res.sha256, at: Date.now() });
       return dest;
     } catch (err) {
+      /* "checksum mismatch for Earthshaker Arcana.zip" is a sentence for whoever wrote the
+         downloader. What it means to the player is that every copy of this mod he can reach
+         is not the mod the catalog describes, and that this is not something he did or can
+         fix from here. Said in his own language, with the technical half kept for the
+         diagnostics report. */
+      if (err.checksum) throw new Error(t('{0}: скачанный файл не совпадает с тем, что опубликовал автор мода. Попробуй позже', safeName));
       throw new Error(t('Не удалось скачать {0}: {1}', safeName, String(err.message || err)));
     }
   }

@@ -6,7 +6,7 @@
  * warranty whatsoever. LICENSE holds the terms; NOTICE holds the additional terms this
  * repository adds under section 7 of that License, about credit and the program's name.
  */
-const { app, BrowserWindow, ipcMain, shell, dialog, net, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, net, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
@@ -41,6 +41,7 @@ const { uninstallFlow } = require('./src/uninstall-window');
 const { presetsService } = require('./src/presets-service');
 const { registerPresetsIpc } = require('./src/ipc-presets');
 const { registerModsIpc } = require('./src/ipc-mods');
+const { createGate } = require('./src/feature-gate');
 const { registerLibraryIpc } = require('./src/ipc-library');
 const { registerPacksIpc } = require('./src/ipc-packs');
 const { registerWindowIpc } = require('./src/ipc-window');
@@ -631,12 +632,51 @@ function setupAutoUpdate() {
   autoUpdater.on('update-downloaded', (info) => {
     if (win && !win.isDestroyed()) win.webContents.send('update', { type: 'downloaded', version: info.version });
   });
+  /* When GitHub is not answering, ask our own copy.
+   *
+   * electron-updater is told one feed at build time and this one is GitHub. On 2026-08-17
+   * GitHub was down for three hours, which meant no installed copy could check for an update
+   * or fetch one, and nobody noticed, because an app that fails to update looks like an app.
+   * It is the release that fixes something urgent where that stops being survivable. The same
+   * goes for the part of the userbase that cannot reach GitHub on an ordinary day.
+   *
+   * tools/r2-release.mjs puts each release's manifests and binaries in the bucket the mods
+   * already live in, so the fallback is a generic feed pointed at it. Tried second and only
+   * after a failure: GitHub is the origin, this is a copy, and a copy that is a version behind
+   * should not be what people update from while the origin works.
+   *
+   * Not a proxy. Both feeds are hosts this project controls, which is what makes it safe to
+   * install what they hand over - the same reason src/portable-update.js refuses mirrors for
+   * its manifest.
+   */
+  const MIRROR_FEED = 'https://cdn.dota2modmanager.com/updates/';
+  let triedMirror = false;
+
   // Silent for the user - being offline is not something to interrupt anybody about - but
   // remembered, because "it never updates" is a support question and this is the answer to it.
-  autoUpdater.on('error', (err) => { lastUpdateError = String(err?.message || err).slice(0, 500); });
+  autoUpdater.on('error', (err) => {
+    lastUpdateError = String(err?.message || err).slice(0, 500);
+    if (triedMirror) return;
+    triedMirror = true;
+    diag(`update check failed on GitHub, trying the mirror: ${lastUpdateError}`);
+    try {
+      autoUpdater.setFeedURL({ provider: 'generic', url: MIRROR_FEED });
+      autoUpdater.checkForUpdates().catch(() => {});
+    } catch (e) {
+      diag(`update mirror unusable: ${e.message || e}`);
+    }
+  });
   autoUpdater.checkForUpdates().catch(() => {});
   // re-check every 4 hours while the app is open
-  setInterval(() => autoUpdater.checkForUpdates().catch(() => {}), 4 * 60 * 60 * 1000);
+  // Four-hourly, and each round starts at GitHub again: the mirror is for the hours it is down,
+  // not a place to settle into.
+  setInterval(() => {
+    if (triedMirror) {
+      triedMirror = false;
+      try { autoUpdater.setFeedURL({ provider: 'github', owner: 'TheFleece', repo: 'dota2-mod-manager' }); } catch { /* keep whatever it has */ }
+    }
+    autoUpdater.checkForUpdates().catch(() => {});
+  }, 4 * 60 * 60 * 1000);
 }
 
 app.on('window-all-closed', () => app.quit());
@@ -1207,11 +1247,15 @@ function registerIpc() {
     win: () => win,
   });
 
+  // One gate, handed to both of the modules that guard a channel with it. Two copies is how
+  // installing broke: the call went to one file and the helper stayed in the other.
+  const blocked = createGate({ remoteConfig, settings });
+
   // ----- install/manage ----- (src/ipc-mods.js)
   registerModsIpc({
-    applyMasterToCursors, catalog, diag, disableOtherCursors, fingerprints, importVpkBuffers,
-    importVpkPaths, installer, isCursorRecord, library, refreshPresence, schemaService,
-    sendProgress, win: () => win,
+    applyMasterToCursors, blocked, catalog, diag, disableOtherCursors, fingerprints,
+    importVpkBuffers, importVpkPaths, installer, isCursorRecord, library, refreshPresence,
+    schemaService, sendProgress, win: () => win,
     // read late: Steam's verify rewrites this while the app is running
     verifyStuck: () => verifyStuck,
   });
@@ -1232,8 +1276,8 @@ function registerIpc() {
 
   // ----- what the app was told from the network ----- (src/ipc-game.js)
   registerGameIpc({
-    diag, dotaIsRunning, gameIcons, icons, library, modPreviews, remoteConfig, repairAfterPatch,
-    schemaService, settings, toolchain,
+    blocked, diag, dotaIsRunning, gameIcons, icons, library, modPreviews, remoteConfig,
+    repairAfterPatch, schemaService, settings, toolchain,
     patchRepair: () => patchRepair,
     setPatchRepair,
   });

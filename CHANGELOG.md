@@ -2,6 +2,212 @@
 
 What changed in each release. The app updates itself, so you get all of this without reinstalling.
 
+## 2.6.10
+
+### Matchmaking works again after a Dota update
+
+With mods on, a Dota update could leave the game refusing to queue. Nothing in the app looked
+wrong: it reported the patch on, signed and in order.
+
+Dota ships a list of hashes for the files it checks, and it ships a new one with every build.
+This app adds one line to that list for the file it edits. What it got wrong was where it read
+the rest of the list from: a copy it had saved the first time you turned mods on, which on one
+machine was six weeks and a dozen Dota patches old. So after an update it put that old list back,
+the client compared its own current binaries against hashes from weeks earlier, and refused to
+queue.
+
+It now writes the list the installed build shipped, plus its one line. The saved copy is not read
+any more.
+
+**If queueing is still refused after this update:** the old list may still be sitting in your game
+folder, and nothing this app does can know what the right one was. Steam, Dota 2, Properties,
+Installed Files, Verify integrity of game files puts it back, and takes a minute. The next Dota
+patch replaces it too.
+
+### A preset brings back the mods it names
+
+Applying a preset whose mods were no longer installed switched every other mod off, switched on
+only the members still there, and said "Preset applied". The card above the button already said
+how many of its mods were missing; the button just never did anything about it.
+
+Now the mods the catalog still has are installed first, and then the preset is applied. A mod of
+your own that is not on this computer cannot be fetched from anywhere, so the app names it instead
+of leaving it out without a word.
+
+## 2.6.9
+
+### Safe mode can be switched off on Linux
+
+It could not before. Pressing the switch answered `dota.signatures not found` and stopped there,
+which meant no mod could be loaded by the game at all on Linux.
+
+The file it was looking for does not exist there. On Windows the client keeps a list of hashes in
+`bin/win64/dota.signatures` and checks the files it loads against it, so this app has to write its
+own line into that list. Valve's Linux build ships `bin/linuxsteamrt64/` with the client, forty
+shared libraries and no list at all, and the app treated that as a broken installation rather than
+as a different one.
+
+Nothing about it needs signing on Linux, so the patch is simply written and that is the whole job.
+The switch also stops showing a warning dot for a list that was never there, and the app stops
+re-applying a patch it thought had failed.
+
+Reported with a photograph of the folder, which is what made it obvious.
+
+### Updates have a second source on Linux too
+
+They were supposed to since 2.6.5, and for Linux they never did: the mirror was filled before the
+Linux build existed, so it carried the Windows files and nothing else. Four releases went out that
+way. Both Linux files are on it now, and a release that leaves any of the six behind fails loudly
+instead of quietly.
+
+## 2.6.8
+
+### A preset someone shared with you finishes
+
+Opening a shared preset file installed everything in it, wrote it to your library, and then
+stopped one line short of switching the mods on. Nothing said so: the window went on waiting for
+an answer that had already failed. The same file split that broke Install in 2.6.5 broke this,
+in the same way, and nobody had reported it because reaching it needs a preset file from another
+player.
+
+### An action that fails says so
+
+Any failure in the process behind the window used to leave the button it belongs to stuck on
+"Installing...", with the reason written only to a log file. That is how a plain error looked
+like a hang for two releases. The button now comes back and the reason is on screen.
+
+## 2.6.7
+
+### Installing a mod works again
+
+It did not in 2.6.5 or 2.6.6. Pressing Install did nothing at all: the button sat on
+"Installing…", no progress, no error, and nothing was ever written. Every mod, everybody.
+
+The handler behind that button checks one thing before it starts - whether installing has been
+switched off from our side, which it never has been. When the process code was split into files
+on 6 September, that check moved to one file and the function it calls stayed in another. It
+threw on the first line, before anything was downloaded, and the window went on waiting for an
+answer that was never coming.
+
+Nothing was damaged by it. No file was written, no mod half-installed. The button was lying
+about being busy.
+
+The check now lives in one place that both files are handed, and the tests here register every
+one of these handlers for real and call it, instead of reading the files as text and finding
+the names all present.
+
+## 2.6.6
+
+### Mods that would not install now install
+
+2.6.5 started checking every archive against the checksum its author publishes, and refused
+anything that did not match. Two things then went wrong on the same day, and between them they
+took mods away from people who had done nothing.
+
+One mirror was serving old copies. The job that fills it skipped any file already there under
+the same name, so a mod its author had replaced kept its old bytes for as long as the name
+stayed the same. Twenty-four of them, one since August. Anybody who cannot reach GitHub is
+served from that mirror first, got the old file, and the check said no.
+
+And the check said no was the end of it. A download stopped at the first mirror that disagreed,
+while three others holding the current file were never asked. That is now the other way round: a
+wrong checksum costs that mirror its turn and the next one is asked. All twenty-four mirrored
+copies have been replaced as well.
+
+The list itself can also be wrong. It is rebuilt by a bot, and on 10 September it named a hash
+for one mod that no copy of that file has ever had - so that mod was refused for everybody,
+whatever their connection. When nothing matches, the app now takes what the catalog's own host
+serves rather than refusing a mod over a list that has not caught up. What a mirror hands over
+still has to match: none of them can give you bytes that GitHub did not.
+
+The app's own updates and the toolchain behind item icons are held to their checksums exactly as
+before. Those are pinned here, and a mismatch there is the thing being guarded against.
+
+### And it says so in your own language
+
+A refused download used to report itself as `checksum mismatch for Some Mod.zip`, in English, in
+the middle of a Russian interface. It now says the file does not match what the mod's author
+published and to try later.
+
+## 2.6.5
+
+### The app keeps working when GitHub does not
+
+Everything here has come from GitHub: the catalog, the mods, the previews, the updates. On
+17 August GitHub was down for three hours and none of it worked, and for a good part of the
+userbase it is not reachable on an ordinary day either. Every one of those now has a second
+place to come from.
+
+The mods themselves: a quarter of the catalog had never reached the copy this app falls back
+to. Five categories are stored differently from the rest and the job that fills it walked past
+them, so 313 mods (item effects, hero items, creeps, denies and towers) were installable only
+while GitHub answered. They are all there now.
+
+The previews: those were fetched straight from GitHub, so a catalog full of empty squares was
+what anybody blocked from it saw. A picture that does not arrive is fetched again from the
+copy, and if that fails too the tile says so instead of leaving a grey rectangle.
+
+Updates: the app checked GitHub Releases and nothing else. It now falls back to our own copy,
+both for the installed build and for the portable one, and goes back to GitHub as soon as it
+answers. The manifest and the file it describes always come from the same place, so nothing
+can hand over one version's checksum with another version's build.
+
+And the icon toolchain, the 50 MB download behind item pictures for free cosmetics, has a copy
+as well.
+
+### It tells you what went wrong
+
+Opening the app with no connection, before it had cached anything, used to put this where the
+catalog should be:
+
+    Could not load the catalog: fetch failed
+
+That is Node's phrase for being unable to open a socket, printed at a person. There is now a
+screen that says there is no connection, that the mods already installed keep working, and
+that the catalog will be back when the connection is. A server that answers badly gets a
+different message, because telling somebody to check a connection that works sends them to fix
+nothing.
+
+### The catalog is signed, and mods are checked against what its author published
+
+The catalog is read through public proxies for anybody who cannot reach GitHub directly, and
+until now nothing proved the list came from its author rather than from whoever was carrying
+it. It carries his signature now, and this app refuses a catalog that does not verify.
+
+Mod archives are checked the same way. They used to be trusted the first time they arrived and
+compared against that first copy afterwards, which catches a substitution on every download
+except the one that matters. The catalog now publishes a checksum for every archive and each
+download is measured against it before anything reaches your game folder.
+
+### The window opens at a size your screen has room for
+
+On a 1366x768 laptop, and on any screen with Windows scaling at 125% or 150%, the app asked
+for a window bigger than the desktop and got it. The part hanging off the bottom held the
+launch bar and the end of every list, and nothing about it looked broken: the list scrolled,
+and the rows it scrolled to were past the edge of the screen. Restarting did not help, because
+the size was asked for again rather than remembered.
+
+### A crash on some Windows setups
+
+The watcher that notices a Dota update could take the whole app down with it, without an error
+and without anything in the log. It happens when the path to your game is a short 8.3 name or
+reaches the folder through a junction, which is the sort of thing a moved Steam library leaves
+behind. Found by running the tests on Windows for the first time.
+
+### Smaller things
+
+- English users saw a catalog category called "Sound" that should have read "Audio". Thirteen
+  translation keys were written twice and two of the pairs disagreed; the duplicates are gone
+  and the build now fails if another one appears.
+- A preset you share is wrapped in a page that hands it to the app, and that page lived on
+  GitHub Pages, so the link would not open for anybody who cannot reach GitHub. New links point
+  at dota2modmanager.com. Links you have already sent keep working.
+- The site no longer runs an animation on phones that could make Safari give up on the tab
+  after a few seconds of scrolling, and it loads pictures sized for the screen showing them.
+- The Library said Minify was being left `pak65-67 and pak99` for a release after pak99
+  stopped being reserved. It reserves 65 to 67, which is what it now says; a pak99 already on
+  disk is still recognised as Minify's and left where it is.
+
 ## 2.6.4
 
 ### Mods reach the folder the game reads again, if you run the new Minify

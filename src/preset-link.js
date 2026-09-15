@@ -9,11 +9,17 @@ const zlib = require('zlib');
 const { t } = require('./i18n');
 
 const SCHEME = 'd2mm';
-// Chat clients only linkify http(s), so a bare d2mm:// link sits in Discord as dead text.
-// The web form is the clickable wrapper: a static page (docs/p/index.html, served from
-// GitHub Pages) that hands the code to the app. The code rides in the FRAGMENT, which
-// browsers never send to a server — GitHub serves the page without seeing anyone's preset.
-const WEB_BASE = 'https://thefleece.github.io/dota2-mod-manager/p/';
+/* The clickable wrapper for a d2mm:// link. Chat clients only linkify http(s), so a bare
+ * d2mm:// link sits in Discord as dead text; the web form is a static page that hands the code
+ * to the app. The code rides in the FRAGMENT, which browsers never send to a server, so the page
+ * is served without anyone seeing the preset.
+ *
+ * On this project's own domain since 2026-09-10, and not on GitHub Pages, because a preset is
+ * the one thing people paste to each other and a link that does not open for the part of the
+ * userbase that cannot reach GitHub is not a shared preset. The same page is still served from
+ * the old address, so every link anybody has already sent keeps working.
+ */
+const WEB_BASE = 'https://dota2modmanager.com/p/';
 const CODE_RE = /^[A-Za-z0-9_-]+$/;
 const MAX_CODE = 64 * 1024;
 const MAX_JSON = 512 * 1024;   // inflate bomb guard

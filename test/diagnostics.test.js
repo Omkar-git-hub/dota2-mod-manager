@@ -111,6 +111,65 @@ test('the detailed report carries every section and the mod list', () => {
   assert.match(md, /app\.log/);
 });
 
+/*
+ * What the main process gathers has to reach the file.
+ *
+ * ipc-diagnostics.js collects an `extra` object and buildReport copies it into the report one
+ * field at a time. The display list was added to the first on 2026-09-04, for the complaint that
+ * a list "stops scrolling partway", and never to the second: no report ever carried it. The
+ * graphics card, added on 2026-09-15, was dropped the same way, which is how the displays turned
+ * up - by exporting a real report and finding neither in it. Every test above hands a finished
+ * report to the renderers, so none of them could see a field that was gathered and then lost.
+ *
+ * Read as text on both sides, because building the gatherer needs Electron and the point is only
+ * that the two lists of names agree.
+ */
+test('every field the main process gathers for the report is copied into it', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const read = (rel) => fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
+  const gatherer = read('src/ipc-diagnostics.js');
+  const builder = read('src/diagnostics.js');
+
+  const at = gatherer.indexOf('extra: {');
+  assert.ok(at > 0, 'ipc-diagnostics.js no longer passes an extra object; this test stopped reading');
+  const open = gatherer.indexOf('{', at);
+  let depth = 0;
+  let end = open;
+  for (let i = open; i < gatherer.length; i++) {
+    if (gatherer[i] === '{') depth++;
+    else if (gatherer[i] === '}') { depth -= 1; if (!depth) { end = i; break; } }
+  }
+  const body = gatherer.slice(open + 1, end).replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/\/\/[^\n]*/g, ' ');
+  const keys = [];
+  depth = 0;
+  let cur = '';
+  for (const ch of body) {
+    if ('{[('.includes(ch)) depth++;
+    if ('}])'.includes(ch)) depth--;
+    if (ch === ',' && depth === 0) { keys.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  keys.push(cur);
+  const names = keys.map((k) => (/^\s*([A-Za-z_$][\w$]*)\s*:/.exec(k) || [])[1]).filter(Boolean);
+  assert.ok(names.length >= 6, `expected the extra fields, found ${names.join(', ')}`);
+
+  const dropped = names.filter((n) => !new RegExp(`extra\\.${n}\\b`).test(builder));
+  assert.deepStrictEqual(dropped, [], `gathered and never copied into the report: ${dropped.join(', ')}`);
+});
+
+test('the detailed report shows the screens and the graphics card when it has them', () => {
+  const r = healthy();
+  r.displays = [{ id: 1, primary: true, size: { width: 1366, height: 768 }, workArea: { width: 1366, height: 728 }, scaleFactor: 1.25 }];
+  r.gpu = { featureStatus: { gpu_compositing: 'enabled' }, devices: [{ active: true, vendorId: 4318, driverVersion: '31.0.15' }] };
+  r.problems = findProblems(r);
+  const md = renderDetailed(r, {});
+  assert.ok(md.includes('## Displays'), 'the display section is missing');
+  assert.ok(md.includes('## Graphics card'), 'the graphics section is missing');
+  assert.match(md, /1366/);
+  assert.match(md, /gpu_compositing/);
+});
+
 test('a mod name with a pipe cannot break the table it is printed in', () => {
   const r = healthy();
   r.installedMods = [{ i: 1, slot: 10, name: 'a | b', categoryId: 'heroes', enabled: true }];

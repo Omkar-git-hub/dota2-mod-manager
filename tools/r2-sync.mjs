@@ -8,11 +8,12 @@
  * install anything at all. This puts the archives in Cloudflare R2, which is a different
  * company having a different bad day.
  *
- * What gets copied: the catalog lists every mod and the file it ships as. Anything already in
- * the bucket at the right size is left alone, so the second run only moves what changed. The
- * free tier is 10 GB and the catalog is close to it, so there is a budget - the categories
- * people install from first go first, and the run stops when the budget is spent instead of
- * failing halfway through.
+ * What gets copied: the catalog lists every mod and the file it ships as. An object already
+ * here at the size upstream reports is left alone, so a run only moves what actually changed -
+ * and a mod its author has replaced does change, which this file claimed to notice and did not
+ * until 2026-09-10. The free tier is 10 GB and the catalog is close to it, so there is a budget
+ * - the categories people install from first go first, and the run stops when the budget is
+ * spent instead of failing halfway through.
  *
  * The index written at the end is what keeps the app from guessing: without it, every install
  * of a mod that did not fit would cost a round trip to R2 and a 404 before falling back.
@@ -53,66 +54,15 @@ const MAX_FILE = Number(flag('--max-file', '1200')) * 1024 ** 2;
 const FIRST = ['heroes', 'terrains', 'shaders', 'trees', 'river', 'backgrounds', 'hero-items',
   'creeps', 'cursors', 'mega-kill', 'announcers', 'hero-sounds', 'couriers', 'wards'];
 
-const host = `${ACCOUNT}.r2.cloudflarestorage.com`;
-const sha = (s) => crypto.createHash('sha256').update(s).digest('hex');
-const hmac = (k, s) => crypto.createHmac('sha256', k).update(s).digest();
-const encodePath = (key) => '/' + key.split('/').map(encodeURIComponent).join('/');
+import { iterMods } from './catalog-mods.js';
+import { createR2, purgeCache } from './r2-client.js';
 
-/** SigV4, all of it. R2 wants region "auto" and service "s3". */
-function sign({ method, key, payloadHash, headers = {}, query = '' }) {
-  const stamp = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
-  const date = stamp.slice(0, 8);
-  const all = { host, 'x-amz-content-sha256': payloadHash, 'x-amz-date': stamp, ...headers };
-  const names = Object.keys(all).map((n) => n.toLowerCase()).sort();
-  const canonicalHeaders = names
-    .map((n) => `${n}:${String(all[Object.keys(all).find((k) => k.toLowerCase() === n)]).trim()}\n`)
-    .join('');
-  const signedHeaders = names.join(';');
-  const canonical = [method, encodePath(key), query, canonicalHeaders, signedHeaders, payloadHash].join('\n');
-  const scope = `${date}/auto/s3/aws4_request`;
-  const toSign = ['AWS4-HMAC-SHA256', stamp, scope, sha(canonical)].join('\n');
-  const signingKey = hmac(hmac(hmac(hmac(`AWS4${SECRET}`, date), 'auto'), 's3'), 'aws4_request');
-  const signature = hmac(signingKey, toSign).toString('hex');
-  return {
-    ...all,
-    Authorization: `AWS4-HMAC-SHA256 Credential=${KEY}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
-  };
-}
-
-const endpoint = (key, query) => `https://${host}${encodePath(key)}${query ? `?${query}` : ''}`;
-
-/** What is already in the bucket, so a second run is cheap. */
-async function listBucket() {
-  const have = new Map();
-  let token = '';
-  do {
-    const q = new URLSearchParams({ 'list-type': '2', 'max-keys': '1000' });
-    if (token) q.set('continuation-token', token);
-    q.sort();
-    const query = q.toString();
-    const headers = sign({ method: 'GET', key: BUCKET, payloadHash: sha(''), query });
-    const res = await fetch(endpoint(BUCKET, query), { headers });
-    const xml = await res.text();
-    if (!res.ok) throw new Error(`list: HTTP ${res.status} ${xml.slice(0, 300)}`);
-    for (const m of xml.matchAll(/<Key>([^<]+)<\/Key>[\s\S]*?<Size>(\d+)<\/Size>/g)) {
-      have.set(m[1], Number(m[2]));
-    }
-    token = (xml.match(/<NextContinuationToken>([^<]+)</) || [])[1] || '';
-  } while (token);
-  return have;
-}
-
-async function put(objectKey, body, type) {
-  const key = `${BUCKET}/${objectKey}`;
-  const headers = sign({
-    method: 'PUT',
-    key,
-    payloadHash: sha(body),
-    headers: { 'content-type': type, 'content-length': String(body.length) },
-  });
-  const res = await fetch(endpoint(key), { method: 'PUT', headers, body });
-  if (!res.ok) throw new Error(`put ${objectKey}: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
-}
+/* The bucket, and SigV4 with it, live in tools/r2-client.js: the release assets need the same
+   signing and a second copy of eighty lines of crypto is how the catalog walk in this very file
+   came to be the one of three that was wrong. */
+const r2 = createR2({ bucket: BUCKET });
+const listBucket = () => r2.list();
+const put = (objectKey, body, type) => r2.put(objectKey, body, type);
 
 // ---------------------------------------------------------------------------
 
@@ -151,9 +101,13 @@ const byCategory = catalog.modsData || catalog;
 
 const wanted = [];
 const rank = (id) => (FIRST.indexOf(id) < 0 ? FIRST.length : FIRST.indexOf(id));
-for (const [categoryId, list] of Object.entries(byCategory)) {
-  if (!Array.isArray(list) || categoryId === 'tools' || categoryId === 'news') continue;
-  for (const mod of list) {
+
+/* tools and news are not mods people install, so the bucket does not carry them. Everything
+   else comes through iterMods, which knows that five categories arrive as { groups: [...] }
+   rather than as an array - the thing this file used to get wrong, and the reason 313 mods had
+   never been mirrored. */
+for (const { categoryId, mod } of iterMods(byCategory, { skip: ['tools', 'news'] })) {
+  {
     const ref = mod?.file;
     if (typeof ref !== 'string' || !/\.(vpk|zip)$/i.test(ref)) continue;
     /* Some entries carry a whole URL rather than a file name: the catalog keeps its heaviest
@@ -167,6 +121,24 @@ for (const [categoryId, list] of Object.entries(byCategory)) {
       rank: rank(categoryId),
     });
   }
+
+  /* The picture as well as the archive.
+   *
+   * The renderer asks raw.githubusercontent for every preview directly, so a user who cannot
+   * reach GitHub gets a catalog that loads and a grid of empty squares - the app looks broken
+   * while working. All 1,336 of them come to about 38 MB, which is nothing beside the archives
+   * and is the difference between a usable window and a blank one.
+   *
+   * First in the list on purpose: a picture is what somebody looks at before deciding to spend
+   * 300 MB on the mod under it, and if the budget ever runs out it should run out on archives.
+   */
+  const preview = mod?.preview;
+  if (typeof preview === 'string' && preview && !/^https?:\/\//i.test(preview)) {
+    const key = preview.startsWith('assets/previews/')
+      ? preview
+      : `assets/previews/${categoryId}/${preview}`;
+    wanted.push({ path: key, source: null, rank: -1 });
+  }
 }
 wanted.sort((a, b) => a.rank - b.rank);
 console.log(`catalog: ${wanted.length} archives`);
@@ -175,15 +147,70 @@ const have = await listBucket();
 let used = [...have.values()].reduce((n, v) => n + v, 0);
 console.log(`bucket: ${have.size} objects, ${(used / 1024 ** 3).toFixed(2)} GB of ${(BUDGET / 1024 ** 3).toFixed(0)} GB budget`);
 
+/* What upstream has, so a copy can be told from a copy of something older.
+ *
+ * This file used to skip anything already in the bucket under the same name, and the comment
+ * at the top of it claimed the size was checked. It was not. An archive the catalog's author
+ * replaced kept its old bytes here forever: on 2026-09-10 that was 24 mods, one of them since
+ * August, and it was invisible until the app started checking downloads against the published
+ * checksum and refused every one of them.
+ *
+ * A HEAD each is the cheap half of the answer, and it is the half that catches a mod being
+ * replaced - the size always moves. The exact half is the checksum below, which is compared
+ * before anything is uploaded, so this bucket can never be the reason a checksum fails.
+ */
+async function sourceSizes(items) {
+  const sizes = new Map();
+  const queue = [...items];
+  const worker = async () => {
+    for (;;) {
+      const item = queue.shift();
+      if (!item) return;
+      try {
+        const res = await fetch(item.source || `${RAW}/${item.path}`, { method: 'HEAD' });
+        if (res.ok) sizes.set(item.path, Number(res.headers.get('content-length')) || 0);
+      } catch { /* asked again as a GET below, or left alone */ }
+    }
+  };
+  await Promise.all(Array.from({ length: 16 }, worker));
+  return sizes;
+}
+
+const present = wanted.filter((item) => have.has(item.path));
+const upstream = await sourceSizes(present);
+const changed = new Set(present
+  .filter((item) => upstream.has(item.path) && upstream.get(item.path) !== have.get(item.path))
+  .map((item) => item.path));
+console.log(`upstream: ${changed.size} of ${present.length} objects here are a copy of something older`);
+
+/* The checksums the app measures a download against. A copy that does not match one is not
+   worth uploading: it would be a mirror handing over bytes the app is about to refuse. */
+let published = {};
+try {
+  const res = await fetch(`${RAW}/assets/data/mod-hashes.json`);
+  if (res.ok) published = await res.json();
+} catch { /* without it the copy is still a copy, just unverified */ }
+const publishedFor = (objectPath) => {
+  const m = /^assets\/files\/(.+?)\/([^/]+)$/.exec(objectPath);
+  const value = m && published[`${m[1]}/${m[2]}`];
+  return typeof value === 'string' && /^[0-9a-f]{64}$/i.test(value) ? value.toLowerCase() : null;
+};
+
+/* The public address of the bucket, which is what the cache is keyed on. R2_PUBLIC_BASE is
+   already a secret here because the index the app reads is written with it. */
+const PUBLIC_BASE = (process.env.R2_PUBLIC_BASE || 'https://cdn.dota2modmanager.com').replace(/[/]+$/, '');
+const replaced = [];
+
 let copied = 0;
 let skipped = 0;
 let failed = 0;
 let tooBig = 0;
+let refused = 0;
 let stopped = '';
 const index = [];
 
 for (const item of wanted) {
-  if (have.has(item.path)) { index.push(item.path); skipped++; continue; }
+  if (have.has(item.path) && !changed.has(item.path)) { index.push(item.path); skipped++; continue; }
   if (copied >= LIMIT) { stopped = 'limit'; break; }
   if (used >= BUDGET) { stopped = 'budget'; break; }
 
@@ -192,17 +219,38 @@ for (const item of wanted) {
     if (!res.ok) throw new Error(`source HTTP ${res.status}`);
     const body = Buffer.from(await res.arrayBuffer());
     if (body.length > MAX_FILE) { tooBig++; continue; }
-    if (used + body.length > BUDGET) { stopped = 'budget'; break; }
+    // replacing an object costs the difference, not the whole file again
+    const already = have.get(item.path) || 0;
+    if (used - already + body.length > BUDGET) { stopped = 'budget'; break; }
+
+    /* Measured against what the catalog published before it goes anywhere. A mirror that
+       carries bytes the app will refuse is worse than a mirror that carries nothing: the app
+       spends the whole download to find out. */
+    const want = publishedFor(item.path);
+    if (want) {
+      const got = crypto.createHash('sha256').update(body).digest('hex');
+      if (got !== want) {
+        refused++;
+        console.log(`not copied ${item.path}: source hashes to ${got.slice(0, 12)}, the catalog publishes ${want.slice(0, 12)}`);
+        if (have.has(item.path)) index.push(item.path);
+        continue;
+      }
+    }
+
     const mb = (body.length / 1024 ** 2).toFixed(1);
+    const replacing = have.has(item.path);
+    const verb = replacing ? 'refreshed' : 'copied';
     if (DRY) {
-      console.log(`would copy ${item.path} (${mb} MB)`);
+      console.log(`would ${verb === 'copied' ? 'copy' : 'refresh'} ${item.path} (${mb} MB)`);
     } else {
       await put(item.path, body, item.path.endsWith('.vpk') ? 'application/octet-stream' : 'application/zip');
-      console.log(`copied ${item.path} (${mb} MB)`);
+      console.log(`${verb} ${item.path} (${mb} MB)`);
     }
-    used += body.length;
+    used += body.length - already;
     copied++;
     index.push(item.path);
+    // only what was replaced: an object nobody could have downloaded yet is in no cache
+    if (replacing && !DRY) replaced.push(`${PUBLIC_BASE}/${item.path}`);
   } catch (e) {
     failed++;
     console.log(`skipped ${item.path}: ${e.message}`);
@@ -215,5 +263,7 @@ if (!DRY) {
   await put('index.json', Buffer.from(payload), 'application/json');
 }
 
-console.log(`\ncopied ${copied}, already there ${skipped}, too big ${tooBig}, failed ${failed}${stopped ? `, stopped on ${stopped}` : ''}`);
+await purgeCache(replaced);
+
+console.log(`\ncopied ${copied}, already current ${skipped}, too big ${tooBig}, failed ${failed}, refused ${refused}${stopped ? `, stopped on ${stopped}` : ''}`);
 console.log(`bucket now ~${(used / 1024 ** 3).toFixed(2)} GB, index lists ${index.length} archives`);

@@ -166,6 +166,14 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
     updater: extra.updater || null,
     remoteConfig: extra.remoteConfig || null,
     toolchain: extra.toolchain || null,
+    /* Both of these were collected and thrown away. ipc-diagnostics.js gathered the displays
+     * from 2026-09-04, for the complaint that a list "stops scrolling partway", and this object
+     * copied `extra` field by field without them - so no report ever carried the one thing that
+     * question needed, and the change that added them was checked by reading the code that
+     * collected them rather than the file that came out. The graphics card went the same way
+     * on the day it was added, and that is how the first one turned up. */
+    displays: extra.displays || null,
+    gpu: extra.gpu || null,
   };
 
   // What the app itself thinks is wrong, worked out here rather than left for a human to
@@ -354,6 +362,8 @@ function renderDetailed(r, files = {}) {
   block('Caches and disk', { ...r.caches, disk: r.disk });
   block('Download mirrors', r.mirrors);
   if (r.windows) block('Windows', r.windows);
+  if (r.displays) block('Displays', r.displays);
+  if (r.gpu) block('Graphics card', r.gpu);
   if (r.rendererErrors) block('Errors reported by the interface', r.rendererErrors);
   if (r.updater) block('Updater', r.updater);
   if (r.remoteConfig) block('Remote config', r.remoteConfig);

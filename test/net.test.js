@@ -183,6 +183,147 @@ test('a file that hashes to something else than last time is refused', async (t)
   assert.equal(fs.existsSync(`${dest}.part`), false, 'and the bad copy is not left to be resumed');
 });
 
+/*
+ * The mirror is wrong, the mod is not.
+ *
+ * On 2026-09-10 the bucket was still serving 24 archives in the versions they had months ago,
+ * because the sync skipped anything already there under the same name. Every one of them was
+ * unreachable for anybody who cannot get to GitHub: the checksum said no and the download gave
+ * up on the spot, with three proxies holding the current file and never asked.
+ *
+ * Both servers here serve real bytes and they are not the same bytes, which is the whole point
+ * - a fake mirror that answers correctly on every path proves nothing about a mirror that does
+ * not.
+ */
+test('a mirror serving a stale copy costs that mirror its turn, not the mod', async (t) => {
+  const current = crypto.randomBytes(8192);
+  const months_old = crypto.randomBytes(6000);
+  const stale = await serve(t, ranged(months_old));
+  const good = await serve(t, ranged(current));
+  net.setMirrors([stale.mirror(), good.mirror()]);
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'Mod.zip');
+
+  const want = crypto.createHash('sha256').update(current).digest('hex');
+  const res = await net.downloadFile(RAW_URL, dest, { expectSha256: want });
+
+  assert.deepEqual(fs.readFileSync(dest), current, 'the mod that was asked for, byte for byte');
+  assert.equal(res.sha256, want);
+  assert.equal(stale.hits, 1, 'and the mirror that was wrong is not asked twice');
+});
+
+test('half a file from a stale mirror is not resumed from the next one', async (t) => {
+  const current = crypto.randomBytes(8192);
+  const stale = await serve(t, ranged(crypto.randomBytes(8192)));
+  const good = await serve(t, ranged(current));
+  net.setMirrors([stale.mirror(), good.mirror()]);
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'Mod.zip');
+
+  const want = crypto.createHash('sha256').update(current).digest('hex');
+  const res = await net.downloadFile(RAW_URL, dest, { expectSha256: want });
+
+  assert.equal(res.resumedFrom, 0, 'it started over instead of gluing two mods together');
+  assert.deepEqual(fs.readFileSync(dest), current);
+});
+
+/*
+ * The list is not always right about the file.
+ *
+ * `mod-hashes.json` named a hash for heroes/Axe Kratos.zip on 2026-09-10 that no copy of that
+ * archive has ever had, so the mod was refused for everybody - a working GitHub made no
+ * difference. The list is built in the same repository as the archives, so it can say nothing
+ * about GitHub that GitHub could not also say about itself; when every copy disagrees with it,
+ * the file wins.
+ *
+ * The first mirror here is the canonical host, so `RAW_URL` maps to itself.
+ */
+const asOrigin = (port) => ({ host: 'raw.githubusercontent.com', origin: true, map: (u) => u.replace(RAW_HOST, `http://127.0.0.1:${port}/`) });
+
+test('a published hash no copy matches is a stale list, and the origin wins', async (t) => {
+  const real = crypto.randomBytes(4096);
+  const origin = await serve(t, ranged(real));
+  const proxy = await serve(t, ranged(real));
+  net.setMirrors([asOrigin(origin.port), proxy.mirror()]);
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'Mod.zip');
+
+  const res = await net.downloadFile(RAW_URL, dest, {
+    expectSha256: 'b'.repeat(64), // what the list claims, and what nothing hashes to
+    fromPublishedList: true,
+  });
+
+  assert.equal(res.unverified, true, 'and it is marked as taken on the origin\'s word');
+  assert.deepEqual(fs.readFileSync(dest), real);
+  assert.equal(fs.existsSync(`${dest}.origin`), false, 'the copy held back is not left lying around');
+});
+
+test('a proxy cannot pass off bytes the origin never served', async (t) => {
+  const invented = crypto.randomBytes(4096);
+  const origin = await serve(t, dead(503));
+  const proxy = await serve(t, ranged(invented));
+  net.setMirrors([asOrigin(origin.port), proxy.mirror()]);
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'Mod.zip');
+
+  // the same stale-list situation, except the one host whose word counts never answered
+  await assert.rejects(
+    () => net.downloadFile(RAW_URL, dest, { expectSha256: 'b'.repeat(64), fromPublishedList: true }),
+  );
+  assert.equal(fs.existsSync(dest), false, 'bytes only a proxy ever had are not installed');
+  assert.equal(fs.existsSync(`${dest}.origin`), false);
+});
+
+/* The catalog keeps its heaviest mods on Hugging Face, and those entries carry a whole URL.
+ * Such a URL has no mirrors, which for a moment made it its own origin and so exempt from the
+ * check - the exact opposite of what it needs. Nothing on that host is signed by the catalog;
+ * the published hash is the only thing connecting those bytes to it. */
+test('a mod hosted somewhere else is held to the published hash, not excused from it', async (t) => {
+  const elsewhere = await serve(t, ranged(crypto.randomBytes(2048)));
+  const url = `http://127.0.0.1:${elsewhere.port}/big-mod.zip`;
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'big-mod.zip');
+
+  assert.deepEqual(net.mirrorsFor(url), [url], 'it really is its own only source');
+  await assert.rejects(
+    () => net.downloadFile(url, dest, { expectSha256: 'd'.repeat(64), fromPublishedList: true }),
+    /checksum/,
+  );
+  assert.equal(fs.existsSync(dest), false);
+});
+
+test('a hash this project pinned itself is never waived', async (t) => {
+  const whatever = crypto.randomBytes(2048);
+  const origin = await serve(t, ranged(whatever));
+  net.setMirrors([asOrigin(origin.port)]);
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'toolchain.zip');
+
+  // no fromPublishedList: this is the update binary and the toolchain, where the pinned hash
+  // is the whole point of downloading through mirrors at all
+  await assert.rejects(
+    () => net.downloadFile(RAW_URL, dest, { expectSha256: 'c'.repeat(64) }),
+    /checksum/,
+  );
+  assert.equal(fs.existsSync(dest), false, 'nothing unpacked from a binary that failed its pin');
+  assert.equal(fs.existsSync(`${dest}.origin`), false);
+});
+
+test('a file every mirror disowns is still refused', async (t) => {
+  const one = await serve(t, ranged(crypto.randomBytes(2048)));
+  const two = await serve(t, ranged(crypto.randomBytes(2048)));
+  net.setMirrors([one.mirror(), two.mirror()]);
+  const dir = tempDir(t);
+  const dest = path.join(dir, 'Mod.zip');
+
+  await assert.rejects(
+    () => net.downloadFile(RAW_URL, dest, { expectSha256: 'a'.repeat(64) }),
+    /checksum/,
+  );
+  assert.equal(fs.existsSync(dest), false, 'nothing is installed from any of them');
+  assert.equal(fs.existsSync(`${dest}.part`), false);
+});
+
 test('a finished download reports the hash it should be remembered by', async (t) => {
   const data = crypto.randomBytes(4096);
   const server = await serve(t, ranged(data));
@@ -224,9 +365,44 @@ test('every file the app expects from our own mirror is a file the site actually
       `net.js does not actually route ${remotePath} to our mirror`,
     );
     // and the site puts it there
+    //
+    // The name used to go in as name.replace(/\./g, '\.'), and in a string '\.' is just '.':
+    // every dot was replaced with itself and stayed a regex wildcard, so "mods.json" also
+    // matched "modsXjson". CodeQL flagged it twice; the check was weaker than it read.
+    const literal = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     assert.ok(
-      new RegExp(`'${name.replace(/\./g, '\.')}'`).test(mirrorTool),
+      new RegExp(`'${literal}'`).test(mirrorTool),
       `site/tools/mirror.mjs never copies ${name}, so our mirror would answer with the 404 page`,
     );
   }
+});
+
+/*
+ * Which failure this was, so the catalog screen can say something a player understands.
+ *
+ * It used to print "fetch failed" - Node's words for being unable to open a socket - at
+ * somebody whose wifi was off, on the screen where the mods should be. Telling those two
+ * apart is the whole job: send the person with no connection to check their connection, and
+ * do not send that message to the person whose connection is fine and whose server answered.
+ */
+test('a network that is not there is marked as such', async (t) => {
+  net.setMirrors([{ host: '127.0.0.1:1', map: () => 'http://127.0.0.1:1/x.json' }]);
+  t.after(() => net.setMirrors(null));
+
+  const err = await net.fetchText(`${RAW_HOST}owner/repo/main/x.json`).then(() => null, (e) => e);
+  assert.ok(err, 'a dead host has to fail');
+  assert.equal(err.offline, true, 'nothing answered at all, so the connection is the thing to mention');
+});
+
+test('a server that answered is not called a missing connection', async (t) => {
+  const server = http.createServer((req, res) => { res.writeHead(500); res.end('nope'); });
+  server.listen(0, '127.0.0.1');
+  await new Promise((r) => server.on('listening', r));
+  const port = server.address().port;
+  net.setMirrors([{ host: `127.0.0.1:${port}`, map: () => `http://127.0.0.1:${port}/x.json` }]);
+  t.after(() => { server.close(); net.setMirrors(null); });
+
+  const err = await net.fetchText(`${RAW_HOST}owner/repo/main/x.json`).then(() => null, (e) => e);
+  assert.ok(err, 'a 500 from every mirror is still a failure');
+  assert.equal(err.offline, false, 'the wifi is fine; saying otherwise sends somebody to fix nothing');
 });

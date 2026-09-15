@@ -7,10 +7,18 @@
  * A single number is nearly useless here - "position 14" means nothing without last week's
  * position 21 - so almost everything below is printed as a delta.
  *
+ * It is also the page somebody checking this project reads to see how far it reaches: a reviewer,
+ * a code-signing programme, anyone deciding whether an unsigned installer is worth trusting. So
+ * the comment opens with reach - downloads, update checks, visits from search - before the
+ * per-console detail that is mostly for us.
+ *
  * Three consoles, one comment. Bing takes a key from a settings page, Google a service account
  * added as a user in Search Console, Yandex an OAuth token. Each reads on its own and prints its
  * own block, so a console nobody has connected yet, or one having a bad morning, costs its
- * section and not the report.
+ * section and not the report. Inside Google every table has its own guard for the same reason.
+ *
+ * Last week's numbers come from last week's comment (see tools/seo-state.mjs for why they live
+ * there), and this week's are appended to this one as an invisible block.
  *
  * Read-only. Nothing here submits a URL, asks for a recrawl or changes a setting: those are
  * worth doing deliberately, not on a schedule while nobody is looking.
@@ -19,8 +27,9 @@
  * an API key in a public build log is a key that has to be rotated.
  *
  * Usage:
- *   node tools/seo-report.mjs              # write report.md and update the state
- *   node tools/seo-report.mjs --dry        # print it, touch nothing
+ *   node tools/seo-report.mjs                            # write seo-report.md
+ *   node tools/seo-report.mjs --dry                      # print it, touch nothing
+ *   SEO_PREVIOUS=last-comment.md node tools/seo-report.mjs   # compare against that report
  *   node tools/seo-report.mjs --raw GetQueryStats        # dump one Bing method
  *   node tools/seo-report.mjs --raw google:sites         # dump one Search Console path
  *   node tools/seo-report.mjs --raw yandex:user          # dump one Webmaster path
@@ -30,6 +39,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
+import { encodeState, previousState, ctr, positionBuckets, countLocs } from './seo-state.mjs';
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 const STATE = path.join(root, 'seo-state.json');
@@ -37,9 +48,11 @@ const OUT = path.join(root, 'seo-report.md');
 
 const SITE = process.env.SEO_SITE_URL || 'https://dota2modmanager.com';
 const HOST = new URL(SITE).hostname;
+const REPO = process.env.GITHUB_REPOSITORY || 'TheFleece/dota2-mod-manager';
 const BING_KEY = process.env.BING_API_KEY || '';
 const GOOGLE_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '';
 const YANDEX_TOKEN = process.env.YANDEX_OAUTH_TOKEN || '';
+const GH_TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN || '';
 
 const args = process.argv.slice(2);
 const dry = args.includes('--dry');
@@ -114,10 +127,10 @@ async function googleToken() {
   return googleAccess;
 }
 
-/** Search Console. A body makes it a POST, which is how searchAnalytics wants to be asked. */
-async function google(pathname, body) {
+/** Any Google API with the token. A body makes it a POST. */
+async function googleCall(url, body) {
   const token = await googleToken();
-  const res = await fetch(`https://www.googleapis.com/webmasters/v3/${pathname}`, {
+  const res = await fetch(url, {
     method: body ? 'POST' : 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -127,13 +140,17 @@ async function google(pathname, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   const text = await res.text();
-  if (!res.ok) throw new Error(`${pathname}: HTTP ${res.status} ${text.slice(0, 200)}`);
+  const where = new URL(url).pathname.split('/').slice(-2).join('/');
+  if (!res.ok) throw new Error(`${where}: HTTP ${res.status} ${text.slice(0, 200)}`);
   try {
     return JSON.parse(text);
   } catch {
-    throw new Error(`${pathname}: answer was not JSON (${text.slice(0, 120)})`);
+    throw new Error(`${where}: answer was not JSON (${text.slice(0, 120)})`);
   }
 }
+
+/** Search Console v3, which is where searchAnalytics and sitemaps live. */
+const google = (pathname, body) => googleCall(`https://www.googleapis.com/webmasters/v3/${pathname}`, body);
 
 /**
  * Which property to read. Search Console keeps a domain property as "sc-domain:example.com" and
@@ -180,6 +197,20 @@ async function yandexHost() {
   return { userId, hostId: main.host_id };
 }
 
+/** GitHub's REST API. Public data, so a token only buys a higher rate limit. */
+async function github(pathname) {
+  const res = await fetch(`https://api.github.com/${pathname}`, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'dota2-mod-manager-seo-report',
+      ...(GH_TOKEN ? { Authorization: `Bearer ${GH_TOKEN}` } : {}),
+    },
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`${pathname}: HTTP ${res.status} ${text.slice(0, 160)}`);
+  return JSON.parse(text);
+}
+
 /** YYYY-MM-DD, n days back. Both consoles want plain dates and no time. */
 const dayAgo = (n) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
 
@@ -191,6 +222,8 @@ const asDate = (v) => {
 
 const num = (v) => (typeof v === 'number' ? v : 0);
 const fmt = (n) => new Intl.NumberFormat('en-US').format(Math.round(n));
+const pct = (v) => (v === null || v === undefined ? 'n/a' : `${v.toFixed(1)}%`);
+const safe = (s) => String(s).replace(/\|/g, '/');
 
 /** "1,240 (+180)" - the number, and what it did since last week. */
 function delta(now, before) {
@@ -211,12 +244,33 @@ function movement(now, before) {
   return Number.isInteger(now) && Number.isInteger(before) ? `${sign}${fmt(d)}` : `${sign}${d.toFixed(1)}`;
 }
 
+/** Last week: from the comment the workflow hands over, or from a local run's file. */
 function loadState() {
+  const previous = process.env.SEO_PREVIOUS;
+  if (previous) {
+    try {
+      return previousState(fs.readFileSync(previous, 'utf-8'));
+    } catch {
+      return {};
+    }
+  }
   try {
     return JSON.parse(fs.readFileSync(STATE, 'utf-8'));
   } catch {
     return {};
   }
+}
+
+/** How many pages the site asks to be indexed, read off its own sitemaps rather than typed in. */
+async function sitemapPages() {
+  const index = await fetch(`${SITE}/sitemap-index.xml`).then((r) => (r.ok ? r.text() : ''));
+  const children = [...index.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  if (!children.length) return countLocs(index) || null;
+  let total = 0;
+  for (const child of children) {
+    total += countLocs(await fetch(child).then((r) => (r.ok ? r.text() : '')));
+  }
+  return total || null;
 }
 
 // ---------------------------------------------------------------------------
@@ -232,15 +286,22 @@ if (rawAt >= 0) {
   let out;
   if (method.startsWith('google:')) {
     const what = method.slice(7);
-    // The one shape worth dumping is the one that needs a body, so it gets a name of its own.
-    out = what === 'query'
-      ? await google(`sites/${encodeURIComponent(await googleProperty())}/searchAnalytics/query`, {
-          startDate: dayAgo(9),
-          endDate: dayAgo(3),
-          dimensions: ['query'],
-          rowLimit: 10,
-        })
-      : await google(what);
+    // The shapes worth dumping are the ones that need a body, so they get names of their own.
+    if (what === 'query' || what === 'country' || what === 'device' || what === 'page') {
+      out = await google(`sites/${encodeURIComponent(await googleProperty())}/searchAnalytics/query`, {
+        startDate: dayAgo(9),
+        endDate: dayAgo(3),
+        dimensions: [what],
+        rowLimit: 10,
+      });
+    } else if (what === 'inspect') {
+      out = await googleCall('https://searchconsole.googleapis.com/v1/urlInspection/index:inspect', {
+        inspectionUrl: `${SITE}/`,
+        siteUrl: await googleProperty(),
+      });
+    } else {
+      out = await google(what);
+    }
   } else if (method.startsWith('yandex:')) {
     // {u} and {h} save looking the ids up by hand: user/{u}/hosts/{h}/summary reads as it runs.
     let where = method.slice(7);
@@ -260,9 +321,60 @@ const was = loadState();
 const now = { checkedAt: new Date().toISOString().slice(0, 10) };
 const lines = [];
 const notes = [];
+const glance = {};
 
-lines.push(`## Search, week of ${now.checkedAt}`);
-lines.push('');
+const sitemapTotal = await sitemapPages().catch(() => null);
+now.sitemapPages = sitemapTotal;
+const ofSitemap = sitemapTotal ? ` of ${fmt(sitemapTotal)} in the sitemap` : '';
+const underCovered = (n) => sitemapTotal && n < sitemapTotal * 0.85;
+
+// --- Reach ------------------------------------------------------------------
+
+/* Downloads and update checks, straight from the release assets. An update check is one request
+   for latest.yml, so it counts requests rather than people - but installs that are still in use
+   ask for it on every start, which makes it the closest public number there is to "how many
+   copies are running". The report says requests, and means requests. */
+const reach = [];
+try {
+  const releases = [];
+  for (let page = 1; page <= 10; page++) {
+    const batch = await github(`repos/${REPO}/releases?per_page=100&page=${page}`);
+    releases.push(...batch);
+    if (batch.length < 100) break;
+  }
+  const count = (match) => releases.reduce((n, r) => n + (r.assets || [])
+    .filter((a) => match.test(a.name)).reduce((m, a) => m + num(a.download_count), 0), 0);
+  const installer = count(/Setup\.exe$/);
+  const portable = count(/Portable\.exe$/);
+  const appimage = count(/\.AppImage$/);
+  const checks = count(/^latest(-linux)?\.yml$|^portable\.yml$/);
+  const latest = releases.find((r) => !r.draft && !r.prerelease);
+  const repo = await github(`repos/${REPO}`);
+
+  now.reach = { installer, portable, appimage, checks, stars: repo.stargazers_count, forks: repo.forks_count };
+  glance.downloads = installer + portable + appimage;
+  glance.releases = releases.filter((r) => !r.draft).length;
+  glance.latest = latest?.tag_name;
+
+  reach.push('### Reach');
+  reach.push('');
+  reach.push('| | total | vs last week |');
+  reach.push('|---|---|---|');
+  reach.push(`| Installer downloads | ${fmt(installer)} | ${movement(installer, was.reach?.installer)} |`);
+  reach.push(`| Portable downloads | ${fmt(portable)} | ${movement(portable, was.reach?.portable)} |`);
+  reach.push(`| Linux AppImage downloads | ${fmt(appimage)} | ${movement(appimage, was.reach?.appimage)} |`);
+  reach.push(`| Update checks served (requests, not people) | ${fmt(checks)} | ${movement(checks, was.reach?.checks)} |`);
+  reach.push(`| Releases | ${fmt(glance.releases)}, latest ${latest?.tag_name || 'n/a'} | |`);
+  reach.push(`| GitHub stars / forks | ${fmt(repo.stargazers_count)} / ${fmt(repo.forks_count)} | ${movement(repo.stargazers_count, was.reach?.stars)} |`);
+  reach.push('');
+  reach.push('Counted from GitHub Releases. The same builds are also served from `cdn.dota2modmanager.com`, which keeps no per-file counter, so these are a floor.');
+  reach.push('');
+} catch (err) {
+  reach.push('### Reach');
+  reach.push('');
+  reach.push(`Could not read the release counters: \`${err.message}\``);
+  reach.push('');
+}
 
 // --- Bing -------------------------------------------------------------------
 
@@ -285,6 +397,7 @@ if (!BING_KEY) {
     const clicks = week.reduce((n, r) => n + r.clicks, 0);
     const impressions = week.reduce((n, r) => n + r.impressions, 0);
     now.bing = { clicks, impressions };
+    glance.bing = clicks;
 
     lines.push('### Bing');
     lines.push('');
@@ -292,6 +405,7 @@ if (!BING_KEY) {
     lines.push('|---|---|---|');
     lines.push(`| Clicks | ${fmt(clicks)} | ${movement(clicks, was.bing?.clicks)} |`);
     lines.push(`| Impressions | ${fmt(impressions)} | ${movement(impressions, was.bing?.impressions)} |`);
+    lines.push(`| Click-through rate | ${pct(ctr(clicks, impressions))} | ${was.bing ? movement(ctr(clicks, impressions) ?? 0, ctr(was.bing.clicks, was.bing.impressions)) : 'first week'} |`);
     lines.push('');
 
     /* Queries. The interesting part is not the top ten, which barely move, but what appeared
@@ -307,7 +421,7 @@ if (!BING_KEY) {
       .filter((q) => q.query)
       .sort((a, b) => b.impressions - a.impressions);
 
-    now.queries = Object.fromEntries(list.map((q) => [q.query, { i: q.impressions, p: q.position }]));
+    now.queries = Object.fromEntries(list.slice(0, 60).map((q) => [q.query, { i: q.impressions, p: q.position }]));
 
     if (list.length) {
       lines.push('<details><summary>Top queries</summary>');
@@ -317,7 +431,7 @@ if (!BING_KEY) {
       for (const q of list.slice(0, 25)) {
         const before = was.queries?.[q.query];
         lines.push(
-          `| ${q.query} | ${delta(q.impressions, before?.i)} | ${fmt(q.clicks)} | ${delta(q.position, before?.p)} |`,
+          `| ${safe(q.query)} | ${delta(q.impressions, before?.i)} | ${fmt(q.clicks)} | ${delta(q.position, before?.p)} |`,
         );
       }
       lines.push('');
@@ -336,8 +450,7 @@ if (!BING_KEY) {
       }
     }
 
-    /* How much of the site Bing actually holds. The site went from 14 addresses to 358, and
-       the question that matters is how many of them it has taken. */
+    /* How much of the site Bing actually holds. */
     /* Field names read off the API rather than guessed: the first version asked for
        CrawledCount and HttpCode404, which do not exist, so both printed a confident zero.
        They are CrawledPages and Code4xx. Dump the shape with --raw before adding more. */
@@ -371,7 +484,7 @@ if (!BING_KEY) {
       lines.push(`| Blocked by robots.txt | ${fmt(last.blocked)} | |`);
       lines.push('');
 
-      if (last.inIndex < 300) notes.push(`Bing holds ${fmt(last.inIndex)} pages of the 358 in the sitemap.`);
+      if (underCovered(last.inIndex)) notes.push(`Bing holds ${fmt(last.inIndex)} pages${ofSitemap}.`);
       if (last.notFound > 0) notes.push(`${fmt(last.notFound)} pages answered 4xx.`);
       if (last.serverErrors > 0) notes.push(`${fmt(last.serverErrors)} pages answered 5xx, which is ours to fix.`);
       if (last.errors > 0) notes.push(`${fmt(last.errors)} crawl failures (DNS, timeouts).`);
@@ -397,69 +510,191 @@ if (!GOOGLE_KEY) {
   try {
     const property = await googleProperty();
     /* Search Console keeps counting a day for two to three more days, so the week that ended
-       three days ago is the last one that will not quietly change between reports. */
+       three days ago is the last one that will not quietly change between reports. The four
+       weeks beside it are there because a small site moves a lot from one week to the next. */
     const startDate = dayAgo(9);
     const endDate = dayAgo(3);
-    const ask = (body) =>
-      google(`sites/${encodeURIComponent(property)}/searchAnalytics/query`, { startDate, endDate, ...body });
+    const monthStart = dayAgo(30);
+    const analytics = `sites/${encodeURIComponent(property)}/searchAnalytics/query`;
+    const ask = (body, range = { startDate, endDate }) => google(analytics, { ...range, ...body });
+
+    /* One guard per table: a dimension Google has nothing for, or a field that changed shape,
+       costs that table and not the rest of the section. */
+    const block = async (title, fn) => {
+      try {
+        await fn();
+      } catch (err) {
+        lines.push(`${title}: could not read it (\`${err.message}\`)`);
+        lines.push('');
+      }
+    };
 
     const totals = await ask({ dimensions: [] });
+    const month = await ask({ dimensions: [] }, { startDate: monthStart, endDate });
     const row = totals.rows?.[0];
+    const mrow = month.rows?.[0];
     const clicks = num(row?.clicks);
     const impressions = num(row?.impressions);
     const position = num(row?.position);
-    now.google = { clicks, impressions, position };
+    const rate = ctr(clicks, impressions);
+    now.google = { clicks, impressions, position, ctr: rate };
+    glance.google = clicks;
 
-    lines.push(`| | ${startDate} to ${endDate} | vs the week before |`);
-    lines.push('|---|---|---|');
-    lines.push(`| Clicks | ${fmt(clicks)} | ${movement(clicks, was.google?.clicks)} |`);
-    lines.push(`| Impressions | ${fmt(impressions)} | ${movement(impressions, was.google?.impressions)} |`);
-    lines.push(`| Average position (lower is better) | ${position.toFixed(1)} | ${movement(position, was.google?.position)} |`);
+    lines.push(`| | ${startDate} to ${endDate} | vs the week before | last 28 days |`);
+    lines.push('|---|---|---|---|');
+    lines.push(`| Clicks | ${fmt(clicks)} | ${movement(clicks, was.google?.clicks)} | ${fmt(num(mrow?.clicks))} |`);
+    lines.push(`| Impressions | ${fmt(impressions)} | ${movement(impressions, was.google?.impressions)} | ${fmt(num(mrow?.impressions))} |`);
+    lines.push(`| Click-through rate | ${pct(rate)} | ${rate !== null && typeof was.google?.ctr === 'number' ? movement(rate, was.google.ctr) : 'first week'} | ${pct(ctr(num(mrow?.clicks), num(mrow?.impressions)))} |`);
+    lines.push(`| Average position (lower is better) | ${position.toFixed(1)} | ${movement(position, was.google?.position)} | ${num(mrow?.position).toFixed(1)} |`);
     lines.push('');
 
-    /* How much of the site Google shows at all. There is no index count in this API, and the
-       URL inspection endpoint answers one address at a time, so the honest measure is how many
-       pages were put in front of somebody this week. */
-    const pages = await ask({ dimensions: ['page'], rowLimit: 1000 });
-    const shown = (pages.rows ?? []).length;
-    now.googlePages = shown;
-    lines.push(`Pages shown in results this week: **${fmt(shown)}** of 358 (${movement(shown, was.googlePages)}).`);
-    lines.push('');
-
-    const queries = await ask({ dimensions: ['query'], rowLimit: 25 });
-    const list = (queries.rows ?? []).map((r) => ({
-      query: r.keys?.[0],
-      clicks: num(r.clicks),
-      impressions: num(r.impressions),
-      position: num(r.position),
-    })).filter((q) => q.query);
-
-    now.gQueries = Object.fromEntries(list.map((q) => [q.query, { i: q.impressions, p: q.position }]));
-
-    if (list.length) {
-      lines.push('<details><summary>Top queries</summary>');
+    /* How much of the site Google shows at all. This API has no index count; the honest weekly
+       measure is how many pages were put in front of somebody. Indexing itself is checked for
+       a handful of pages further down. */
+    let pageRows = [];
+    await block('Pages', async () => {
+      const pages = await ask({ dimensions: ['page'], rowLimit: 1000 });
+      pageRows = pages.rows ?? [];
+      const shown = pageRows.length;
+      now.googlePages = shown;
+      lines.push(`Pages shown in results this week: **${fmt(shown)}**${ofSitemap} (${movement(shown, was.googlePages)}).`);
       lines.push('');
-      lines.push('| Query | Impressions | Clicks | Position (lower is better) |');
+      if (shown > 0 && underCovered(shown)) notes.push(`Google showed ${fmt(shown)} pages${ofSitemap}.`);
+    });
+
+    let queryRows = [];
+    await block('Queries', async () => {
+      const queries = await ask({ dimensions: ['query'], rowLimit: 1000 });
+      queryRows = (queries.rows ?? []).map((r) => ({
+        query: r.keys?.[0],
+        clicks: num(r.clicks),
+        impressions: num(r.impressions),
+        position: num(r.position),
+      })).filter((q) => q.query).sort((a, b) => b.impressions - a.impressions);
+      now.gQueries = Object.fromEntries(queryRows.slice(0, 60).map((q) => [q.query, { i: q.impressions, p: q.position }]));
+      now.gQueryCount = queryRows.length;
+
+      /* Where on the result page the site is, weighted by what people saw. An average of 6.2
+         can be half the queries at the top and half on page two; this says which. */
+      lines.push(`| Where the site shows up (${fmt(queryRows.length)} queries, vs last week ${movement(queryRows.length, was.gQueryCount)}) | Queries | Impressions | Clicks |`);
       lines.push('|---|---|---|---|');
-      for (const q of list) {
-        const before = was.gQueries?.[q.query];
-        lines.push(`| ${q.query} | ${delta(q.impressions, before?.i)} | ${fmt(q.clicks)} | ${delta(q.position, before?.p)} |`);
+      for (const b of positionBuckets(queryRows)) {
+        lines.push(`| ${b.label} | ${fmt(b.queries)} | ${fmt(b.impressions)} | ${fmt(b.clicks)} |`);
+      }
+      lines.push('');
+
+      if (queryRows.length) {
+        lines.push('<details><summary>Top queries</summary>');
+        lines.push('');
+        lines.push('| Query | Impressions | Clicks | Position (lower is better) |');
+        lines.push('|---|---|---|---|');
+        for (const q of queryRows.slice(0, 25)) {
+          const before = was.gQueries?.[q.query];
+          lines.push(`| ${safe(q.query)} | ${delta(q.impressions, before?.i)} | ${fmt(q.clicks)} | ${delta(q.position, before?.p)} |`);
+        }
+        lines.push('');
+        lines.push('</details>');
+        lines.push('');
+
+        const fresh = queryRows.slice(0, 60).filter((q) => was.gQueries && !(q.query in was.gQueries)).slice(0, 15);
+        if (fresh.length) {
+          lines.push(`**New this week:** ${fresh.map((q) => `\`${q.query}\``).join(', ')}`);
+          lines.push('');
+        }
+      } else {
+        lines.push('No queries came back for the week, which is what a property that was added days ago looks like.');
+        lines.push('');
+      }
+    });
+
+    await block('Top pages', async () => {
+      const top = [...pageRows].sort((a, b) => num(b.clicks) - num(a.clicks)).slice(0, 10);
+      if (!top.length) return;
+      lines.push('<details><summary>Top pages by clicks</summary>');
+      lines.push('');
+      lines.push('| Page | Clicks | Impressions | CTR | Position |');
+      lines.push('|---|---|---|---|---|');
+      for (const p of top) {
+        const url = String(p.keys?.[0] || '').replace(SITE, '') || '/';
+        lines.push(`| ${safe(url)} | ${fmt(num(p.clicks))} | ${fmt(num(p.impressions))} | ${pct(ctr(num(p.clicks), num(p.impressions)))} | ${num(p.position).toFixed(1)} |`);
       }
       lines.push('');
       lines.push('</details>');
       lines.push('');
+    });
 
-      const fresh = list.filter((q) => was.gQueries && !(q.query in was.gQueries)).slice(0, 15);
-      if (fresh.length) {
-        lines.push(`**New this week:** ${fresh.map((q) => `\`${q.query}\``).join(', ')}`);
-        lines.push('');
-      }
-    } else {
-      lines.push('No queries came back for the week, which is what a property that was added days ago looks like.');
+    /* Who the audience is. Search Console gives countries as ISO 3166 alpha-3 codes, printed as
+       they come rather than through a lookup table that would be one more thing to be wrong. */
+    await block('Countries', async () => {
+      const countries = await ask({ dimensions: ['country'], rowLimit: 12 });
+      const list = (countries.rows ?? []).sort((a, b) => num(b.clicks) - num(a.clicks));
+      if (!list.length) return;
+      const total = list.reduce((n, r) => n + num(r.clicks), 0) || 1;
+      now.googleCountries = Object.fromEntries(list.map((r) => [r.keys?.[0], num(r.clicks)]));
+      lines.push('<details><summary>Countries</summary>');
       lines.push('');
-    }
+      lines.push('| Country | Clicks | Share of clicks | Impressions | vs last week (clicks) |');
+      lines.push('|---|---|---|---|---|');
+      for (const r of list) {
+        const code = String(r.keys?.[0] || '');
+        lines.push(`| ${code.toUpperCase()} | ${fmt(num(r.clicks))} | ${((num(r.clicks) / total) * 100).toFixed(0)}% | ${fmt(num(r.impressions))} | ${movement(num(r.clicks), was.googleCountries?.[code])} |`);
+      }
+      lines.push('');
+      lines.push('</details>');
+      lines.push('');
+    });
 
-    if (shown > 0 && shown < 300) notes.push(`Google showed ${fmt(shown)} pages of the 358 in the sitemap.`);
+    await block('Devices', async () => {
+      const devices = await ask({ dimensions: ['device'] });
+      const list = devices.rows ?? [];
+      if (!list.length) return;
+      lines.push('| Device | Clicks | Impressions | CTR | Position |');
+      lines.push('|---|---|---|---|---|');
+      for (const r of list.sort((a, b) => num(b.clicks) - num(a.clicks))) {
+        const name = String(r.keys?.[0] || '').toLowerCase();
+        lines.push(`| ${name} | ${fmt(num(r.clicks))} | ${fmt(num(r.impressions))} | ${pct(ctr(num(r.clicks), num(r.impressions)))} | ${num(r.position).toFixed(1)} |`);
+      }
+      lines.push('');
+    });
+
+    /* Whether the sitemap is being read at all, and whether Google objects to anything in it. */
+    await block('Sitemaps', async () => {
+      const { sitemap = [] } = await google(`sites/${encodeURIComponent(property)}/sitemaps`);
+      if (!sitemap.length) {
+        notes.push('Search Console has no sitemap on record for the site.');
+        return;
+      }
+      lines.push('| Sitemap | Last read by Google | Errors | Warnings |');
+      lines.push('|---|---|---|---|');
+      for (const s of sitemap) {
+        lines.push(`| ${safe(String(s.path).replace(SITE, ''))} | ${String(s.lastDownloaded || 'never').slice(0, 10)} | ${fmt(num(Number(s.errors)))} | ${fmt(num(Number(s.warnings)))} |`);
+        if (Number(s.errors) > 0) notes.push(`Google reports ${s.errors} error(s) in ${s.path}.`);
+      }
+      lines.push('');
+    });
+
+    /* Indexing, asked page by page for the ones that matter most. The inspection API answers one
+       address at a time and is rationed, so this is a spot check, not a census. */
+    await block('Indexing', async () => {
+      const keyPages = ['/', '/ru/', '/facts/', '/docs/'];
+      lines.push('| Page | Indexed | Coverage | Last crawled |');
+      lines.push('|---|---|---|---|');
+      for (const p of keyPages) {
+        try {
+          const res = await googleCall('https://searchconsole.googleapis.com/v1/urlInspection/index:inspect', {
+            inspectionUrl: `${SITE}${p}`,
+            siteUrl: property,
+          });
+          const r = res.inspectionResult?.indexStatusResult || {};
+          const verdict = r.verdict === 'PASS' ? 'yes' : (r.verdict ? r.verdict.toLowerCase() : 'n/a');
+          lines.push(`| ${p} | ${verdict} | ${safe(r.coverageState || 'n/a')} | ${String(r.lastCrawlTime || 'n/a').slice(0, 10)} |`);
+          if (r.verdict && r.verdict !== 'PASS') notes.push(`Google does not have ${p} indexed: ${r.coverageState || r.verdict}.`);
+        } catch (err) {
+          lines.push(`| ${p} | n/a | could not inspect (\`${safe(err.message).slice(0, 80)}\`) | |`);
+        }
+      }
+      lines.push('');
+    });
   } catch (err) {
     lines.push(`Could not read it: \`${err.message}\``);
     lines.push('');
@@ -520,11 +755,13 @@ if (!YANDEX_TOKEN) {
     const clicks = list.reduce((n, q) => n + q.clicks, 0);
     now.yandexTraffic = { shows, clicks };
     now.yQueries = Object.fromEntries(list.slice(0, 40).map((q) => [q.query, { i: q.impressions, p: q.position }]));
+    glance.yandex = clicks;
 
     lines.push(`| Across the top ${list.length} queries, ${dateFrom} to ${dateTo} | | |`);
     lines.push('|---|---|---|');
     lines.push(`| Impressions | ${fmt(shows)} | ${movement(shows, was.yandexTraffic?.shows)} |`);
     lines.push(`| Clicks | ${fmt(clicks)} | ${movement(clicks, was.yandexTraffic?.clicks)} |`);
+    lines.push(`| Click-through rate | ${pct(ctr(clicks, shows))} | |`);
     lines.push('');
 
     if (list.length) {
@@ -534,7 +771,7 @@ if (!YANDEX_TOKEN) {
       lines.push('|---|---|---|---|');
       for (const q of list.slice(0, 25)) {
         const before = was.yQueries?.[q.query];
-        lines.push(`| ${q.query} | ${delta(q.impressions, before?.i)} | ${fmt(q.clicks)} | ${delta(q.position, before?.p)} |`);
+        lines.push(`| ${safe(q.query)} | ${delta(q.impressions, before?.i)} | ${fmt(q.clicks)} | ${delta(q.position, before?.p)} |`);
       }
       lines.push('');
       lines.push('</details>');
@@ -552,8 +789,8 @@ if (!YANDEX_TOKEN) {
     for (const [grade, count] of Object.entries(summary.site_problems ?? {})) {
       if (num(count) > 0) notes.push(`Yandex reports ${count} ${grade.toLowerCase()} site problem(s), listed in the console under Diagnostics.`);
     }
-    if (typeof summary.searchable_pages_count === 'number' && summary.searchable_pages_count < 300) {
-      notes.push(`Yandex holds ${fmt(summary.searchable_pages_count)} pages of the 358 in the sitemap.`);
+    if (typeof summary.searchable_pages_count === 'number' && underCovered(summary.searchable_pages_count)) {
+      notes.push(`Yandex holds ${fmt(summary.searchable_pages_count)} pages${ofSitemap}.`);
     }
   } catch (err) {
     lines.push(`Could not read it: \`${err.message}\``);
@@ -568,14 +805,32 @@ if (notes.length) {
   lines.push('');
 }
 
-const report = lines.join('\n');
+/* The top of the comment is the part a stranger reads. Two sentences, then the detail. */
+const head = [`## Search, week of ${now.checkedAt}`, ''];
+const visits = ['google', 'bing', 'yandex'].filter((k) => typeof glance[k] === 'number');
+if (visits.length || typeof glance.downloads === 'number') {
+  const parts = [];
+  if (visits.length) {
+    const total = visits.reduce((n, k) => n + glance[k], 0);
+    parts.push(`Search sent **${fmt(total)}** visits to ${HOST} in the last week (${visits.map((k) => `${k[0].toUpperCase()}${k.slice(1)} ${fmt(glance[k])}`).join(', ')}).`);
+  }
+  if (typeof glance.downloads === 'number') {
+    parts.push(`The app has been downloaded **${fmt(glance.downloads)}** times from GitHub across ${fmt(glance.releases)} releases; the latest is ${glance.latest}.`);
+  }
+  if (sitemapTotal) parts.push(`The site lists ${fmt(sitemapTotal)} pages.`);
+  head.push(parts.join(' '));
+  head.push('');
+}
+
+const report = [...head, ...reach, ...lines].join('\n');
+const withState = `${report}\n${encodeState(now)}\n`;
 
 // Ending by falling off the bottom rather than by process.exit: the sockets fetch leaves open
 // are still closing, and killing the process out from under them makes libuv complain.
 if (dry) {
-  console.log(report);
+  console.log(withState);
 } else {
-  fs.writeFileSync(OUT, report);
+  fs.writeFileSync(OUT, withState);
   fs.writeFileSync(STATE, JSON.stringify(now, null, 0));
   console.log(`wrote ${path.relative(root, OUT)} and ${path.relative(root, STATE)}`);
 }

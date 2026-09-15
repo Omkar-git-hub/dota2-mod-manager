@@ -3,6 +3,11 @@
 <img src=".github/banner.ru.svg" alt="Dota 2 Mod Manager" width="900">
 
 <p>
+  <a href="README.md"><img src="https://img.shields.io/badge/in%20English-211f26?style=for-the-badge&labelColor=211f26" alt="Read in English"></a>
+  <img src="https://img.shields.io/badge/%D0%BF%D0%BE%E2%80%91%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8-8b6ff0?style=for-the-badge&labelColor=8b6ff0&logoColor=white" alt="Вы читаете русскую версию">
+</p>
+
+<p>
   <a href="https://github.com/TheFleece/dota2-mod-manager/releases/latest/download/Dota-2-Mod-Manager-Setup.exe">
     <img src="https://img.shields.io/github/v/release/TheFleece/dota2-mod-manager?style=for-the-badge&color=8b6ff0&label=%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C&logo=github&logoColor=white" alt="Скачать последнюю версию"></a>
   <img src="https://img.shields.io/github/downloads/TheFleece/dota2-mod-manager/Dota-2-Mod-Manager-Setup.exe?style=for-the-badge&color=4f378b&label=%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE%D0%BA" alt="Загрузок установщика">
@@ -27,8 +32,7 @@
   <a href="#рядом-с-dota2-minify">Рядом с Minify</a> &nbsp;·&nbsp;
   <a href="#документация">Документация</a> &nbsp;·&nbsp;
   <a href="#сообщить-о-проблеме">Сообщить о проблеме</a> &nbsp;·&nbsp;
-  <a href="#жизнь-проекта">Жизнь проекта</a> &nbsp;·&nbsp;
-  <a href="README.md">English</a>
+  <a href="#жизнь-проекта">Жизнь проекта</a>
   </b>
 </p>
 
@@ -184,11 +188,12 @@ v1.14rc7 проверяет принадлежность перед чистко
 
 | | |
 |---|---|
-| [Тесты](.github/workflows/test.yml) | Весь набор с порогом покрытия. Среди них четыре проверки проекта на согласие с самим собой: у каждого IPC-канала есть обработчик, у каждой русской строки есть английский близнец, версия и оба чейнджлога сходятся, а `docs/API.md` всё ещё соответствует исходникам |
+| [Тесты](.github/workflows/test.yml) | Сначала eslint, потом весь набор с порогом покрытия, на Linux и на Windows. Часть тестов проверяет не модуль, а проект на согласие с самим собой: у каждого IPC-канала есть обработчик и каждый обработчик запускается, каждый импорт в renderer находится, у каждой русской строки есть английский близнец, версия и оба чейнджлога сходятся, `docs/API.md` соответствует исходникам, а `DECISIONS.md` соответствует репозиторию |
 | [CodeQL](.github/workflows/codeql.yml) | Анализ на безопасность и качество, плюс прогон раз в неделю |
 | [Релиз](.github/workflows/release.yml) | Только на тег: собирает установщик, портативную сборку и AppImage из того самого коммита и публикует их с секцией чейнджлога для этой версии |
-| [Сайт](.github/workflows/site.yml) | Пересобирает сайт, чтобы его счётчики, версия и эта картинка оставались правдой |
+| [Сайт](.github/workflows/site.yml) | Пересобирает сайт, чтобы его счётчики, версия и эта картинка оставались правдой. На pull request только собирает сайт и проверяет результат |
 | [Зеркало](.github/workflows/mirror.yml) | Толкает ту же историю на [GitLab](https://gitlab.com/TheFleece/dota2-mod-manager), чтобы код пережил этот репозиторий |
+| [Отчёт о поиске](.github/workflows/seo.yml) | Раз в неделю, а не на каждый пуш: скачивания, проверки обновлений и переходы из Google, Bing и Яндекса. Всё уходит в [одно открытое issue](https://github.com/TheFleece/dota2-mod-manager/issues/3), прошлые недели там же выше |
 
 Ничто из этого не коммитит обратно в `main`. То, что воркфлоу нужно помнить между запусками,
 лежит в кеше Actions: коммит от бота на каждый прогон — это то, из-за чего лог перестаёт читаться.
@@ -207,13 +212,28 @@ npm run sandbox:seed      # одноразовое дерево игры с на
 npm run start:sandbox     # приложение против него, а не против своей игры
 ```
 
-Node 24, Electron 43, без сборщика: рендерер — обычные HTML, CSS и JavaScript. Каждый релиз
+Node 24, Electron 44, без сборщика: рендерер — обычные HTML, CSS и JavaScript. Каждый релиз
 делает [`release.yml`](.github/workflows/release.yml) из того коммита, на который указывает тег.
 
 **Если задумал больше, чем починку — сначала issue.** Это одно сообщение, и оно спасает от
 случая, когда одно и то же делают дважды по-разному, или когда ответ был «так задумано, и вот
 почему». Остальное — в [CONTRIBUTING.md](CONTRIBUTING.md); [AGENTS.md](AGENTS.md) — то же самое
 для тех, кто работает с ИИ-ассистентом.
+
+<br>
+
+## Написано с Claude Code
+
+Проект пишется с [Claude Code](https://claude.com/claude-code) с первого коммита 20 июля 2026
+года и пишется так до сих пор. В коммитах для этого стоит строка `Co-Authored-By`.
+
+Написано здесь, потому что догадки хуже. Всё, по чему можно судить о коде, и так открыто: вся
+история коммитов, больше сорока файлов тестов, линтер и порог покрытия, которые CI держит на двух
+операционных системах, и [DECISIONS.md](DECISIONS.md), где на частые вопросы ревьюеров отвечают
+командой, которую можно запустить самому.
+
+Присылай правку, написанную с ассистентом, и оставляй в ней эту строку. Что проект просит
+взамен — в [AGENTS.md](AGENTS.md).
 
 <br>
 

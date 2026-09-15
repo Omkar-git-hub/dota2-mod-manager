@@ -5,9 +5,7 @@
  * These are the channels that answer "what is the game like right now" rather than "do this to
  * a mod". Bodies unchanged from main.js.
  */
-const fs = require('fs');
-const path = require('path');
-const { app, ipcMain } = require('electron');
+const { ipcMain } = require('electron');
 
 const { t } = require('./i18n');
 
@@ -15,17 +13,15 @@ const { t } = require('./i18n');
 function registerGameIpc({
   // patchRepair() is read late and written through setPatchRepair: it changes while the app
   // runs, and a value captured at registration would answer for the wrong moment forever.
-  diag, dotaIsRunning, gameIcons, icons, library, modPreviews, remoteConfig, repairAfterPatch,
-  schemaService, settings, toolchain, patchRepair, setPatchRepair,
+  blocked, diag, dotaIsRunning, gameIcons, icons, library, modPreviews, remoteConfig,
+  repairAfterPatch, schemaService, settings, toolchain, patchRepair, setPatchRepair,
 }) {
 
   // A switch is honoured here rather than in the renderer: this is the boundary an old
-  // window, a stale screen or a replayed click all have to come through.
+  // window, a stale screen or a replayed click all have to come through. `blocked` arrives
+  // from src/feature-gate.js, because the copy that used to live here got left behind when
+  // its only other caller moved to another file.
   const uiLang = () => (settings.get('uiLang') === 'ru' ? 'ru' : 'en');
-  const blocked = (name) => {
-    const f = remoteConfig.feature(name, uiLang());
-    return f.off ? { error: f.note || t('Эта возможность временно отключена') } : null;
-  };
 
   ipcMain.handle('config:state', () => ({
     features: Object.fromEntries(remoteConfig.SWITCHABLE.map((n) => [n, remoteConfig.feature(n, uiLang())])),

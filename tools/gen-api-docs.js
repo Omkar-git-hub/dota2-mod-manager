@@ -136,7 +136,9 @@ function render(mods) {
   out.push('| Module | What it owns |');
   out.push('|---|---|');
   for (const m of mods) {
-    const first = (m.header.split('\n').find((l) => l.trim()) || '').replace(/\|/g, '\\|');
+    // Backslashes first: escaping only the pipe turns a source line ending in "\" into "\\|",
+    // which markdown reads as an escaped backslash followed by a live column break.
+    const first = (m.header.split('\n').find((l) => l.trim()) || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|');
     out.push(`| [\`src/${m.file}\`](#src${m.file.replace(/\./g, '')}) | ${first} |`);
   }
   out.push('');

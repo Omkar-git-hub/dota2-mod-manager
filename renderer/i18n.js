@@ -441,6 +441,8 @@ const EN = {
   'Введи название пресета': 'Enter a preset name',
   'Пресет «{0}» сохранён': 'Preset «{0}» saved',
   'Пресет применён': 'Preset applied',
+  'Пресет применён · доустановлено {0} {1}': 'Preset applied · installed {0} {1} it was missing',
+  'Своих модов нет на этом компьютере, из каталога их не вернуть: {0}': 'Your own mods are not on this computer, and the catalog cannot bring them back: {0}',
   'Удалить пресет «{0}»?': 'Delete preset «{0}»?',
 
   // ---------- tools ----------
@@ -561,8 +563,8 @@ const EN = {
   '. Он собирает в dota_{0}, а {1} Папку с таким именем игра не читает — его моды сейчас не грузятся, и на наши это не влияет. В свежих версиях Minify это решено переходом на голландский.':
     '. It builds into dota_{0}, and {1} No folder by that name is read, so its mods are not loading and ours are unaffected. Newer Minify releases solved this by moving to Dutch.',
   'Minify рядом, и обе программы работают': 'Minify is here, and both are working',
-  ': моды в одной папке dota_{0}, а слоты pak65-67 и pak99, куда пишет он, мы не занимаем.':
-    ': the mods share dota_{0}, and the slots it writes - pak65-67 and pak99 - are left to it.',
+  ': моды в одной папке dota_{0}, а слоты {1}, куда он пишет, мы не занимаем.':
+    ': the mods share dota_{0}, and the slots it writes - {1} - are left to it.',
   'Проверка файлов Steam вернула оригиналы игры': 'Steam’s file check put the game’s own files back',
   ': {0}. Архива для установки уже нет — скачать заново?':
     ': {0}. The archive they were installed from is no longer cached — download it again?',
@@ -653,6 +655,11 @@ const EN = {
   'Обновляю каталог…': 'Refreshing the catalog…',
   'Каталог обновлён': 'Catalog updated',
   'Каталог не обновился, показан последний загруженный': 'Could not update the catalog, showing the last one downloaded',
+  'Нет соединения с интернетом': 'No internet connection',
+  'Каталог сейчас недоступен': 'The catalog is unavailable right now',
+  'Моды, которые уже стоят, работают. Каталог появится, как только связь вернётся.': 'The mods you already have keep working. The catalog will be here as soon as you are back online.',
+  'Моды, которые уже стоят, работают. Попробуй ещё раз через минуту.': 'The mods you already have keep working. Try again in a minute.',
+  'Часть превью не загрузилась. Проверь интернет — каталог и моды работают': 'Some previews did not load. Check your connection - the catalog and the mods still work',
 
   // ---------- thanks ----------
   'Спасибо': 'Thanks',
