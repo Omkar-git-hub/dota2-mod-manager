@@ -121,32 +121,26 @@ test('diagnostic report does not expose the account name', () => {
   const home = path.join(os.tmpdir(), account);
   const game = path.join(home, 'Dota 2 Mod Manager');
 
-  const originalHome = os.homedir;
-  os.homedir = () => home;
+  const { report, files } = buildReport({
+    settings: { all: () => ({ langSuffix: 'english', uiLang: 'en', dotaGamePath: game }) },
+    library: { list: () => [], listPresets: () => [] },
+    installer: { coverage: () => new Set(), downloadCacheSize: () => 0, slotNumber: () => 1 },
+    schemaService: { state: () => ({}) },
+    catalog: { cacheInfo: () => ({}) },
+    app: { version: 'test', userDataDir: game },
+    home,
+  });
 
-  try {
-    const { report, files } = buildReport({
-      settings: { all: () => ({ langSuffix: 'english', uiLang: 'en', dotaGamePath: game }) },
-      library: { list: () => [], listPresets: () => [] },
-      installer: { coverage: () => new Set(), downloadCacheSize: () => 0, slotNumber: () => 1 },
-      schemaService: { state: () => ({}) },
-      catalog: { cacheInfo: () => ({}) },
-      app: { version: 'test', userDataDir: game },
-    });
+  const zip = new AdmZip();
+  zip.addFile('report.json', Buffer.from(JSON.stringify(report)));
+  zip.addFile('REPORT.md', Buffer.from(renderDetailed(report, files)));
 
-    const zip = new AdmZip();
-    zip.addFile('report.json', Buffer.from(JSON.stringify(report)));
-    zip.addFile('REPORT.md', Buffer.from(renderDetailed(report, files)));
+  for (const [name, content] of Object.entries(files)) {
+    zip.addFile(name, Buffer.from(content));
+  }
 
-    for (const [name, content] of Object.entries(files)) {
-      zip.addFile(name, Buffer.from(content));
-    }
-
-    for (const entry of zip.getEntries()) {
-      assert.ok(!entry.getData().toString().includes(account), `${entry.entryName} exposes account name`);
-    }
-  } finally {
-    os.homedir = originalHome;
+  for (const entry of zip.getEntries()) {
+    assert.ok(!entry.getData().toString().includes(account), `${entry.entryName} exposes account name`);
   }
 });
 
