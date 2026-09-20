@@ -386,7 +386,7 @@ packaged (see the diag:export handler) and this stays exercisable on its own.
 ### `buildReport`
 
 ```js
-function buildReport({ settings, library, installer, schemaService, catalog, icons, app, extra = {} })
+function buildReport({ settings, library, installer, schemaService, catalog, icons, app, extra = {}, home })
 ```
 
 ```
@@ -398,10 +398,11 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
 @param {import('./catalog').Catalog} deps.catalog
 @param {import('./icons').Icons} [deps.icons]
 @param {{version: string, logFile?: string, userDataDir?: string, updateError?: string}} deps.app
+@param {string} [deps.home]  the home directory to hide, for a test that cannot have one
 @param {object} [deps.extra] facts only the main process can answer: whether Dota is
 running, the open windows, errors the interface has reported, the updater's state, the
 remote config and the toolchain. Passed in so this module stays free of Electron.
-@returns {{report: object, files: Record<string, string>}}
+@returns {{report: object, files: object}}
 report: the structured data to write as report.json
 files: extra plain-text files to include verbatim, keyed by name inside the zip
 ```
@@ -427,7 +428,7 @@ happened, not the file's whole history.
 ### `findProblems`
 
 ```js
-function findProblems(r, { app } = {})
+function findProblems(r, { app } = /** @type {{app?: object}} */ ({}))
 ```
 
 ---------- what is wrong, said out loud ----------

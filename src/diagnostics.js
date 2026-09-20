@@ -73,7 +73,7 @@ function tailLog(file, maxBytes) {
  * @param {import('./catalog').Catalog} deps.catalog
  * @param {import('./icons').Icons} [deps.icons]
  * @param {{version: string, logFile?: string, userDataDir?: string, updateError?: string}} deps.app
- * @param {string} [deps.home] home directory override 
+ * @param {string} [deps.home]  the home directory to hide, for a test that cannot have one
  * @param {object} [deps.extra] facts only the main process can answer: whether Dota is
  *   running, the open windows, errors the interface has reported, the updater's state, the
  *   remote config and the toolchain. Passed in so this module stays free of Electron.

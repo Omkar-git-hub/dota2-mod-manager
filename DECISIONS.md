@@ -298,7 +298,6 @@ back to the hash remembered from the first download.
 stale mirror, a stale list, a proxy inventing bytes, and a hash pinned in this repository, which
 is never waived.
 
-
 ### `main.js` still holds several jobs
 
 It went from 3,102 lines to about 1,300 when the IPC handlers moved into `src/ipc-*.js`, and to
