@@ -73,10 +73,11 @@ function tailLog(file, maxBytes) {
  * @param {import('./catalog').Catalog} deps.catalog
  * @param {import('./icons').Icons} [deps.icons]
  * @param {{version: string, logFile?: string, userDataDir?: string, updateError?: string}} deps.app
+ * @param {string} [deps.home] home directory override 
  * @param {object} [deps.extra] facts only the main process can answer: whether Dota is
  *   running, the open windows, errors the interface has reported, the updater's state, the
  *   remote config and the toolchain. Passed in so this module stays free of Electron.
- * @returns {{report: object, files: Record<string, string>}}
+ * @returns {{report: object, files: object}}
  *   report: the structured data to write as report.json
  *   files: extra plain-text files to include verbatim, keyed by name inside the zip
  */
@@ -238,7 +239,7 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
  * carries what to do about it. Severity is only two levels on purpose: something is broken,
  * or something is worth knowing. A third level would just be a place to hide things in.
  */
-function findProblems(r, { app } = {}) {
+function findProblems(r, { app } = /** @type {{app?: object}} */ ({})) {
   const out = [];
   const add = (level, what, detail) => out.push({ level, what, detail });
 
