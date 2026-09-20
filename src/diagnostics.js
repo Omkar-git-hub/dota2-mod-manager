@@ -24,13 +24,22 @@ function listFolder(dir) {
   }
 }
 
+function redactHome(dir) {
+  const home = os.homedir();
+  if (!dir?.startsWith(home)) return dir;
+
+  return process.platform === 'win32'
+    ? `%USERPROFILE%${dir.slice(home.length)}`
+    : `~${dir.slice(home.length)}`;
+}
+
 function folderListingText(dir, filter) {
   const list = listFolder(dir);
-  if (!list) return `${dir}\n(not found or unreadable)`;
+  if (!list) return `${redactHome(dir)}\n(not found or unreadable)`;
   const rows = filter ? list.filter(filter) : list;
   const lines = rows.map((f) =>
     `${f.dir ? 'DIR ' : '    '}${String(f.size).padStart(10)}  ${new Date(f.mtime).toISOString()}  ${f.name}`);
-  return `${dir}\n\n${lines.join('\n') || '(empty)'}`;
+  return `${redactHome(dir)}\n\n${lines.join('\n') || '(empty)'}`;
 }
 
 // The last chunk of a log file - a support conversation is almost always about what just
@@ -89,10 +98,11 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
       ...s,
       // the OAuth token never touches disk (see discord-auth.js) - what's left is fine to
       // send, but the Discord id and the avatar picture add nothing to a bug report
+      dotaGamePath: redactHome(s.dotaGamePath),
       account: s.account ? { signedIn: true, username: s.account.username || null } : null,
     },
     dota: {
-      path: game || null,
+      path: redactHome(game) || null,
       pathValid: gameValid,
       detectedLang: gameValid ? gamelang.detectLangSuffix(game) : null,
       bootLanguages: gameValid ? gamelang.bootLanguages(game) : null,

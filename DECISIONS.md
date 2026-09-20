@@ -298,15 +298,6 @@ back to the hash remembered from the first download.
 stale mirror, a stale list, a proxy inventing bytes, and a hash pinned in this repository, which
 is never waived.
 
-### The diagnostic report carries two real paths
-
-`userdata-listing.txt` starts with the app's own folder, which on Windows is under
-`C:\Users\<account name>`, and the report names the game folder. The user exports the file and
-attaches it themselves, so nothing leaves the machine on its own, but the account name rides
-along. Masking both to `%USERPROFILE%` and a placeholder is a small change nobody has made yet;
-it is open as a first issue, [#17](https://github.com/TheFleece/dota2-mod-manager/issues/17).
-
-*Check:* `src/diagnostics.js`, `folderListingText`.
 
 ### `main.js` still holds several jobs
 

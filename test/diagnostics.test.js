@@ -6,7 +6,11 @@
  */
 const test = require('node:test');
 const assert = require('node:assert');
-const { findProblems, renderSummary, renderDetailed } = require('../src/diagnostics');
+const { buildReport, findProblems, renderSummary, renderDetailed } = require('../src/diagnostics');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const AdmZip = require('adm-zip');
 
 // A report with nothing wrong with it, which each test then breaks in exactly one way.
 const healthy = () => ({
@@ -111,6 +115,41 @@ test('the detailed report carries every section and the mod list', () => {
   assert.match(md, /app\.log/);
 });
 
+
+test('diagnostic report does not expose the account name', () => {
+  const account = 'SECRET_ACCOUNT';
+  const home = path.join(os.tmpdir(), account);
+  const game = path.join(home, 'Dota 2 Mod Manager');
+
+  const originalHome = os.homedir;
+  os.homedir = () => home;
+
+  try {
+    const { report, files } = buildReport({
+      settings: { all: () => ({ langSuffix: 'english', uiLang: 'en', dotaGamePath: game }) },
+      library: { list: () => [], listPresets: () => [] },
+      installer: { coverage: () => new Set(), downloadCacheSize: () => 0, slotNumber: () => 1 },
+      schemaService: { state: () => ({}) },
+      catalog: { cacheInfo: () => ({}) },
+      app: { version: 'test', userDataDir: game },
+    });
+
+    const zip = new AdmZip();
+    zip.addFile('report.json', Buffer.from(JSON.stringify(report)));
+    zip.addFile('REPORT.md', Buffer.from(renderDetailed(report, files)));
+
+    for (const [name, content] of Object.entries(files)) {
+      zip.addFile(name, Buffer.from(content));
+    }
+
+    for (const entry of zip.getEntries()) {
+      assert.ok(!entry.getData().toString().includes(account), `${entry.entryName} exposes account name`);
+    }
+  } finally {
+    os.homedir = originalHome;
+  }
+});
+
 /*
  * What the main process gathers has to reach the file.
  *
@@ -125,8 +164,6 @@ test('the detailed report carries every section and the mod list', () => {
  * that the two lists of names agree.
  */
 test('every field the main process gathers for the report is copied into it', () => {
-  const fs = require('fs');
-  const path = require('path');
   const read = (rel) => fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
   const gatherer = read('src/ipc-diagnostics.js');
   const builder = read('src/diagnostics.js');
