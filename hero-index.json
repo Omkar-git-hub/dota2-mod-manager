@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1364,
+  "mods": 1368,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -481,6 +481,7 @@
         {"name":"Aghanim Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Blue Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Enchantress Darkwood Witness","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","weapon"]},
+        {"name":"Enchantress Sematary","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","weapon"]},
         {"name":"Enchantress Shiro","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","weapon","belt","shoulder","legs"]},
         {"name":"Green Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Nemestice Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
@@ -637,8 +638,10 @@
         {"name":"Invoker Dark Artistry v3","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder","belt"]},
         {"name":"Invoker Dark Divine","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder","belt"]},
         {"name":"Invoker Depths Covenant","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
+        {"name":"Invoker Esl Relics Forge","categoryId":"hero-items","styleLabel":null,"slots":["misc"]},
         {"name":"Invoker Fate Meridian","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
         {"name":"Invoker Frostbloom","categoryId":"hero-items","styleLabel":null,"slots":["head"]},
+        {"name":"Invoker Kid Forge","categoryId":"hero-items","styleLabel":null,"slots":["misc"]},
         {"name":"Invoker Magus Accord","categoryId":"hero-items","styleLabel":null,"slots":["arms"]},
         {"name":"Invoker Magus Apex","categoryId":"hero-items","styleLabel":null,"slots":["head"]},
         {"name":"Invoker Magus Mimicry","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
@@ -1485,6 +1488,7 @@
         {"name":"Naga Siren Izayoi Miku","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","head","tail","weapon","offhand","legs"]},
         {"name":"Naga Siren Snickers","categoryId":"hero-items","styleLabel":null,"slots":["weapon","offhand"]},
         {"name":"Nude Naga Siren","categoryId":"heroes","styleLabel":null,"slots":[]},
+        {"name":"Princess Naga Siren","categoryId":"heroes","styleLabel":null,"slots":["arms","head","tail","weapon","offhand"]},
         {"name":"Purple Naga Siren","categoryId":"heroes","styleLabel":null,"slots":["offhand","weapon","tail","head","arms"]}
       ]
     },

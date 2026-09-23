@@ -226,6 +226,16 @@
           "date": 1776456530
         },
         {
+          "name": "Invoker Esl Relics Forge",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["misc"],
+          "image": {"src":"/mods/invoker-esl-relics-forge.webp","width":854,"height":480},
+          "author": "XIIIpsiblade",
+          "authorUrl": "https://t.me/XIIIpsiblade",
+          "date": 1790202267
+        },
+        {
           "name": "Invoker Frostbloom",
           "categoryId": "hero-items",
           "styleLabel": null,
@@ -234,6 +244,16 @@
           "author": "Harlord",
           "authorUrl": "https://discord.com/users/436420477511139329",
           "date": 1790170612
+        },
+        {
+          "name": "Invoker Kid Forge",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["misc"],
+          "image": {"src":"/mods/invoker-kid-forge.webp","width":854,"height":480},
+          "author": "XIIIpsiblade",
+          "authorUrl": "https://t.me/XIIIpsiblade",
+          "date": 1790202267
         },
         {
           "name": "Invoker Magus Accord",
@@ -8066,6 +8086,133 @@
       ]
     },
     {
+      "id": "enchantress",
+      "name": "Enchantress",
+      "slug": "enchantress",
+      "mods": [
+        {
+          "name": "Enchantress Shiro",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon","belt","shoulder","legs"],
+          "image": {"src":"/mods/enchantress-shiro.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1771195327
+        },
+        {
+          "name": "Enchantress Darkwood Witness",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/enchantress-darkwood-witness.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1771681325
+        },
+        {
+          "name": "Enchantress Sematary",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/enchantress-sematary.webp","width":854,"height":480},
+          "author": "XIIIpsiblade",
+          "authorUrl": "https://t.me/XIIIpsiblade",
+          "date": 1790202267
+        },
+        {
+          "name": "Aghanim Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Blue Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Green Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Nemestice Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Red Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI10 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI12 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI9 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Yellow Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        }
+      ]
+    },
+    {
       "id": "jakiro",
       "name": "Jakiro",
       "slug": "jakiro",
@@ -9688,119 +9835,119 @@
       ]
     },
     {
-      "id": "enchantress",
-      "name": "Enchantress",
-      "slug": "enchantress",
+      "id": "naga",
+      "name": "Naga Siren",
+      "slug": "naga-siren",
       "mods": [
         {
-          "name": "Enchantress Shiro",
+          "name": "Naga Siren 42 Bratuha",
           "categoryId": "heroes",
           "styleLabel": null,
-          "slots": ["arms","misc","head","weapon","belt","shoulder","legs"],
-          "image": {"src":"/mods/enchantress-shiro.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1771195327
+          "slots": ["arms","head","tail","weapon","offhand","legs","misc"],
+          "image": {"src":"/mods/naga-siren-42-bratuha.webp","width":1280,"height":720},
+          "author": "NahuiToSay",
+          "authorUrl": "https://t.me/NahuiToSay",
+          "date": 1786848392
         },
         {
-          "name": "Enchantress Darkwood Witness",
+          "name": "Naga Siren Izayoi Miku",
           "categoryId": "heroes",
           "styleLabel": null,
-          "slots": ["arms","misc","head","weapon"],
-          "image": {"src":"/mods/enchantress-darkwood-witness.webp","width":854,"height":480},
+          "slots": ["misc","arms","head","tail","weapon","offhand","legs"],
+          "image": {"src":"/mods/naga-siren-izayoi-miku.webp","width":854,"height":480},
           "author": null,
           "authorUrl": null,
-          "date": 1771681325
+          "date": 1772755574
         },
         {
-          "name": "Aghanim Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Aquamarine Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["arms","head","tail","weapon","offhand","misc"],
+          "image": {"src":"/mods/aquamarine-naga-siren.webp","width":854,"height":480},
+          "author": "NahuiToSay",
+          "authorUrl": "https://t.me/NahuiToSay",
+          "date": 1782925485
         },
         {
-          "name": "Blue Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Ancient Sand Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["arms","head","tail","weapon","offhand"],
+          "image": {"src":"/mods/ancient-sand-naga-siren.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1767797001
         },
         {
-          "name": "Green Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Darkness Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["arms","head","tail","weapon","offhand"],
+          "image": {"src":"/mods/darkness-naga-siren.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1768363987
         },
         {
-          "name": "Nemestice Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Naga Siren Allure of the Deep",
+          "categoryId": "heroes",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["arms","head","tail","weapon","offhand"],
+          "image": {"src":"/mods/naga-siren-allure-of-the-deep.webp","width":854,"height":480},
+          "author": "Haruma",
+          "authorUrl": "https://t.me/DotA_2_Mods",
+          "date": 1779092133
         },
         {
-          "name": "Red Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Princess Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["arms","head","tail","weapon","offhand"],
+          "image": {"src":"/mods/princess-naga-siren.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1790202695
         },
         {
-          "name": "TI10 Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Purple Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["offhand","weapon","tail","head","arms"],
+          "image": {"src":"/mods/purple-naga-siren.webp","width":854,"height":480},
+          "author": "zitock",
+          "authorUrl": "https://steamcommunity.com/profiles/76561198790474721/",
+          "date": 1787950241
         },
         {
-          "name": "TI12 Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Darkness Crimson Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
           "slots": [],
-          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "image": {"src":"/mods/darkness-crimson-naga-siren.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1776456530
         },
         {
-          "name": "TI9 Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Nude Naga Siren",
+          "categoryId": "heroes",
           "styleLabel": null,
           "slots": [],
-          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "image": {"src":"/mods/nude-naga-siren.webp","width":854,"height":480},
+          "author": "Pinkpapa",
+          "authorUrl": "https://www.patreon.com/Pinkpapa",
+          "date": 1767120602
         },
         {
-          "name": "Yellow Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
+          "name": "Naga Siren Snickers",
+          "categoryId": "hero-items",
           "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
+          "slots": ["weapon","offhand"],
+          "image": {"src":"/mods/naga-siren-snickers.webp","width":854,"height":480},
+          "author": "Arthas",
+          "authorUrl": "https://t.me/ArthasModMaker",
+          "date": 1785412684
         }
       ]
     },
@@ -11149,113 +11296,6 @@
       ]
     },
     {
-      "id": "naga",
-      "name": "Naga Siren",
-      "slug": "naga-siren",
-      "mods": [
-        {
-          "name": "Naga Siren 42 Bratuha",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","tail","weapon","offhand","legs","misc"],
-          "image": {"src":"/mods/naga-siren-42-bratuha.webp","width":1280,"height":720},
-          "author": "NahuiToSay",
-          "authorUrl": "https://t.me/NahuiToSay",
-          "date": 1786848392
-        },
-        {
-          "name": "Naga Siren Izayoi Miku",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","head","tail","weapon","offhand","legs"],
-          "image": {"src":"/mods/naga-siren-izayoi-miku.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1772755574
-        },
-        {
-          "name": "Aquamarine Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","tail","weapon","offhand","misc"],
-          "image": {"src":"/mods/aquamarine-naga-siren.webp","width":854,"height":480},
-          "author": "NahuiToSay",
-          "authorUrl": "https://t.me/NahuiToSay",
-          "date": 1782925485
-        },
-        {
-          "name": "Ancient Sand Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","tail","weapon","offhand"],
-          "image": {"src":"/mods/ancient-sand-naga-siren.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1767797001
-        },
-        {
-          "name": "Darkness Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","tail","weapon","offhand"],
-          "image": {"src":"/mods/darkness-naga-siren.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1768363987
-        },
-        {
-          "name": "Naga Siren Allure of the Deep",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","tail","weapon","offhand"],
-          "image": {"src":"/mods/naga-siren-allure-of-the-deep.webp","width":854,"height":480},
-          "author": "Haruma",
-          "authorUrl": "https://t.me/DotA_2_Mods",
-          "date": 1779092133
-        },
-        {
-          "name": "Purple Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["offhand","weapon","tail","head","arms"],
-          "image": {"src":"/mods/purple-naga-siren.webp","width":854,"height":480},
-          "author": "zitock",
-          "authorUrl": "https://steamcommunity.com/profiles/76561198790474721/",
-          "date": 1787950241
-        },
-        {
-          "name": "Darkness Crimson Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/darkness-crimson-naga-siren.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1776456530
-        },
-        {
-          "name": "Nude Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nude-naga-siren.webp","width":854,"height":480},
-          "author": "Pinkpapa",
-          "authorUrl": "https://www.patreon.com/Pinkpapa",
-          "date": 1767120602
-        },
-        {
-          "name": "Naga Siren Snickers",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["weapon","offhand"],
-          "image": {"src":"/mods/naga-siren-snickers.webp","width":854,"height":480},
-          "author": "Arthas",
-          "authorUrl": "https://t.me/ArthasModMaker",
-          "date": 1785412684
-        }
-      ]
-    },
-    {
       "id": "phantom_assassin",
       "name": "Phantom Assassin",
       "slug": "phantom-assassin",
@@ -11522,7 +11562,7 @@
           "image": {"src":"/mods/spectre-immortal-arcana.webp","width":854,"height":480},
           "author": "depex",
           "authorUrl": "https://t.me/depexfx",
-          "date": 1790171805
+          "date": 1790202267
         },
         {
           "name": "Spectre Phantom Advent",
