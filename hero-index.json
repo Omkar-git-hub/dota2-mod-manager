@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1355,
+  "mods": 1362,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -553,6 +553,7 @@
         {"name":"Grimstroke Arong","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","legs","weapon","belt"]},
         {"name":"Grimstroke Gloom Shroud","categoryId":"heroes","styleLabel":null,"slots":["arms","head","legs","weapon"]},
         {"name":"Grimstroke Purple","categoryId":"heroes","styleLabel":null,"slots":["arms","head","legs","weapon","misc","belt"]},
+        {"name":"Immortal Grimstroke","categoryId":"heroes","styleLabel":null,"slots":["arms","head","legs","weapon","misc","belt"]},
         {"name":"Nemestice Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Red Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI10 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
@@ -636,6 +637,7 @@
         {"name":"Invoker Dark Divine","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder","belt"]},
         {"name":"Invoker Depths Covenant","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
         {"name":"Invoker Fate Meridian","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
+        {"name":"Invoker Frostbloom","categoryId":"hero-items","styleLabel":null,"slots":["head"]},
         {"name":"Invoker Magus Accord","categoryId":"hero-items","styleLabel":null,"slots":["arms"]},
         {"name":"Invoker Magus Apex","categoryId":"hero-items","styleLabel":null,"slots":["head"]},
         {"name":"Invoker Magus Mimicry","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
@@ -913,6 +915,7 @@
       "mods": [
         {"name":"Lycan Blood Beast","categoryId":"heroes","styleLabel":null,"slots":["belt","weapon"]},
         {"name":"Lycan Blood Moon","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc"]},
+        {"name":"Lycan Frostbloom Claws","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Lycan Furrytrop","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc","head"]},
         {"name":"Lycan Red Wolf Clan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc","head"]},
         {"name":"Winter Lycan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc"]}
@@ -1237,8 +1240,10 @@
       "mods": [
         {"name":"Immortal Primal Beast","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","legs"]},
         {"name":"Primal Beast Dark Behemoth","categoryId":"heroes","styleLabel":null,"slots":["arms","back","legs","head"]},
+        {"name":"Primal Beast Frostbloom","categoryId":"hero-items","styleLabel":null,"slots":["legs"]},
         {"name":"Primal Beast Prehistoric Predator","categoryId":"heroes","styleLabel":null,"slots":["arms","back","legs","head"]},
-        {"name":"Primal Beast Snowbeast","categoryId":"heroes","styleLabel":null,"slots":["arms","legs","back","head"]}
+        {"name":"Primal Beast Snowbeast","categoryId":"heroes","styleLabel":null,"slots":["arms","legs","back","head"]},
+        {"name":"Primal Beast Temple Guardian","categoryId":"hero-items","styleLabel":null,"slots":["arms"]}
       ]
     },
     "puck": {
@@ -1334,7 +1339,8 @@
         {"name":"Razor Rainbow Statics","categoryId":"heroes","styleLabel":null,"slots":["arms","head","misc","weapon"]},
         {"name":"Razor Rizelencer","categoryId":"heroes","styleLabel":null,"slots":["head","weapon","arms","misc"]},
         {"name":"Razor Silver Rrevenant","categoryId":"heroes","styleLabel":null,"slots":["arms","head","misc","weapon"]},
-        {"name":"Razor Voidstorm Asylum","categoryId":"heroes","styleLabel":null,"slots":["weapon","arms","head","misc","belt","shield"]},
+        {"name":"Razor Stormlord Reborn","categoryId":"heroes","styleLabel":null,"slots":["arms","head","misc","weapon","belt","shield"]},
+        {"name":"Razor Voidstorm Asylum","categoryId":"heroes","styleLabel":null,"slots":["arms","head","misc","weapon","belt","shield"]},
         {"name":"Red Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI10 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI12 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
@@ -1572,6 +1578,7 @@
         {"name":"Phantom Adven Blademail White","categoryId":"item-effects","styleLabel":null,"slots":[]},
         {"name":"Spectre Arcana","categoryId":"heroes","styleLabel":"Style I","slots":["misc","head","weapon","wings"]},
         {"name":"Spectre Arcana","categoryId":"heroes","styleLabel":"Style II","slots":["misc","head","weapon","wings"]},
+        {"name":"Spectre Immortal Arcana","categoryId":"heroes","styleLabel":null,"slots":["misc","head","weapon","wings"]},
         {"name":"Spectre Phantom Advent","categoryId":"heroes","styleLabel":null,"slots":["misc","head","weapon","wings"]},
         {"name":"Spectre Shadowveil","categoryId":"heroes","styleLabel":null,"slots":["misc","head","weapon","wings"]},
         {"name":"Spectre Toxin","categoryId":"heroes","styleLabel":null,"slots":["misc","wings","weapon","head"]}

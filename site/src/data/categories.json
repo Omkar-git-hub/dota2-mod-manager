@@ -228,6 +228,38 @@
     {
       "id": "hero-items",
       "mods": [
+        {
+          "name": "Invoker Frostbloom",
+          "styleLabel": null,
+          "image": {"src":"/mods/invoker-frostbloom.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://discord.com/users/436420477511139329",
+          "date": 1790170612
+        },
+        {
+          "name": "Lycan Frostbloom Claws",
+          "styleLabel": null,
+          "image": {"src":"/mods/lycan-frostbloom-claws.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://discord.com/users/436420477511139329",
+          "date": 1790170612
+        },
+        {
+          "name": "Primal Beast Frostbloom",
+          "styleLabel": null,
+          "image": {"src":"/mods/primal-beast-frostbloom.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://discord.com/users/436420477511139329",
+          "date": 1790170612
+        },
+        {
+          "name": "Primal Beast Temple Guardian",
+          "styleLabel": null,
+          "image": {"src":"/mods/primal-beast-temple-guardian.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://discord.com/users/436420477511139329",
+          "date": 1790170612
+        },
         {"name":"Mops Lone Druid Bear","styleLabel":null,"image":{"src":"/mods/mops-lone-druid-bear.webp","width":854,"height":480},"author":"depex","authorUrl":"https://t.me/depexfx","date":1789745325},
         {"name":"Chen Green Infernal","styleLabel":null,"image":{"src":"/mods/chen-green-infernal.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1789398422},
         {
@@ -692,6 +724,14 @@
     {
       "id": "mega-kill",
       "mods": [
+        {
+          "name": "Stariy Bog Mega Kill",
+          "styleLabel": null,
+          "image": {"src":"/mods/stariy-bog-mega-kill.webp","width":854,"height":480},
+          "author": "rasstegai",
+          "authorUrl": "https://steamcommunity.com/id/rasstegai/",
+          "date": 1790180966
+        },
         {"name":"CS 1.6 Mega-Kill","styleLabel":null,"image":{"src":"/mods/cs-1-6-mega-kill.webp","width":854,"height":480},"author":"VPKDota","authorUrl":"https://t.me/vpkdota","date":1785081533},
         {"name":"Umbrella Mega-Kill","styleLabel":null,"image":{"src":"/mods/umbrella-mega-kill.webp","width":854,"height":480},"author":"HiddenPool","authorUrl":"https://t.me/hiddenpoolcm","date":1777663732},
         {"name":"Stray228 Mega-Kill","styleLabel":null,"image":{"src":"/mods/stray228-mega-kill.webp","width":854,"height":480},"author":"VPKDota","authorUrl":"https://t.me/vpkdota","date":1766279803},
@@ -1457,23 +1497,9 @@
       ]
     },
     {
-      "id": "roshan",
-      "mods": [
-        {"name":"Cosmic Roshan","styleLabel":null,"image":{"src":"/mods/cosmic-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1770899849},
-        {"name":"Santa Hat Roshan","styleLabel":null,"image":{"src":"/mods/santa-hat-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1766555595},
-        {"name":"Aghanims Roshan","styleLabel":null,"image":{"src":"/mods/aghanims-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Desert Roshan","styleLabel":null,"image":{"src":"/mods/desert-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Gardens Roshan","styleLabel":null,"image":{"src":"/mods/gardens-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Golden Roshan","styleLabel":null,"image":{"src":"/mods/golden-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Greevil Grief Roshan","styleLabel":null,"image":{"src":"/mods/greevil-grief-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Journey Roshan","styleLabel":null,"image":{"src":"/mods/journey-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Reef Roshan","styleLabel":null,"image":{"src":"/mods/reef-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Winter Roshan","styleLabel":null,"image":{"src":"/mods/winter-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101}
-      ]
-    },
-    {
       "id": "item-icons",
       "mods": [
+        {"name":"Reflow Radiance","styleLabel":null,"image":{"src":"/mods/reflow-radiance.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790171120},
         {"name":"Old Items","styleLabel":null,"image":{"src":"/mods/old-items.webp","width":854,"height":480},"author":"lebensinhalt","authorUrl":"https://t.me/turnoffyourlebensinhalt","date":1788922344},
         {"name":"Purple Icons","styleLabel":null,"image":{"src":"/mods/purple-icons.webp","width":854,"height":480},"author":"palekid666","authorUrl":"https://t.me/ubiycasmerty","date":1781856687},
         {"name":"White Items","styleLabel":null,"image":{"src":"/mods/white-items.webp","width":993,"height":526},"author":"Миша Талант","authorUrl":"https://t.me/madberserker","date":1781786024},
@@ -1490,6 +1516,21 @@
           "date": 1763215402
         },
         {"name":"Beer Bottle","styleLabel":null,"image":{"src":"/mods/beer-bottle.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1763215402}
+      ]
+    },
+    {
+      "id": "roshan",
+      "mods": [
+        {"name":"Cosmic Roshan","styleLabel":null,"image":{"src":"/mods/cosmic-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1770899849},
+        {"name":"Santa Hat Roshan","styleLabel":null,"image":{"src":"/mods/santa-hat-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1766555595},
+        {"name":"Aghanims Roshan","styleLabel":null,"image":{"src":"/mods/aghanims-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Desert Roshan","styleLabel":null,"image":{"src":"/mods/desert-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Gardens Roshan","styleLabel":null,"image":{"src":"/mods/gardens-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Golden Roshan","styleLabel":null,"image":{"src":"/mods/golden-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Greevil Grief Roshan","styleLabel":null,"image":{"src":"/mods/greevil-grief-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Journey Roshan","styleLabel":null,"image":{"src":"/mods/journey-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Reef Roshan","styleLabel":null,"image":{"src":"/mods/reef-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Winter Roshan","styleLabel":null,"image":{"src":"/mods/winter-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101}
       ]
     },
     {
