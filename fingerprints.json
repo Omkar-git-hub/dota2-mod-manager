@@ -1,5 +1,5 @@
 {
-  "count": 1375,
+  "count": 1377,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -19,6 +19,7 @@
     "0324591d2647bb353b8afcf1d510c260c925ed29": [{"name":"Queen of Pain Rose","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "034ec9dd622af8650cb0d269d8829e666a3dcdaa": [{"name":"Darkness Mekanism","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "0355073486b0615a8ffcb478671de919bedfbae9": [{"name":"Crystal Maiden Yulsarias Glacier","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
+    "0393a6cc58ea74ed15079fe64d4d74d4d50c3f51": [{"name":"Drow Ranger Master Of Madness","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "0398581bd3e7f55d4c173b75fda6414d95310182": [{"name":"Desert Sands Baby Roshan","categoryId":"couriers","styleLabel":null,"type":"vpk"}],
     "03f71c971ee8ea8eefa7fb0c14f1f6fff57d1dcd": [{"name":"BP 2022 Fountain Regen I","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "041700fd788dca3cb690497da307351603159cf6": [{"name":"Broodmother Undermount Candles","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
@@ -430,6 +431,7 @@
     "526b2f0ade4b58b10b2abbb67fe55dc92682fe22": [{"name":"TI9 Bottle","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "52797fd7a9c8357ad10a434d757cd828fa1ac466": [{"name":"lasthit Golden Shards","categoryId":"creep-deny","styleLabel":null,"type":"vpk"}],
     "527b4ca965d97750b812a247d5b8a6f40c126fcd": [{"name":"Blue Dagon","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
+    "52acdc652b400c1e8db09708fadb5a6ae423ae72": [{"name":"Clockwerk Immortal","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "52b7fcd3c785687dd616ab6a11f6fd2fa8bb2f62": [{"name":"Spectre Arcana","categoryId":"heroes","styleLabel":"Style II","type":"vpk"}],
     "52b819d7d01576aec00f4c09d8dc128147af4a58": [{"name":"Unlock Hidden Profile Animations","categoryId":"other","styleLabel":null,"type":"vpk"}],
     "52da49c595d4af89f649ce0a42912b98f03ff1ef": [{"name":"Emblem of the Diretide Blue","categoryId":"emblems","styleLabel":null,"type":"vpk"}],

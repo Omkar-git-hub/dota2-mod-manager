@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1362,
+  "mods": 1364,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -421,6 +421,7 @@
         {"name":"Drow Ranger Arcana","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","legs","misc","weapon","shoulder"]},
         {"name":"Drow Ranger Diretide","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","legs","misc","weapon"]},
         {"name":"Drow Ranger Immortal","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","legs","misc","weapon"]},
+        {"name":"Drow Ranger Master Of Madness","categoryId":"heroes","styleLabel":null,"slots":["arms","back","misc","head","legs","weapon","shoulder"]},
         {"name":"Drow Ranger Silent Wake","categoryId":"hero-items","styleLabel":"Crimson","slots":["back"]},
         {"name":"Drow Ranger Silent Wake","categoryId":"hero-items","styleLabel":"Golden","slots":["back"]},
         {"name":"Drow Ranger Silent Wake","categoryId":"hero-items","styleLabel":null,"slots":["back"]},
@@ -1322,6 +1323,7 @@
       "name": "Clockwerk",
       "mods": [
         {"name":"Clockwerk Apex Automated","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","weapon"]},
+        {"name":"Clockwerk Immortal","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","weapon"]},
         {"name":"Clockwerk Paraflare Cannon","categoryId":"hero-items","styleLabel":null,"slots":["misc"]},
         {"name":"Clockwerk Rabid Watchcog","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Clockwerk Seadog Stash","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","weapon"]},

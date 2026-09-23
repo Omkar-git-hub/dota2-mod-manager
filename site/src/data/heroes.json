@@ -1199,6 +1199,223 @@
       ]
     },
     {
+      "id": "drow",
+      "name": "Drow Ranger",
+      "slug": "drow-ranger",
+      "mods": [
+        {
+          "name": "Drow Ranger Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","head","legs","misc","weapon","shoulder"],
+          "image": {"src":"/mods/drow-ranger-arcana.webp","width":854,"height":480},
+          "author": "Kisilev",
+          "authorUrl": "https://vk.com/id363951132",
+          "date": 1781786024
+        },
+        {
+          "name": "Drow Ranger Master Of Madness",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","misc","head","legs","weapon","shoulder"],
+          "image": {"src":"/mods/drow-ranger-master-of-madness.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790192632
+        },
+        {
+          "name": "Drow Ranger Stranger Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","head","legs","misc","weapon","shoulder"],
+          "image": {"src":"/mods/drow-ranger-stranger-arcana.webp","width":854,"height":480},
+          "author": "Kisilev",
+          "authorUrl": "https://vk.com/id363951132",
+          "date": 1756539017
+        },
+        {
+          "name": "Nude Drow Ranger v2",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","head","legs","misc","weapon","shoulder"],
+          "image": {"src":"/mods/nude-drow-ranger-v2.webp","width":854,"height":480},
+          "author": "Amir4an",
+          "authorUrl": "https://vk.com/amir4an",
+          "date": 1767707545
+        },
+        {
+          "name": "Drow Ranger Diretide",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","head","legs","misc","weapon"],
+          "image": {"src":"/mods/drow-ranger-diretide.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1769438771
+        },
+        {
+          "name": "Drow Ranger Immortal",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","head","legs","misc","weapon"],
+          "image": {"src":"/mods/drow-ranger-immortal.webp","width":854,"height":480},
+          "author": "Tenkay",
+          "authorUrl": "https://t.me/dota2Tenkay",
+          "date": 1787030118
+        },
+        {
+          "name": "Nude Drow Ranger",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","head","misc"],
+          "image": {"src":"/mods/nude-drow-ranger.webp","width":854,"height":480},
+          "author": "Pinkpapa",
+          "authorUrl": "https://www.patreon.com/Pinkpapa",
+          "date": 1767120602
+        },
+        {
+          "name": "Darkness Crimson Naga Siren",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/darkness-crimson-naga-siren.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1776456530
+        },
+        {
+          "name": "Drow Ranger Silent Wake",
+          "categoryId": "hero-items",
+          "styleLabel": "Crimson",
+          "slots": ["back"],
+          "image": {"src":"/mods/drow-ranger-silent-wake-crimson.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1788042221
+        },
+        {
+          "name": "Drow Ranger Silent Wake",
+          "categoryId": "hero-items",
+          "styleLabel": "Golden",
+          "slots": ["back"],
+          "image": {"src":"/mods/drow-ranger-silent-wake-golden.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1788042221
+        },
+        {
+          "name": "Drow Ranger Silent Wake",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["back"],
+          "image": {"src":"/mods/drow-ranger-silent-wake.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1788042221
+        },
+        {
+          "name": "Drow Ranger Silent Wake",
+          "categoryId": "hero-items",
+          "styleLabel": "Tyrian",
+          "slots": ["back"],
+          "image": {"src":"/mods/drow-ranger-silent-wake-tyrian.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1788042221
+        },
+        {
+          "name": "Aghanim Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Blue Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Green Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Nemestice Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Red Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI10 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI12 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI9 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Yellow Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        }
+      ]
+    },
+    {
       "id": "storm_spirit",
       "name": "Storm Spirit",
       "slug": "storm-spirit",
@@ -1322,213 +1539,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1776836841
-        },
-        {
-          "name": "Aghanim Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Blue Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Green Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Nemestice Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Red Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI10 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI12 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI9 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Yellow Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        }
-      ]
-    },
-    {
-      "id": "drow",
-      "name": "Drow Ranger",
-      "slug": "drow-ranger",
-      "mods": [
-        {
-          "name": "Drow Ranger Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","back","head","legs","misc","weapon","shoulder"],
-          "image": {"src":"/mods/drow-ranger-arcana.webp","width":854,"height":480},
-          "author": "Kisilev",
-          "authorUrl": "https://vk.com/id363951132",
-          "date": 1781786024
-        },
-        {
-          "name": "Drow Ranger Stranger Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","back","head","legs","misc","weapon","shoulder"],
-          "image": {"src":"/mods/drow-ranger-stranger-arcana.webp","width":854,"height":480},
-          "author": "Kisilev",
-          "authorUrl": "https://vk.com/id363951132",
-          "date": 1756539017
-        },
-        {
-          "name": "Nude Drow Ranger v2",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","back","head","legs","misc","weapon","shoulder"],
-          "image": {"src":"/mods/nude-drow-ranger-v2.webp","width":854,"height":480},
-          "author": "Amir4an",
-          "authorUrl": "https://vk.com/amir4an",
-          "date": 1767707545
-        },
-        {
-          "name": "Drow Ranger Diretide",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","back","head","legs","misc","weapon"],
-          "image": {"src":"/mods/drow-ranger-diretide.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1769438771
-        },
-        {
-          "name": "Drow Ranger Immortal",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","back","head","legs","misc","weapon"],
-          "image": {"src":"/mods/drow-ranger-immortal.webp","width":854,"height":480},
-          "author": "Tenkay",
-          "authorUrl": "https://t.me/dota2Tenkay",
-          "date": 1787030118
-        },
-        {
-          "name": "Nude Drow Ranger",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","back","head","misc"],
-          "image": {"src":"/mods/nude-drow-ranger.webp","width":854,"height":480},
-          "author": "Pinkpapa",
-          "authorUrl": "https://www.patreon.com/Pinkpapa",
-          "date": 1767120602
-        },
-        {
-          "name": "Darkness Crimson Naga Siren",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/darkness-crimson-naga-siren.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1776456530
-        },
-        {
-          "name": "Drow Ranger Silent Wake",
-          "categoryId": "hero-items",
-          "styleLabel": "Crimson",
-          "slots": ["back"],
-          "image": {"src":"/mods/drow-ranger-silent-wake-crimson.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1788042221
-        },
-        {
-          "name": "Drow Ranger Silent Wake",
-          "categoryId": "hero-items",
-          "styleLabel": "Golden",
-          "slots": ["back"],
-          "image": {"src":"/mods/drow-ranger-silent-wake-golden.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1788042221
-        },
-        {
-          "name": "Drow Ranger Silent Wake",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["back"],
-          "image": {"src":"/mods/drow-ranger-silent-wake.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1788042221
-        },
-        {
-          "name": "Drow Ranger Silent Wake",
-          "categoryId": "hero-items",
-          "styleLabel": "Tyrian",
-          "slots": ["back"],
-          "image": {"src":"/mods/drow-ranger-silent-wake-tyrian.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1788042221
         },
         {
           "name": "Aghanim Ranged Attack",
@@ -12942,6 +12952,73 @@
       ]
     },
     {
+      "id": "rattletrap",
+      "name": "Clockwerk",
+      "slug": "clockwerk",
+      "mods": [
+        {
+          "name": "Clockwerk Apex Automated",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/clockwerk-apex-automated.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764908114
+        },
+        {
+          "name": "Clockwerk Immortal",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/clockwerk-immortal.webp","width":854,"height":480},
+          "author": "3atvorn1k",
+          "authorUrl": "https://discord.com/users/642254136053596200",
+          "date": 1790193060
+        },
+        {
+          "name": "Clockwerk Seadog Stash",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/clockwerk-seadog-stash.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764908114
+        },
+        {
+          "name": "Nuclear Clockwerk",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/nuclear-clockwerk.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1769273719
+        },
+        {
+          "name": "Clockwerk Paraflare Cannon",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["misc"],
+          "image": {"src":"/mods/clockwerk-paraflare-cannon.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1787135218
+        },
+        {
+          "name": "Clockwerk Rabid Watchcog",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["weapon"],
+          "image": {"src":"/mods/clockwerk-rabid-watchcog.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1787135218
+        }
+      ]
+    },
+    {
       "id": "lycan",
       "name": "Lycan",
       "slug": "lycan",
@@ -13377,63 +13454,6 @@
           "author": "Darkness",
           "authorUrl": "https://t.me/Darkness_Logovo",
           "date": 1776456530
-        }
-      ]
-    },
-    {
-      "id": "rattletrap",
-      "name": "Clockwerk",
-      "slug": "clockwerk",
-      "mods": [
-        {
-          "name": "Clockwerk Apex Automated",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","weapon"],
-          "image": {"src":"/mods/clockwerk-apex-automated.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764908114
-        },
-        {
-          "name": "Clockwerk Seadog Stash",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","weapon"],
-          "image": {"src":"/mods/clockwerk-seadog-stash.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764908114
-        },
-        {
-          "name": "Nuclear Clockwerk",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","weapon"],
-          "image": {"src":"/mods/nuclear-clockwerk.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1769273719
-        },
-        {
-          "name": "Clockwerk Paraflare Cannon",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["misc"],
-          "image": {"src":"/mods/clockwerk-paraflare-cannon.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1787135218
-        },
-        {
-          "name": "Clockwerk Rabid Watchcog",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["weapon"],
-          "image": {"src":"/mods/clockwerk-rabid-watchcog.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1787135218
         }
       ]
     },
