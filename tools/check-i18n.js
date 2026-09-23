@@ -224,6 +224,21 @@ function duplicateKeys(file) {
   return [...at].filter(([, seen]) => seen.length > 1);
 }
 
+function checkTranslations(dict) {
+  const unchanged = [];
+  const cyrillic = [];
+
+  for (const [ru, en] of Object.entries(dict)) {
+    if (ru === en && !['Dota 2', 'VPK', '18+'].includes(en)) {
+      unchanged.push(ru);
+    } else if (/[А-Яа-яЁё]/.test(en)) {
+      cyrillic.push({ ru, en });
+    }
+  }
+
+  return { unchanged, cyrillic };
+}
+
 let missing = 0;
 for (const side of SIDES) {
   const dupes = duplicateKeys(side.dict);
@@ -235,6 +250,10 @@ for (const side of SIDES) {
   const dict = readDict(side.dict);
   const used = new Set();
   const gaps = [];
+
+
+  const { unchanged, cyrillic } = checkTranslations(dict);
+
   for (const file of side.files) {
     for (const h of scan(fs.readFileSync(path.join(ROOT, file), 'utf8'), side.calls)) {
       used.add(h.key);
@@ -247,14 +266,32 @@ for (const side of SIDES) {
     console.log(`\n${gaps.length} string(s) with no English twin in ${side.dict}:`);
     for (const g of gaps) console.log(`  ${g.file}:${g.line}  ${g.call}  ${JSON.stringify(g.key)}`);
   }
+  if (unchanged.length) {
+    missing += unchanged.length;
+    console.log(`\n${unchanged.length} English twin(s) are unchanged:`);
+    for (const key of unchanged) console.log(`  ${JSON.stringify(key)}`);
+  }
+
+  if (cyrillic.length) {
+    missing += cyrillic.length;
+    console.log(`\n${cyrillic.length} English twin(s) contain Cyrillic:`);
+    for (const item of cyrillic) {
+      console.log(`  ${JSON.stringify(item.ru)}: ${JSON.stringify(item.en)}`);
+    }
+  }
   if (process.argv.includes('--unused')) {
     const dead = Object.keys(dict).filter((k) => !used.has(k));
     if (dead.length) console.log(`\n${dead.length} key(s) in ${side.dict} that no literal call site uses (data-driven lookups land here too):\n  ${dead.map((k) => JSON.stringify(k)).join('\n  ')}`);
   }
 }
 
-if (missing) {
-  console.log(`\nAdd the English text to the EN dictionary, keyed by the exact Russian string.`);
-  process.exit(1);
+if (require.main === module) {
+  if (missing) {
+    console.log(`\nAdd the English text to the EN dictionary, keyed by the exact Russian string.`);
+    process.exit(1);
+  }
+
+  console.log(`i18n: every Russian string in ${rel(path.join(ROOT, 'renderer'))}/ and main has an English twin.`);
 }
-console.log(`i18n: every Russian string in ${rel(path.join(ROOT, 'renderer'))}/ and main has an English twin.`);
+
+module.exports = { checkTranslations };

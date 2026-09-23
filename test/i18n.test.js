@@ -18,3 +18,25 @@ test('every Russian string has an English twin', () => {
   // the failure message. Repeating it here in a nicer shape would only lose the line numbers.
   assert.equal(run.status, 0, `\n${run.stdout}${run.stderr}`);
 });
+
+test('rejects an unchanged English twin', () => {
+  const { checkTranslations } = require('../tools/check-i18n');
+
+  const result = checkTranslations({
+    Настройки: 'Настройки',
+  });
+
+  assert.deepEqual(result.unchanged, ['Настройки']);
+});
+
+test('rejects an English twin containing Cyrillic', () => {
+  const { checkTranslations } = require('../tools/check-i18n');
+
+  const result = checkTranslations({
+    Установить: 'Установить мод',
+  });
+
+  assert.deepEqual(result.cyrillic, [
+    { ru: 'Установить', en: 'Установить мод' },
+  ]);
+});
