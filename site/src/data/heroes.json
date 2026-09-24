@@ -6347,8 +6347,8 @@
           "styleLabel": null,
           "slots": ["weapon","back","head","misc","shoulder"],
           "image": {"src":"/mods/windranger-reflections-of-gale.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
           "date": 1790281615
         },
         {
