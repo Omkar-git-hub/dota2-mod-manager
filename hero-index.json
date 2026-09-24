@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1387,
+  "mods": 1391,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -1717,6 +1717,7 @@
         {"name":"Terrorblade Scythes of Sorrow","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Terrorblade Span Of Sorrow","categoryId":"hero-items","styleLabel":null,"slots":["wings"]},
         {"name":"Terrorblade Unblinking Horror","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","wings"]},
+        {"name":"Terrorblade Wings Foulfell","categoryId":"hero-items","styleLabel":null,"slots":["wings"]},
         {"name":"Terrorblade Wrong Arcana","categoryId":"heroes","styleLabel":null,"slots":["arms","head","weapon","wings"]},
         {"name":"Terrorblade Yatoro Arcana","categoryId":"heroes","styleLabel":null,"slots":["misc","head"]},
         {"name":"TI10 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
@@ -1836,6 +1837,7 @@
         {"name":"TI10 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI12 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI9 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
+        {"name":"Vengeful Spirit Queen Imperia","categoryId":"heroes","styleLabel":null,"slots":["head","misc","weapon"]},
         {"name":"Vengeful Spirit Seraph Scion","categoryId":"heroes","styleLabel":null,"slots":["head","misc","weapon"]},
         {"name":"Yellow Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]}
       ]
@@ -1945,8 +1947,10 @@
         {"name":"TI12 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI9 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"slots":["misc","weapon","back","head","shoulder"]},
+        {"name":"Windranger Compass Rising Gale","categoryId":"heroes","styleLabel":null,"slots":["weapon","back","head","misc","shoulder"]},
         {"name":"Windranger Papizi","categoryId":"heroes","styleLabel":null,"slots":["head","weapon","back","misc","shoulder","offhand"]},
         {"name":"Windranger Peregrine Flight","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
+        {"name":"Windranger Reflections Of Gale","categoryId":"heroes","styleLabel":null,"slots":["weapon","back","head","misc","shoulder"]},
         {"name":"Yellow Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]}
       ]
     },

@@ -229,6 +229,14 @@
       "id": "hero-items",
       "mods": [
         {
+          "name": "Terrorblade Wings Foulfell",
+          "styleLabel": null,
+          "image": {"src":"/mods/terrorblade-wings-foulfell.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://discord.com/users/436420477511139329",
+          "date": 1790281615
+        },
+        {
           "name": "Batrider Verna Frostbloom",
           "styleLabel": null,
           "image": {"src":"/mods/batrider-verna-frostbloom.webp","width":854,"height":480},

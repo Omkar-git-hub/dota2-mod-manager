@@ -1,5 +1,5 @@
 {
-  "count": 1405,
+  "count": 1409,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -179,6 +179,7 @@
     "1f9f1696c877a8353a19633d6bcd7c2e583a5003": [{"name":"Ringmaster Ibalai","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "1fb874b1369ac1beaa4d2cec86a170037578763d": [{"name":"Wraith King Arcana","categoryId":"heroes","styleLabel":"Style I","type":"vpk"}],
     "1ffc815f926d1150c632d3b7f81a2e7f9d98ef76": [{"name":"Dawnbreaker Death Knight","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
+    "202f31899f64516c8f5547ee2809a72b836fb769": [{"name":"Vengeful Spirit Queen Imperia","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "20416aa077ae301b8c56a12cd285ab9ba42ed24c": [{"name":"Techies Sunken Galley","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "2057ac5663ee19508d4acc6c8c19d8bc6d79a821": [{"name":"Imperial Medals","categoryId":"ranks","styleLabel":null,"type":"vpk"}],
     "206e0f4e241f7e10bb913846696d4e193f3ef2c0": [{"name":"Luna Bloodmoon Stalker","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
@@ -381,6 +382,7 @@
     "470fa61cad07db5e568b96b13f2ed138a4f5a363": [{"name":"TI8 Fountain Regen II","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "471ef25b7d91facda501eb0020a627daab92ae3c": [{"name":"Chrome River","categoryId":"river","styleLabel":null,"type":"vpk"}],
     "471f3679e358854a77a00e60147dde79d56d17af": [{"name":"Amor Endscreen","categoryId":"backgrounds","styleLabel":null,"type":"vpk"}],
+    "47431a9e70021612fd3330d0f8564ec4ffdb84d0": [{"name":"Terrorblade Wings Foulfell","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "4774c08682b1c51bd24955cb3ec127e978b3cfc7": [{"name":"TI10 Blink Dagger II","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "477eec44dc8ebc911457e65f085d2652211f1f35": [{"name":"Ursa Alpine Stalker","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "47acc8499a8375e4e87a580cd1b8fa554c00e753": [{"name":"Twilight Hud","categoryId":"huds","styleLabel":null,"type":"vpk"}],
@@ -768,6 +770,7 @@
     "8d7d069eff2eba5b503d700373356542ce384700": [{"name":"JJ Lin Timekeeper","categoryId":"music","styleLabel":null,"type":"vpk"}],
     "8db030979ffe1f324aa5b8736c2838eb5d0c8c56": [{"name":"TI7 Bottle","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "8e261a6dca3f939e5861db76587cb7f3d700a0ad": [{"name":"Aquamarine Naga Siren","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
+    "8e57c59b624d175567934c3489b921a431e73660": [{"name":"Windranger Reflections Of Gale","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "8e7fecdef99e1534c8b7a29ad625f0bda11c5291": [{"name":"Morphling Darktrench Tears","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "8ebaa24b5c5763522b00bceaf9a536355abd5537": [{"name":"Night Stalker Dark Oath","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "8ec694d64ba39daab5a8caa83dda2f6a353902e7": [{"name":"Cosmic Immortal Tinker","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
@@ -1031,6 +1034,7 @@
     "c0afb0af2a1045bc81c7b6825d3d559a248ca4b2": [{"name":"Phantom Assassin Avowance","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "c0b6e5c1cfc242e9bc3eea962cf1c1ee8d2cf68b": [{"name":"Wraith King Blistering Crimson","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "c0f048f42d00d933157654e9b9e2a7ea77fb798c": [{"name":"Emblem Darkness","categoryId":"emblems","styleLabel":null,"type":"vpk"}],
+    "c1027d5841ce457a24e032c334d92dc19627a026": [{"name":"Windranger Compass Rising Gale","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "c10f967142dfe34619f50d63a79cb7dd245c4fb9": [{"name":"Nude Drow Ranger","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "c13966a36ff04cc2b0c28bd2d17fb5be4c5afa5c": [{"name":"Anti-Mage Taunt","categoryId":"hero-sounds","styleLabel":null,"type":"vpk"}],
     "c1400d9119ffa686f8926cf72d3e163a57b8a854": [{"name":"Centaur Emerald Marauder","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
