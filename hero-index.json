@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1368,
+  "mods": 1371,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -132,6 +132,7 @@
         {"name":"Beastmaster Primal Paean Crimson","categoryId":"hero-items","styleLabel":null,"slots":["shoulder"]},
         {"name":"Beastmaster Primal Peacemaker","categoryId":"hero-items","styleLabel":"Crimson","slots":["weapon"]},
         {"name":"Beastmaster Primal Peacemaker","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
+        {"name":"Beastmaster Prismatic Bone","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","belt","head","shoulder","weapon"]},
         {"name":"Beastmaster Yuuki Yuuna","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","belt","head","shoulder","weapon","legs","back"]},
         {"name":"Immortal Beastmaster","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","head","shoulder","weapon"]}
       ]
@@ -1693,6 +1694,8 @@
         {"name":"Nemestice Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Red Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Terrorblade 666 Fractal Horns","categoryId":"heroes","styleLabel":null,"slots":["misc","head"]},
+        {"name":"Terrorblade Arcana Midnight Blue","categoryId":"heroes","styleLabel":null,"slots":["misc","head"]},
+        {"name":"Terrorblade Arcana Plushy Shag","categoryId":"heroes","styleLabel":null,"slots":["misc","head"]},
         {"name":"Terrorblade Foulfell Corruptor","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Terrorblade Immortal Arcana","categoryId":"heroes","styleLabel":null,"slots":["arms","misc","head","wings"]},
         {"name":"Terrorblade Scythes of Sorrow","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
