@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1391,
+  "mods": 1400,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -47,6 +47,7 @@
         {"name":"Anti-Mage Bloody Reaper","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
         {"name":"Anti-Mage Blue Illidan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
         {"name":"Anti-Mage Creep","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head"]},
+        {"name":"Anti-Mage Forgotten Planes","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon","shoulder"]},
         {"name":"Anti-Mage Illidan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon","legs","offhand","shoulder"]},
         {"name":"Anti-Mage Illidan v2","categoryId":"heroes","styleLabel":null,"slots":["head","weapon","arms","misc","belt"]},
         {"name":"Anti-Mage Manta","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
@@ -641,6 +642,7 @@
         {"name":"Invoker Dark Artistry","categoryId":"heroes","styleLabel":null,"slots":["arms","back","misc","head","shoulder"]},
         {"name":"Invoker Dark Artistry v2","categoryId":"heroes","styleLabel":null,"slots":["arms","back","misc","head","shoulder"]},
         {"name":"Invoker Dark Artistry v3","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder","belt"]},
+        {"name":"Invoker Dark Artistry V4","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
         {"name":"Invoker Dark Divine","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder","belt"]},
         {"name":"Invoker Depths Covenant","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","shoulder"]},
         {"name":"Invoker Esl Relics Forge","categoryId":"hero-items","styleLabel":null,"slots":["misc"]},
@@ -715,11 +717,13 @@
         {"name":"Blue Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Camel Keeper of the Light","categoryId":"heroes","styleLabel":null,"slots":["head","mount","legs","weapon"]},
         {"name":"Green Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
+        {"name":"Keeper Of The Light - Snowdrift","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Keeper of the Light Darklord","categoryId":"heroes","styleLabel":null,"slots":["head","mount","legs","weapon","belt","arms","misc"]},
         {"name":"Keeper of the Light Frostbloom","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Keeper of the Light Northlight Illuminance","categoryId":"herofx","styleLabel":null,"slots":[]},
         {"name":"Keeper of the Light Prominence","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Keeper of the Light Renegade","categoryId":"heroes","styleLabel":null,"slots":["head","mount","legs","weapon"]},
+        {"name":"Keeper of the Light Sematary","categoryId":"heroes","styleLabel":null,"slots":["mount","head","legs"]},
         {"name":"Keeper of the Light Tamamo","categoryId":"heroes","styleLabel":null,"slots":["head","misc","mount","legs","weapon","arms","belt"]},
         {"name":"Keeper of the Light Waitureally","categoryId":"heroes","styleLabel":null,"slots":["head","mount","legs","weapon"]},
         {"name":"Keeper of the Light Wings of Daybreak","categoryId":"hero-items","styleLabel":null,"slots":["mount"]},
@@ -755,6 +759,8 @@
       "name": "Kunkka",
       "mods": [
         {"name":"Immortal Kunkka","categoryId":"heroes","styleLabel":null,"slots":["legs","head","arms","shoulder","misc","weapon"]},
+        {"name":"Kunkka Saltworn Mariner","categoryId":"hero-items","styleLabel":"I","slots":["misc","shoulder"]},
+        {"name":"Kunkka Saltworn Mariner","categoryId":"hero-items","styleLabel":"II","slots":["misc","shoulder"]},
         {"name":"Kunkka Shadow Blade","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Kunkka Whale Blade","categoryId":"hero-items","styleLabel":"Eminent Revival","slots":["weapon"]},
         {"name":"Kunkka Whale Blade","categoryId":"hero-items","styleLabel":"Eminent Revival Exceptional","slots":["weapon"]},
@@ -1091,6 +1097,7 @@
     "nerubian_assassin": {
       "name": "Nyx Assassin",
       "mods": [
+        {"name":"Nyx Assassin - Mecha Nyx","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","head","weapon"]},
         {"name":"Nyx Assassin Dalbaeb","categoryId":"heroes","styleLabel":null,"slots":["arms","head","weapon"]},
         {"name":"Nyx Assassin Latticean Hierarchy","categoryId":"hero-items","styleLabel":"Crimson","slots":["arms"]},
         {"name":"Nyx Assassin Latticean Hierarchy","categoryId":"hero-items","styleLabel":null,"slots":["arms"]},
@@ -1168,7 +1175,8 @@
       "name": "Omniknight",
       "mods": [
         {"name":"Omniknight Akashi","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","weapon","shoulder","wings","misc"]},
-        {"name":"Omniknight Blinding Bastion","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","weapon","shoulder"]}
+        {"name":"Omniknight Blinding Bastion","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","weapon","shoulder"]},
+        {"name":"Omniknight Immortal","categoryId":"heroes","styleLabel":null,"slots":["arms","back","head","weapon","shoulder","misc"]}
       ]
     },
     "oracle": {
@@ -1946,6 +1954,7 @@
         {"name":"TI10 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI12 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"TI9 Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
+        {"name":"Windranger Arcana Prismatic","categoryId":"heroes","styleLabel":null,"slots":["weapon","back","head","misc","shoulder"]},
         {"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"slots":["misc","weapon","back","head","shoulder"]},
         {"name":"Windranger Compass Rising Gale","categoryId":"heroes","styleLabel":null,"slots":["weapon","back","head","misc","shoulder"]},
         {"name":"Windranger Papizi","categoryId":"heroes","styleLabel":null,"slots":["head","weapon","back","misc","shoulder","offhand"]},
