@@ -158,7 +158,9 @@ function clampZoom(v) {
 function windowFit() {
   const fallback = { width: 1360, height: 860, minWidth: 1020, minHeight: 640 };
   try {
-    const { width: aw, height: ah } = screen.getPrimaryDisplay().workAreaSize;
+    // dev: MM_WORKAREA=1366x728 stands in for a smaller screen (tools/sim profiles)
+    const fake = /^(\d+)x(\d+)$/.exec(process.env.MM_WORKAREA || '');
+    const { width: aw, height: ah } = fake ? { width: +fake[1], height: +fake[2] } : screen.getPrimaryDisplay().workAreaSize;
     if (!(aw > 0 && ah > 0)) return fallback;
     return {
       width: Math.min(fallback.width, aw),
@@ -383,6 +385,8 @@ function createWindow() {
     });
   }
 
+  // dev: MM_SIM=<scenarios> drives the window through tools/sim (tools/sim/driver.js attach)
+  if (process.env.MM_SIM) require('./tools/sim/driver').attach(win);
   // dev: MM_REC=<dir> films the app running a scripted scene, one webm per scene. The site
   // needs a clip of the app working and will need a fresh one every release, so it is a
   // script rather than something recorded by hand. MM_SCENE picks scenes by name.
