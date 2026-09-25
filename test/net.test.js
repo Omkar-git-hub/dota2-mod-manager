@@ -55,6 +55,40 @@ function tempDir(t) {
 
 test.afterEach(() => net.setMirrors(null));
 
+test('a host the signed config names joins the chain, after our own copy and before the proxies', () => {
+  /* The built-in list is compiled in, so arranging a second copy of the catalog somewhere used
+     to mean a release and then waiting for people to take it. */
+  const GITLAB = 'https://gitlab.com/rotten/mirror/-/raw/main/assets/files/';
+  net.applyMirrors([{ id: 'gitlab', base: GITLAB, host: 'gitlab.com' }]);
+
+  const list = net.mirrorsFor(RAW_URL);
+  const at = list.findIndex((u) => u.startsWith(GITLAB));
+  assert.equal(list[at], `${GITLAB}heroes/Mod.zip`, 'the path after assets/files/ is kept');
+  // the whole prefix, not a host anywhere in the string: a substring check here reads as a
+  // security check to the scanner, and it would be a bad one
+  assert.ok(at > list.findIndex((u) => u.startsWith('https://cdn.dota2modmanager.com/')), 'after our own bucket');
+  assert.ok(at < list.findIndex((u) => u.startsWith('https://ghproxy.net/')), 'before the proxies, which are GitHub again');
+
+  net.applyMirrors([]);
+  assert.equal(net.mirrorsFor(RAW_URL).some((u) => u.startsWith(GITLAB)), false, 'and taken out again by an empty list');
+});
+
+test('a host named in the config is never the one believed when no copy matches the published hash', () => {
+  /* origin means the host the catalog is published from, which is the one host the published
+     hashes cannot prove anything about. A file named in the config is somewhere else entirely. */
+  net.applyMirrors([
+    { id: 'gitlab', base: 'https://gitlab.com/x/-/raw/main/assets/files/', host: 'gitlab.com' },
+    { id: 'liar', base: 'https://raw.githubusercontent.com/x/y/main/assets/files/', host: 'raw.githubusercontent.com' },
+  ]);
+
+  const entries = net.entriesFor(RAW_URL);
+  const origins = entries.filter((e) => e.origin);
+  assert.equal(origins.length, 1, 'exactly one entry is the origin');
+  assert.equal(origins[0].url, RAW_URL);
+  assert.equal(entries.filter((e) => e.host === 'raw.githubusercontent.com').length, 1,
+    'and an entry claiming that host is dropped rather than added beside it');
+});
+
 test('a GitHub raw URL gets mirrors, and a size-capped one only for small files', () => {
   const big = net.mirrorsFor(RAW_URL);
   const small = net.mirrorsFor(RAW_URL, { small: true });
@@ -68,7 +102,7 @@ test('a GitHub raw URL gets mirrors, and a size-capped one only for small files'
 // which is deployed elsewhere, and it carries the four files the app cannot start without.
 test('the four startup files can also come from the site, and nothing else can', () => {
   const catalog = `${RAW_HOST}h6rd/Dota2PornFxWeb/main/assets/data/mods.json`;
-  const prints = `${RAW_HOST}TheFleece/dota2-mod-manager/main/fingerprints.json`;
+  const prints = `${RAW_HOST}dota2modmanager/dota2-mod-manager/main/fingerprints.json`;
   for (const url of [catalog, prints]) {
     const list = net.mirrorsFor(url, { small: true });
     assert.ok(list.includes(`https://dota2modmanager.com/mirror/${url.split('/').pop()}`), url);
@@ -108,7 +142,7 @@ test('a file asked for trusted-only goes to GitHub itself or nowhere', () => {
   assert.deepEqual(net.mirrorsFor(RAW_URL, { small: true, trustedOnly: true }), [RAW_URL]);
   assert.ok(net.mirrorsFor(RAW_URL, { small: true }).length > 1, 'and the ordinary path still has its mirrors');
 
-  const manifest = 'https://github.com/TheFleece/dota2-mod-manager/releases/download/v2.6.11/portable.yml';
+  const manifest = 'https://github.com/dota2modmanager/dota2-mod-manager/releases/download/v2.6.11/portable.yml';
   assert.deepEqual(net.mirrorsFor(manifest, { small: true, trustedOnly: true }), [manifest],
     'the manifest the portable build really asks for this way');
 });

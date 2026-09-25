@@ -111,6 +111,8 @@ function paintAccount() {
     paintAccount();
   });
 }
+// drawn in whichever language was on when it was drawn (see applyLanguage in ui/language.js)
+document.addEventListener('mm:language', () => paintAccount());
 
 
 $('#modsMasterBtn')?.addEventListener('click', async () => {
@@ -171,7 +173,10 @@ $('#globalSearch').addEventListener('input', (e) => {
   searchTimer = setTimeout(() => {
     state.search = e.target.value;
     $('#clearSearch').classList.toggle('hidden', !state.search);
-    if (state.view !== 'catalog') switchView('catalog');
+    // The catalog draws the results, and a catalog opened from another section is shown as it
+    // was left unless it is marked out of date: a search typed on Settings opened the home
+    // screen with no results on it (found by the simulation, tools/sim, 2026-09-24).
+    if (state.view !== 'catalog') { invalidateViews(); switchView('catalog'); }
     else render();
   }, 180);
 });
@@ -180,6 +185,7 @@ $('#clearSearch').addEventListener('click', () => {
   state.search = '';
   $('#clearSearch').classList.add('hidden');
   if (state.view === 'catalog') render();
+  else invalidateViews(); // so the catalog does not come back still showing the old results
 });
 
 // drag & drop of .vpk files anywhere in the window -> import
@@ -376,6 +382,10 @@ window.api.patch.onRepair((st) => {
 
   // startup put the mods where the game will look for them, and pointed the game there —
   // say so once, because the game has to be restarted before it reads the new folder
+  // the load order was laid out in its two parts on this start (installer.migrateSlotZones)
+  if (cfg.slotMigration) {
+    toast(L`Порядок загрузки обновлён: шейдеры, деревья, река, эффекты героев и ещё несколько категорий теперь грузятся раньше остальных модов.`, 'ok', 9000);
+  }
   if (cfg.langMigration) {
     toast(L`Моды перенесены в dota_${cfg.langMigration.to} — папку, которую монтирует твоя озвучка. Перезапусти игру.`, 'warn', 9000);
   }

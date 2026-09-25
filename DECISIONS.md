@@ -46,8 +46,8 @@ where it runs before the suite.
 
 ### The app ships two dependencies
 
-`adm-zip` and `electron-updater` ship inside it; `electron`, `electron-builder`, `eslint` and
-`typescript` only build and check it, and never reach a user's machine. The VPK reader and writer, the
+`adm-zip` and `electron-updater` ship inside it; `electron`, `electron-builder`, `eslint`,
+`typescript` and `fast-check` only build and check it, and never reach a user's machine. The VPK reader and writer, the
 KeyValues parser, the zip guards, the mirror logic and the update checks are written here,
 because every dependency is a stranger with write access to a game folder on tens of thousands
 of machines. That is a bias rather than a ban: a pull request adding one has to say what it
@@ -68,6 +68,19 @@ they existed, and three functions whose JSDoc described a different signature th
 it. Inferring types across thirty thousand lines is not something to write by hand either. What is
 left is counted per file in `.github/typecheck-baseline.json`, and `tools/typecheck.mjs` refuses a
 run where that count grows.
+
+`fast-check` was added on 2026-09-20, and it replaces something written here rather than adding a
+habit. The parsers were already fuzzed with generators of our own (`tools/fuzz-parsers.mjs`,
+`test/safe-zip-fuzz.test.js`), and those have one flaw that cannot be written around cheaply: when
+they find something they hand over the four kilobytes of rubbish that broke it instead of the two
+bytes that mattered. fast-check shrinks a failure to the smallest input that still fails, which is
+the difference between "an archive broke it" and "a name of one dot breaks it". Its properties are
+in `test/properties.test.js`, and the first of them already earns its keep: our hand-written crc32
+is checked against `zlib.crc32` on random bytes rather than on the cases somebody chose.
+
+It also flips a check on the OpenSSF Scorecard, which recognises fuzzing in JavaScript only
+through a short list of libraries and not through generators of our own. That is a real reason and
+not the reason: the shrinking is.
 
 *Check:* `node -e "const p=require('./package.json');console.log(p.dependencies,p.devDependencies)"`
 and `npm run typecheck`
@@ -161,10 +174,30 @@ request #62 had merged itself the day before with one, because the rule asked fo
 run and nothing about what it found. The deploy key the catalog bot pushes its index with is the
 one bypass: those commits are data, and they never touch code.
 
-*Check:* `curl https://api.github.com/repos/TheFleece/dota2-mod-manager/rules/branches/main`, which
-needs no token, or `gh api repos/TheFleece/dota2-mod-manager/rulesets`. `tools/radar.mjs` compares
+Since 23 September it also requires an approving review from a maintainer who did not write the
+change, and a fresh one after every new push. Until then an approval was welcome and never a
+gate, so that one person working alone would not wait on anybody for a typo. A second maintainer
+changed the sum: every change now gets a reader besides its author, and OpenSSF Scorecard's
+Code-Review and Branch-Protection checks measure exactly that. The cost is pace. A pull request
+waits for the other maintainer, and so does a Dependabot update that used to merge itself.
+
+A pull request also goes through a merge queue since the repository moved into an organization,
+which is where GitHub offers one. The queue puts the change on top of the newest main, runs the
+required checks there once more, and only then lands it. That is what lets the rule require a
+branch to be up to date without the cost it had before: the catalog bot pushes to main several
+times a day, and without the queue every open pull request would have had to be updated and
+rerun by hand after each push. A probe repository showed a pull request left behind by such a push
+going through the queue on its own, with CodeQL, the code scanning rule and a skipped
+pull-request-only check in the way.
+
+The same day the release gate started refusing a tag on a commit that is not on main. Checks run
+on pull request branches as well, so without that a tag on a green, unapproved branch would ship
+it.
+
+*Check:* `curl https://api.github.com/repos/dota2modmanager/dota2-mod-manager/rules/branches/main`, which
+needs no token, or `gh api repos/dota2modmanager/dota2-mod-manager/rulesets`. `tools/radar.mjs` compares
 that answer with `.github/required-checks.json` every morning and reports a rule that drifted.
-Note that `gh api repos/TheFleece/dota2-mod-manager/branches/main/protection` answers **404 Branch
+Note that `gh api repos/dota2modmanager/dota2-mod-manager/branches/main/protection` answers **404 Branch
 not protected**, because this is a ruleset and not classic branch protection. Reviewers have read
 that 404 as an unguarded branch.
 
@@ -223,6 +256,45 @@ stores on disk.
 
 *Check:* `PRIVACY.md`, and grep the source for an outbound call: `grep -rn "fetch\|https.get" src/`.
 
+### The catalog's preview images are committed, and stay committed
+
+`site/public/mods/` is 1,324 files and 47.3 MB of a 57.2 MB pack once history is counted in: 83%
+of it. It grows by five to ten files a day, and the generated JSON at the root that reviews
+usually blame for the size is 1.3 MB, so this is where the weight is.
+
+It stays. The two alternatives both cost more than they save. Fetching the pictures during the
+site build makes every build depend on the catalog being up, for files that are written once and
+almost never rewritten. Moving them to the R2 bucket changes their public addresses, and those
+addresses are indexed: the catalog and hero pages are what the site is found by, and trading a
+settled position in search for repository size is a bad trade for a project whose whole problem
+is that too few people know it exists.
+
+What makes it affordable is that these files are append-only. A picture arrives, and that is the
+last time it is written, so the pack grows by what the catalog gains rather than by what anyone
+edits.
+
+*Check:*
+```
+git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize:disk) %(rest)' | awk '$1=="blob"&&$4~/^site\/public\/mods\//{n+=$3} END{print n/1048576" MB"}'
+```
+
+### TypeScript stays on 5.x
+
+The type check here is not a compiler step. Nothing is emitted; it reads the JSDoc the code
+already carries and counts what disagrees, and `.github/typecheck-baseline.json` holds that count
+so it can only fall.
+
+TypeScript 7, the Go rewrite, reads `@param {object}` far more strictly than 5.x does. The same
+tree goes from 66 known errors to 303, nearly all of them `Property does not exist on type
+'object'`. Measured on 2026-09-22, and the module-resolution change that 7 also forces was ruled
+out separately: 5.9.3 on those same settings gives 64.
+
+Taking 7 means writing out the shapes behind those annotations first, across forty-one files.
+That is worth doing, and it is a piece of work rather than a dependency bump, so the bot is told
+to stop offering the major version until somebody does it.
+
+*Check:* `.github/dependabot.yml`, the `ignore` block for the app's dependencies.
+
 ---
 
 ## Known gaps
@@ -239,21 +311,25 @@ nobody pays for. What stands in for a signature: every binary is built by a publ
 a public commit, and the update metadata beside it carries a SHA-512 of the file.
 
 *Check:* the run that produced any release under
-<https://github.com/TheFleece/dota2-mod-manager/actions/workflows/release.yml>, and `latest.yml`
+<https://github.com/dota2modmanager/dota2-mod-manager/actions/workflows/release.yml>, and `latest.yml`
 in the release assets.
 
-### One maintainer
+### Two maintainers, and one of them holds the keys
 
-One person writes it, reviews it and releases it. There have been two outside pull requests and
-a handful of issues from users. Nothing about the project survives that person losing interest,
-which is worth knowing before depending on it.
+One person writes most of it. Since 2026-09-23 a second maintainer reviews every change before it
+merges, and both own the [dota2modmanager](https://github.com/dota2modmanager) organization the
+repository moved into that day, so either can release without the other. What still sits with one
+person: the knowledge of how the app keeps up with a game update, and the keys outside GitHub
+(the `config/app.json` signing key, the domain, the mirror bucket).
+[GOVERNANCE.md](GOVERNANCE.md) says what losing those costs.
 
-*Check:* `git shortlog -sne HEAD`, and the contributors list on GitHub.
+*Check:* `git shortlog -sne HEAD`, `.github/CODEOWNERS`, and the "Who can merge" table in
+GOVERNANCE.md.
 
 ### The coverage floor is measured on one platform only
 
 The suite runs on both since 2026-09-09, which is what issue
-[#5](https://github.com/TheFleece/dota2-mod-manager/issues/5) asked for: `ubuntu-latest` carries
+[#5](https://github.com/dota2modmanager/dota2-mod-manager/issues/5) asked for: `ubuntu-latest` carries
 the coverage gate, `windows-latest` runs the same tests for correctness, and that job earned
 itself on its first run by finding a libuv abort Linux cannot see.
 
@@ -298,16 +374,6 @@ back to the hash remembered from the first download.
 stale mirror, a stale list, a proxy inventing bytes, and a hash pinned in this repository, which
 is never waived.
 
-### The diagnostic report carries two real paths
-
-`userdata-listing.txt` starts with the app's own folder, which on Windows is under
-`C:\Users\<account name>`, and the report names the game folder. The user exports the file and
-attaches it themselves, so nothing leaves the machine on its own, but the account name rides
-along. Masking both to `%USERPROFILE%` and a placeholder is a small change nobody has made yet;
-it is open as a first issue, [#17](https://github.com/TheFleece/dota2-mod-manager/issues/17).
-
-*Check:* `src/diagnostics.js`, `folderListingText`.
-
 ### `main.js` still holds several jobs
 
 It went from 3,102 lines to about 1,300 when the IPC handlers moved into `src/ipc-*.js`, and to
@@ -336,7 +402,7 @@ code, photographs the first window and fails on `unhandledrejection`, `is not de
 restarts the app, switches it on and removes it, and compares the language folder on disk after
 each launch. Run against the 2.6.6 code it stops at Install with `blocked is not defined`, the
 error that left installing dead in 2.6.5 and 2.6.6
-([#19](https://github.com/TheFleece/dota2-mod-manager/issues/19)). These jobs are required before
+([#19](https://github.com/dota2modmanager/dota2-mod-manager/issues/19)). These jobs are required before
 a pull request merges and before a release builds.
 
 What it still does not cover: one mod of one shape, a zip holding a single VPK, in one category.
@@ -362,20 +428,6 @@ own layout there has never been tested here.
 
 Weighed, not settled. Listed so nobody files them as an oversight.
 
-### The repository carries 46 MB of catalog preview images
-
-`site/public/mods/` is 1,324 files and 49 MB on disk, and 47.3 MB of a 57.2 MB pack once history
-is counted in: 83% of it. It grows by five to ten files a day. Committing them was decided when
-there were 468 of them averaging 14 KB. The candidates are leaving it alone, fetching them during
-the site build instead of committing them, and serving them from the R2 bucket that already
-mirrors the mod archives. For what it is worth, the generated JSON at the root that reviews
-usually blame for the size is 1.3 MB of that pack, so this is where the weight actually is.
-
-*Check:*
-```
-git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize:disk) %(rest)' | awk '$1=="blob"&&$4~/^site\/public\/mods\//{n+=$3} END{print n/1048576" MB"}'
-```
-
 ### Applying to SignPath again
 
 The first application was turned down for public visibility rather than for anything in the code.
@@ -395,12 +447,12 @@ Each of these has arrived in a review. Each is answered by one command.
 
 | Claim | What is true | Check |
 |---|---|---|
-| "The repository cannot be opened, so the open-source promise is unverifiable" | It is public and has been. A fetch failing at one moment is not a private repository | `gh repo view TheFleece/dota2-mod-manager --json visibility` |
+| "The repository cannot be opened, so the open-source promise is unverifiable" | It is public and has been. A fetch failing at one moment is not a private repository | `gh repo view dota2modmanager/dota2-mod-manager --json visibility` |
 | "`main.js` is a 3,100 line monolith" | About 1,150 lines since 2026-09-06, with the IPC handlers in `src/ipc-*.js` and three more jobs moved out since | `wc -l main.js` |
 | "The catalog counts on the site disagree between pages" | They are counted when each page is built. Two pages built an hour apart show two numbers, and both were right when they were made | `site/src/lib/stats.ts` |
 | "The state files in the root are why the repository is 61 MB" | The generated JSON at the root is 1.3 MB of the pack. The preview images are 47.3 MB of 57.2 MB | the command under the open question above |
 | "It is a Windows-only app" | Every release since 2.4.0 also carries a Linux AppImage | `gh release view --json assets` |
-| "`main` is unprotected" | It is guarded by a ruleset, which the branch-protection endpoint does not report | `gh api repos/TheFleece/dota2-mod-manager/rulesets` |
+| "`main` is unprotected" | It is guarded by a ruleset, which the branch-protection endpoint does not report | `gh api repos/dota2modmanager/dota2-mod-manager/rulesets` |
 | "There are 25 test files" | More than 40 of them, run on Linux and on Windows on every push | `ls test/*.test.js \| wc -l` then `npm test` |
 | "An open issue asks for tests that already exist" | Issue #4 was closed on 2026-09-08 when that was pointed out, and `#5` on 2026-09-09 when Windows CI landed. `#3`, `#6`, `#7` and `#9` are open and really are open | `gh issue list --state open` |
 | "There is no static analysis, only tests" | `eslint` runs before the suite in CI and again in the commit guard, with rules about code that cannot run rather than about style | `npm run lint` |
@@ -414,5 +466,5 @@ Say which commit or release you looked at, because this repository moves quickly
 last month's tree reads as wrong rather than as dated. And run the check next to a claim before
 filing it, because most of what arrives has one.
 
-Where to put it: an [issue](https://github.com/TheFleece/dota2-mod-manager/issues) for anything
+Where to put it: an [issue](https://github.com/dota2modmanager/dota2-mod-manager/issues) for anything
 public, and a [private advisory](SECURITY.md) for anything exploitable.

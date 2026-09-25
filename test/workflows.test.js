@@ -169,6 +169,24 @@ test('a beta tag is published as a prerelease, and never as the latest release',
   assert.match(yml, /is a beta - installed copies follow that endpoint/, 'nothing checks that the stable endpoint was left alone');
 });
 
+test('a beta goes out with the feed its testers read', () => {
+  /* electron-builder writes latest.yml and latest-linux.yml for a beta too, and a tester reads
+     beta.yml. v2.8.0-beta.1 was published without it: the check after publishing caught it, and
+     not one tester was offered the build. The publish job now copies the feed under the beta
+     names, between taking the draft out and checking it. */
+  const jobs = read('release.yml').split(/\n {2}(?=[a-z][\w-]*:\n)/);
+  const publish = jobs.find((j) => j.startsWith('publish:')) || '';
+  const at = (s) => publish.indexOf(s);
+  const copy = at('- name: Give a beta the feed its testers read');
+  assert.ok(copy > 0, 'nothing gives a beta its beta.yml');
+  assert.ok(at('- name: Publish the draft') < copy && copy < at('- name: Check the release is one release'),
+    'the feed is copied before there is a release to copy from, or after the check that wants it');
+  const step = publish.slice(copy, at('- name: Check the release is one release'));
+  assert.match(step, /if: needs\.gate\.outputs\.beta == 'true'/, 'a release would get a second beta feed here as well');
+  assert.match(step, /latest\.yml beta\.yml/);
+  assert.match(step, /latest-linux\.yml beta-linux\.yml/, 'Linux testers would be offered nothing');
+});
+
 test('a beta reaches the mirror in its own folder, and is not announced', () => {
   /* A tester whose GitHub is down needs the second route as much as anybody. What a beta must
      never do is land beside the release: the file names carry no version, so it would replace the
@@ -204,7 +222,37 @@ test('RELEASING.md names every job release.yml runs', () => {
   assert.deepEqual(missing, [], `RELEASING.md does not mention: ${missing.join(', ')}`);
 });
 
-test('a dependency update merges itself only when it is minor or patch, and only through the checks', () => {
+test('every required check also runs in the merge queue', () => {
+  /* main has a merge queue since 2026-09-23. It tests a pull request again on top of the newest
+     main and waits for every required check there; a workflow that does not listen to
+     merge_group never reports, and the whole queue stalls behind it. Checked on a probe
+     repository before it was switched on: CodeQL, a skipped pull-request-only job and the code
+     scanning rule all let a queued change through. */
+  const required = json('.github/required-checks.json');
+  const prOnly = new Set(required.pullRequestOnly);
+  const found = new Map();
+  for (const file of workflows) {
+    const text = read(file);
+    for (const m of text.matchAll(/\n {2}([\w-]+):\n {4}name: ([^\n]+)\n((?: {4}[^\n]*\n)*)/g)) {
+      const name = m[2].trim().replace(/^['"]|['"]$/g, '');
+      if (required.branch.includes(name)) found.set(name, { file, text, body: m[3] });
+    }
+    for (const m of text.matchAll(/\n {2}([\w-]+):\n((?: {4}[^\n]*\n)*)/g)) {
+      if (required.branch.includes(m[1]) && !/^ {4}name:/m.test(m[2])) found.set(m[1], { file, text, body: m[2] });
+    }
+  }
+  for (const name of required.branch) {
+    const job = found.get(name);
+    assert.ok(job, `no workflow has a job that reports "${name}"`);
+    assert.match(job.text, /\n {2}merge_group:/, `${job.file} reports "${name}" but does not run in the merge queue`);
+    if (prOnly.has(name)) {
+      assert.match(job.body, /if: github\.event_name == 'pull_request'/,
+        `"${name}" reads the pull request, so it has to skip itself in the merge queue`);
+    }
+  }
+});
+
+test('a dependency update queues itself to merge only when it is minor or patch, and only through the checks', () => {
   /* Majors changed the runtime and the site generator under the project twice in a month
      (Electron 43 to 44, Astro 5 to 7), and the Astro one built green while the site came out
      broken. A merge that is not limited to minor and patch, or that skips the required checks,
@@ -245,3 +293,42 @@ test('CI runs the same gate as a person and the commit hook', () => {
   assert.match(pkg.scripts.verify, /test:coverage/, 'npm run verify does not run the suite with its coverage floor');
   assert.match(read('test.yml'), /npm run verify/, 'test.yml runs its own list of steps instead of npm run verify');
 });
+
+test('a job with no checkout tells gh which repository it means', () => {
+  /* gh finds the repository in the .git of the working directory, and a job that never checked
+     the code out has none: "fatal: not a git repository". That failed the publish job of 2.7.1
+     and of 2.8.0-beta.1 on its last step, after the release was public, and everything after it
+     was skipped. gh pr takes the pull request's own address, which carries the repository. */
+  const bad = [];
+  for (const f of fs.readdirSync(path.join(ROOT, '.github', 'workflows')).filter((n) => /\.ya?ml$/.test(n))) {
+    const body = read(f).replace(/\r\n/g, '\n').split(/\njobs:\n/)[1] || '';
+    for (const job of body.split(/\n(?= {2}[\w-]+:\n)/)) {
+      if (/uses: actions\/checkout@/.test(job)) continue;
+      const name = (/^\s*([\w-]+):/.exec(job) || [])[1];
+      for (const line of job.split('\n')) {
+        if (/^\s*#/.test(line) || !/\bgh (workflow|release|run|issue|label|secret|variable|cache)\b/.test(line)) continue;
+        if (!/--repo\b|\s-R\s/.test(line)) bad.push(`${f} ${name}: ${line.trim()}`);
+      }
+    }
+  }
+  assert.deepEqual(bad, [], bad.join('\n'));
+});
+
+test('the release asks for the antivirus check by name, because the event never comes', () => {
+  /* virustotal.yml listens for `release: published`, and that event is never raised: the release
+     is published by a workflow using GITHUB_TOKEN, and GitHub refuses to start workflows from
+     events its own token created. On its first chance, 2.7.0, it did not run, and the changelog
+     of that release said every release is scanned. */
+  const jobs = read('release.yml').split(/\n {2}(?=[a-z][\w-]*:\n)/);
+  const job = jobs.find((j) => j.startsWith('antivirus:')) || '';
+  assert.match(job, /gh workflow run virustotal\.yml --repo "\$REPO" -f tag="\$TAG"/,
+    'nothing starts the antivirus check, or it starts it without saying which repository');
+  assert.match(job, /needs: \[gate, publish\]/, 'the check is asked for before there is a release to check');
+  assert.match(job, /permissions:\s*\n\s*actions: write/, 'starting another workflow needs actions: write');
+  // not a step of publish: a failed request there skipped mirror-update and notify on 2.7.1
+  const publish = jobs.find((j) => j.startsWith('publish:')) || '';
+  assert.doesNotMatch(publish, /gh workflow run/, 'a failed request would fail publish and skip the mirror');
+  assert.match(read('virustotal.yml'), /workflow_dispatch:[\s\S]{0,200}tag:/,
+    'virustotal.yml no longer takes the tag it is asked about');
+});
+

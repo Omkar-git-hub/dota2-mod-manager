@@ -5,6 +5,7 @@ incident, named by the day it was found.
 
 | Found | Incident | Versions | Fixed in |
 | --- | --- | --- | --- |
+| 2026-08-31 | [Updating put the removal window on screen](2026-08-31-uninstaller-during-update.md) | 2.6.1 | 2.6.2 |
 | 2026-09-10 | [Pressing Install did nothing](2026-09-10-install-did-nothing.md) | 2.6.5, 2.6.6 | 2.6.7 |
 | 2026-09-10 | [Mods refused after the checksum check arrived](2026-09-10-downloads-refused.md) | 2.6.5 | 2.6.6 |
 | 2026-09-11 | [The update mirror carried nothing for Linux](2026-09-11-linux-update-files-missing.md) | 2.6.5 to 2.6.8 | 2.6.9 |
@@ -13,6 +14,7 @@ incident, named by the day it was found.
 | 2026-09-15 | [2.6.11 was built from a commit with a failing test](2026-09-15-release-from-red-commit.md) | 2.6.11 | #21 |
 | 2026-09-15 | [The site built as version 0.0.0](2026-09-15-site-built-as-0.0.0.md) (near miss) | site | 53416db |
 | 2026-09-17 | [Fonts and cursors put back at every start](2026-09-17-restored-after-every-start.md) | 2.0.0 to 2.6.12 | #62 |
+| 2026-09-20 | [The antivirus check never ran](2026-09-20-antivirus-check-never-ran.md) | 2.7.0 | unreleased |
 
 ## Writing one
 

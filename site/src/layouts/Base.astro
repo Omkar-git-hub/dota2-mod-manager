@@ -48,7 +48,7 @@ const drawn = fs.existsSync(join(SITE_ROOT, 'public', card)) ? card : ogPath(lan
 const ogImage = image?.src ?? drawn;
 const ogSize = image ? { w: image.width, h: image.height } : { w: 1200, h: 630 };
 
-const GITHUB = 'https://github.com/TheFleece/dota2-mod-manager';
+const GITHUB = 'https://github.com/dota2modmanager/dota2-mod-manager';
 const DISCORD = 'https://discord.gg/PBvG8D9MxT';
 const RELEASES = `${GITHUB}/releases/latest`;
 ---
@@ -126,7 +126,7 @@ const RELEASES = `${GITHUB}/releases/latest`;
     <footer class="foot">
       <div class="wrap foot-row">
         <p>
-          {t('foot.built')} <a href="https://github.com/TheFleece" rel="noopener">Mykhailo Lynnyk</a>.
+          {t('foot.built')} <a href="https://github.com/TheFleece" rel="noopener">TheFleece</a>.
           <a href={GITHUB} rel="noopener">{t('foot.license')}</a>.
         </p>
         <nav class="foot-links" aria-label={t('site.name')}>
@@ -134,6 +134,8 @@ const RELEASES = `${GITHUB}/releases/latest`;
           <a href={pathIn(lang, '/catalog/')}>{t('nav.catalog')}</a>
           <a href={pathIn(lang, '/heroes/')}>{t('nav.heroes')}</a>
           <a href={pathIn(lang, '/facts/')}>{t('nav.facts')}</a>
+          <a href={pathIn(lang, '/transparency/')}>{t('nav.transparency')}</a>
+          <a href="https://dota2modmanager.betteruptime.com" rel="noopener">{t('nav.status')}</a>
           <a href={GITHUB} rel="noopener">{t('nav.github')}</a>
           <a href={`${GITHUB}/releases`} rel="noopener">{t('foot.releases')}</a>
           <a href={DISCORD} rel="noopener">{t('nav.discord')}</a>

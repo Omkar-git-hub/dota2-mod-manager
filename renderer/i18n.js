@@ -33,6 +33,9 @@ window.EN_PLURAL = {
   'косметик': ['cosmetic', 'cosmetics'],
   'из них — копии уже установленных модов': ['of them is a copy of a mod you already have', 'of them are copies of mods you already have'],
   'вариантов': ['option', 'options'],
+  'героев': ['hero', 'heroes'],
+  'наборов': ['set', 'sets'],
+  'деталей': ['piece', 'pieces'],
   'видов': ['look', 'looks'],
 };
 
@@ -59,6 +62,7 @@ const EN = {
 
   // ---------- group / link labels ----------
   'Все герои': 'All heroes', 'Все предметы': 'All items', 'Все крипы': 'All creeps',
+  'Вид': 'View', 'Сеткой героев': 'Hero grid', 'Все моды списком': 'All mods as a list',
   'Все башни': 'All towers', 'Все типы': 'All types', 'Все группы': 'All groups',
   'Все категории': 'All categories', 'Все слоты': 'All slots',
 
@@ -76,6 +80,9 @@ const EN = {
   'Убрать из избранного': 'Remove from favorites',
   'Здесь пусто — жми на сердечко у мода в каталоге': 'Nothing here yet — tap the heart on a mod in the catalog',
   'Превью': 'Preview', 'Источник': 'Source', 'Автор': 'Author', 'Баг': 'Bug', 'Гайд': 'Guide',
+  // who made a mod, in the mod window (core/credits.js)
+  'моддер': 'modder', 'отправитель': 'sender',
+  'Автор: {0}': 'Author: {0}', 'Моддер: {0}': 'Modder: {0}', 'Отправитель: {0}': 'Sender: {0}',
 
   // ---------- nav / chrome (index.html static) ----------
   'Каталог': 'Catalog', 'Библиотека': 'Library', 'Пресеты': 'Presets',
@@ -143,11 +150,37 @@ const EN = {
   'Косметика': 'Cosmetics',
   'Моды': 'Mods',
   'вид для стандартного предмета': 'a look for a default item',
+  'Предметы': 'Items',
+  'Стандартный': 'Default',
+  'Надето': 'Equipped',
+  'Надетые': 'Equipped',
+  'Надето: {0}': 'Equipped: {0}',
+  'Надеть': 'Equip',
+  'Надеваю…': 'Equipping…',
+  'Сохранить эффекты': 'Save effects',
+  'Вернуть стандартный': 'Back to default',
+  'Можно выбрать несколько. Иней и Снег держатся не на всех моделях.':
+    'You can pick several. Frostbloom and Snow do not hold on every model.',
+  'Наборы': 'Sets',
+  '{0} из {1}': '{0} of {1}',
+  '{0} из {1} {2}': '{0} of {1} {2}',
+  'Надеть весь набор': 'Equip the whole set',
+  'Ничего не найдено. Очисти поиск': 'Nothing found. Clear the search',
+  'Изменено {0} из {1}': 'Changed {0} of {1}',
+  'Надето {0} из {1} {2}': 'Equipped {0} of {1} {2}',
+  'Набор надевается без эффектов. Чтобы добавить эффект, открой деталь.':
+    'A set goes on without effects. Open a piece to add one.',
+  'Эффект добавляется к предмету: сначала выбери его выше.': 'An effect goes on an item: choose one above first.',
+  'Конструктор предметов': 'Item builder',
+  'конструктор предметов': 'item builder',
+  'Без эффектов': 'No effects',
   'Выбрать всю косметику': 'Select every look',
   'Вернуть все слоты к тому, что даёт игра': 'Put every slot back to what the game gives',
   'Косметика выключена — слоты снова как в игре': 'Cosmetics off — the slots are the game’s own again',
   'Вид подставляется в схему предметов игры — стандартный предмет просто рисуется как выбранный. Файлы модов это не трогает, и видно только тебе.':
     'A look is spliced into the game’s item schema — it touches no mod files, and only you can see it.',
+  'Стандартный предмет героя сохранит свои id, name и prefab=default_item. Остальная часть блока берётся у выбранного предмета, а выбранный эффект добавляется в visuals.':
+    'The hero’s stock item keeps its own id, name and prefab=default_item. The rest of the block comes from the chosen item, and the chosen effect is added to visuals.',
   '…и ещё {0} — уточни запрос': '…and {0} more — narrow the search',
   // cosmetic slot labels
   'Погода': 'Weather', 'Ландшафт': 'Terrain', 'Интерфейс игры': 'Game HUD',
@@ -561,11 +594,18 @@ const EN = {
   'Игра читает моды Minify из dota_{0}': 'The game is reading the Minify mods in dota_{0}',
   ', а наши {0} лежат в dota_{1} и сейчас не грузятся. {2} Какую именно — решает параметр запуска Dota, и сейчас он указывает на папку Minify.':
     ', while our {0} sit in dota_{1} and are not loading. {2} Which one is decided by the Dota launch option, and right now it names the Minify folder.',
-  'Игра читает папку dota_{0}, а модов там нет': 'The game is reading dota_{0}, and there are no mods in it',
-  '. Наши лежат в dota_{0}, Minify собирает в dota_{1}. {2}':
-    '. Ours are in dota_{0} and Minify builds into dota_{1}. {2}',
-  '. Игра читает нашу папку dota_{0}, а он собирает в dota_{1} — его моды сейчас не грузятся. {2}':
-    '. The game reads our dota_{0} while it builds into dota_{1}, so its mods are not loading. {2}',
+  '. Игра читает dota_{0}, куда ставятся наши моды. Minify собирает в dota_{1}, поэтому его моды сейчас не грузятся. {2}':
+    '. The game reads dota_{0}, where our mods go. Minify builds into dota_{1}, so its mods are not loading. {2}',
+  'Игра читает папку Minify dota_{0}, а она пуста': 'The game reads the Minify folder dota_{0}, and it is empty',
+  '. Наши {0} лежат в dota_{1} и сейчас не грузятся. {2} Какую читать, решает параметр запуска Dota.':
+    '. Our {0} sit in dota_{1} and are not loading. {2} Which one it reads is decided by the Dota launch option.',
+  '. Наши моды ставятся в dota_{0}. {1} Какую читать, решает параметр запуска Dota.':
+    '. Our mods go into dota_{0}. {1} Which one it reads is decided by the Dota launch option.',
+  'Игра читает dota_{0}, а там нет ни наших модов, ни модов Minify': 'The game reads dota_{0}, and neither we nor Minify have mods there',
+  '. Наши ставятся в dota_{0}, Minify собирает в dota_{1}. {2}':
+    '. Ours go into dota_{0} and Minify builds into dota_{1}. {2}',
+  '. Он собирает в dota_{0}, наши моды ставятся в dota_{1}. {2}':
+    '. It builds into dota_{0} and our mods go into dota_{1}. {2}',
   'Рядом установлен Minify': 'Minify is installed alongside',
   '. Он собирает в dota_{0}, а {1} Папку с таким именем игра не читает — его моды сейчас не грузятся, и на наши это не влияет. В свежих версиях Minify это решено переходом на голландский.':
     '. It builds into dota_{0}, and {1} No folder by that name is read, so its mods are not loading and ours are unaffected. Newer Minify releases solved this by moving to Dutch.',
@@ -598,6 +638,8 @@ const EN = {
   ', менять ничего не пришлось': ', and nothing needed changing',
   '. Можно играть.': '. You are good to play.',
   'Понятно': 'Got it',
+  'Порядок загрузки обновлён: шейдеры, деревья, река, эффекты героев и ещё несколько категорий теперь грузятся раньше остальных модов.':
+    'Load order updated: shaders, trees, river, hero effects and a few more categories now load before the other mods.',
   'Dota обновилась, пока игра запущена': 'Dota updated while the game was running',
   '. Моды в этой сессии не работают: файлы игры заняты. Закрой Dota — приложение вернёт всё само.':
     '. Mods are off for this session because the game holds its files open. Close Dota and the app puts everything back on its own.',

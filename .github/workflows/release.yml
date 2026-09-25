@@ -248,7 +248,7 @@ jobs:
           subject-checksums: SHA256SUMS
 
       - name: Attest the SBOM for the same files
-        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-checksums: SHA256SUMS
           sbom-path: release/dota2-mod-manager.cdx.json
@@ -437,6 +437,25 @@ jobs:
             echo "release $id ($TAG) is public"
           fi
 
+      # electron-builder names the update feed latest.yml whatever the version says, 2.8.0-beta.1
+      # included, and a tester's copy reads beta.yml. So a beta's own feed goes up a second time
+      # under the names the beta channel reads, the way beta-feed does it for a release. The first
+      # beta, v2.8.0-beta.1, came out without them and its testers were offered nothing.
+      - name: Give a beta the feed its testers read
+        if: needs.gate.outputs.beta == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          for pair in "latest.yml beta.yml" "latest-linux.yml beta-linux.yml"; do
+            set -- $pair
+            gh release download "$TAG" --repo "$REPO" --pattern "$1" --output "$2" --clobber
+            gh release upload "$TAG" "$2" --repo "$REPO" --clobber
+            echo "$1 is also on the beta as $2"
+          done
+
       # What broke on 2.2.0 was invisible until somebody looked at the API by hand: the workflow was
       # green, the installer was on a page, and the app could not update. This is that look, taken
       # by the machine once the release is public.
@@ -484,6 +503,36 @@ jobs:
               || { echo "::error::$want is missing from the release the updater reads"; exit 1; }
           done
           echo "one release, it is the latest, and it carries every file the updater and a person checking a download read"
+
+  # The antivirus check, asked for by name.
+  #
+  # virustotal.yml listens for `release: published` as well, and that event never comes: this
+  # release was published by a workflow using GITHUB_TOKEN, and GitHub refuses to start
+  # workflows from events its own token created. So the file sat there active and correct, and
+  # on its first chance, 2.7.0, it did not run: the release was public with a changelog saying
+  # every release is scanned. A dispatch is an API call rather than an event, so it runs.
+  #
+  # A job of its own, after publish. It used to be the last step of publish, where it failed on
+  # 2.7.1 and 2.8.0-beta.1 alike: there is no checkout there, and gh looks for the repository in a
+  # .git that is not there unless it is told. A failed step failed publish, so mirror-update,
+  # beta-feed and notify were skipped, and the release that was already public reached neither the
+  # mirror nor Discord. Here a failed request is a red job and nothing more.
+  antivirus:
+    needs: [gate, publish]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Ask for the antivirus check on this tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run virustotal.yml --repo "$REPO" -f tag="$TAG"
+          echo "asked VirusTotal to look at $TAG"
 
   # A second place to get the update from.
   #

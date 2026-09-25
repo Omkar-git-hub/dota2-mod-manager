@@ -8,13 +8,14 @@ How a version goes out, what stops it on the way, and what to do when one that w
    everything since the last tag. `test/release-contract.test.js` fails the pull request if the
    version in `package.json` has no section or an empty one.
 2. The version in `package.json` goes up in the same pull request, which merges like any other.
-3. The maintainer tags the merged commit `vX.Y.Z` and pushes the tag. Nothing else starts a release.
+3. A maintainer tags the merged commit `vX.Y.Z` and pushes the tag. Nothing else starts a release,
+   and the `gate` job refuses a tag on a commit that is not on main.
 
 The tag starts `.github/workflows/release.yml`:
 
 | Job | What it does | Who can see it |
 |---|---|---|
-| `gate` | Waits until the tagged commit has passed every check in `.github/required-checks.json`, and fails if one failed | nobody |
+| `gate` | Refuses a tagged commit that is not on main, then waits until it has passed every check in `.github/required-checks.json`, and fails if one failed | nobody |
 | `build` | Opens the release as a draft with its changelog section, builds the installer and the portable exe into it, and checks the draft is the only release on the tag | the maintainer |
 | `linux` | Builds the AppImage into the same draft | the maintainer |
 | `checksums` | Downloads every file on the draft, writes `SHA256SUMS` and an SBOM, attests the build provenance of every file and the SBOM through Sigstore, and puts `SHA256SUMS`, the SBOM and the provenance bundle on the draft | the maintainer |
@@ -22,6 +23,7 @@ The tag starts `.github/workflows/release.yml`:
 | `try-linux` | Downloads the AppImage from the draft, checks it against `SHA256SUMS`, unpacks it, and runs `tools/e2e.mjs` against it | the maintainer |
 | `publish` | Takes the release out of draft, then checks it is the latest and carries every file the updater reads | everybody |
 | `beta-feed` | Uploads the release's own `latest.yml` and `latest-linux.yml` a second time as `beta.yml` and `beta-linux.yml`, so the beta channel points at this release too | everybody |
+| `antivirus` | Asks `virustotal.yml` to scan the release and put the verdict in its notes | everybody |
 | `mirror-update` | Copies the release to the update mirror | everybody |
 | `notify` | Posts the changelog section to Discord | everybody |
 
@@ -137,7 +139,7 @@ files stay on the page for anyone who needs them:
 
 ```bash
 gh release edit vX.Y.Z --prerelease
-gh api repos/TheFleece/dota2-mod-manager/releases/latest --jq .tag_name
+gh api repos/dota2modmanager/dota2-mod-manager/releases/latest --jq .tag_name
 ```
 
 The second command has to print the previous version. The update mirror holds one version only and

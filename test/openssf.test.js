@@ -22,7 +22,8 @@ const statusOf = (id) => answers[`${id}_status`];
 const why = (id) => answers[`${id}_justification`] || '';
 
 test('every criterion carries both a status and the reason for it', () => {
-  assert.equal(criteria.length, 67, 'the passing level has 67 criteria; one was added or dropped here');
+  assert.equal(criteria.length, 115, 'passing has 67 criteria and silver 55, seven of them the '
+    + 'same ones: 115 answers. One was added or dropped here');
   const wrong = [];
   for (const id of criteria) {
     if (!['Met', 'Unmet', 'N/A'].includes(statusOf(id))) wrong.push(`${id}: status "${statusOf(id)}"`);
@@ -57,15 +58,62 @@ test('every file a reason names is in the repository', () => {
   assert.deepEqual(missing, []);
 });
 
-/* Eight criteria are marked met_url_required in the badge's own criteria.yml: an answer without a
-   link does not count, and the entry sits at 99% with nothing saying which one is short. That is
+/* Criteria marked met_url_required in the badge's own criteria.yml: answered Met without a link
+   they do not count, and the entry sits one percent short with nothing saying which one. That is
    how vulnerability_report_private held the badge back on 2026-09-19. */
-const NEEDS_URL = ['contribution', 'contribution_requirements', 'license_location', 'release_notes',
-  'report_process', 'report_archive', 'vulnerability_report_process', 'vulnerability_report_private'];
+const NEEDS_URL = [
+  // passing
+  'contribution', 'contribution_requirements', 'license_location', 'release_notes',
+  'report_process', 'report_archive', 'vulnerability_report_process', 'vulnerability_report_private',
+  // silver
+  'dco', 'governance', 'code_of_conduct', 'roles_responsibilities', 'access_continuity',
+  'bus_factor', 'documentation_roadmap', 'documentation_architecture', 'documentation_security',
+  'documentation_quick_start', 'documentation_achievements', 'vulnerability_report_credit',
+  'vulnerability_response_process', 'coding_standards', 'external_dependencies', 'assurance_case',
+];
 
 test('every criterion that has to carry a link carries one', () => {
-  const short = NEEDS_URL.filter((id) => !/https?:\/\//.test(why(id)));
-  assert.deepEqual(short, [], `answered without the link the badge requires: ${short.join(', ')}`);
+  // the link is asked of an answer claiming the criterion is met, not of one that admits it is not
+  const short = NEEDS_URL.filter((id) => statusOf(id) === 'Met' && !/https?:\/\//.test(why(id)));
+  assert.deepEqual(short, [], `answered Met without the link the badge requires: ${short.join(', ')}`);
+});
+
+/* The silver level, by id. That form starts empty and fills itself from this file, so a criterion
+   missing here is a question nobody answers rather than a question somebody sees. */
+const SILVER = [
+  'achieve_passing', 'contribution_requirements', 'dco', 'governance', 'code_of_conduct',
+  'roles_responsibilities', 'access_continuity', 'bus_factor', 'documentation_roadmap',
+  'documentation_architecture', 'documentation_security', 'documentation_quick_start',
+  'documentation_current', 'documentation_achievements', 'accessibility_best_practices',
+  'internationalization', 'sites_password_security', 'maintenance_or_update', 'report_tracker',
+  'vulnerability_report_credit', 'vulnerability_response_process', 'coding_standards',
+  'coding_standards_enforced', 'build_standard_variables', 'build_preserve_debug',
+  'build_non_recursive', 'build_repeatable', 'installation_common',
+  'installation_standard_variables', 'installation_development_quick', 'external_dependencies',
+  'dependency_monitoring', 'updateable_reused_components', 'interfaces_current',
+  'automated_integration_testing', 'regression_tests_added50', 'test_statement_coverage80',
+  'test_policy_mandated', 'tests_documented_added', 'warnings_strict', 'implement_secure_design',
+  'crypto_weaknesses', 'crypto_algorithm_agility', 'crypto_credential_agility',
+  'crypto_used_network', 'crypto_tls12', 'crypto_certificate_verification',
+  'crypto_verification_private', 'signed_releases', 'version_tags_signed', 'input_validation',
+  'hardening', 'assurance_case', 'static_analysis_common_vulnerabilities', 'dynamic_analysis_unsafe',
+];
+
+test('the silver level is answered in full', () => {
+  assert.equal(SILVER.length, 55);
+  const unanswered = SILVER.filter((id) => !criteria.includes(id));
+  assert.deepEqual(unanswered, [], `silver criteria with no answer here: ${unanswered.join(', ')}`);
+});
+
+test('the silver answers that are not Met are the ones this project cannot write its way out of', () => {
+  /* Every one left is a SHOULD or a SUGGESTED and may stay that way. access_continuity, the MUST,
+     was Unmet until 2026-09-23, while one person could release; it turned Met when the repository
+     moved into an organization both maintainers own. If a MUST shows up here again, silver is
+     gone, and that is not something to fix by editing this list. */
+  const notMet = SILVER.filter((id) => !['Met', 'N/A'].includes(statusOf(id))).sort();
+  assert.deepEqual(notMet, ['bus_factor', 'crypto_algorithm_agility', 'dco', 'version_tags_signed']);
+  assert.match(why('access_continuity'), /GOVERNANCE\.md/,
+    'the continuity answer has to point at where it is explained');
 });
 
 test('the prose and the machine-readable answers cover the same criteria', () => {
@@ -80,13 +128,22 @@ test('the counted claims match what the repository counts', () => {
   /* Two numbers in the answers are measured elsewhere in this repository, and both have gone stale
      in documents before: the number of test files and the coverage the ratchet holds. */
   const files = fs.readdirSync(path.join(ROOT, 'test')).filter((f) => f.endsWith('.test.js')).length;
-  const said = /(\d+) test files on node:test/.exec(why('test'));
+  // a floor, like ARCHITECTURE.md's: an exact number conflicted between every two open pull
+  // requests that each added a test file
+  const said = /more than (\d+) test files on node:test/.exec(why('test'));
   assert.ok(said, 'the test criterion stopped saying how many test files there are');
-  assert.equal(Number(said[1]), files, 'the number of test files in the answer is not the number there are');
+  assert.ok(files > Number(said[1]), `the answer says more than ${said[1]} test files and test/ has ${files}`);
 
   const baseline = JSON.parse(fs.readFileSync(path.join(ROOT, '.github', 'coverage-baseline.json'), 'utf8'));
   const floor = /floor of (\d+)% of lines/.exec(why('test_most'));
   assert.ok(floor, 'the coverage criterion stopped naming the floor the gate holds');
   assert.equal(Number(floor[1]), baseline.global.lines,
     'the floor in the answer is not the floor in .github/coverage-baseline.json');
+
+  /* Silver asks for 80% of statements. Claiming that while holding a floor below it would be a
+     claim nothing enforces, so the answer points at the gate and the gate has to agree. */
+  const refuses = /refuses anything under (\d+)%/.exec(why('test_statement_coverage80'));
+  assert.ok(refuses, 'the statement-coverage answer stopped naming what the gate refuses');
+  assert.equal(Number(refuses[1]), baseline.global.lines, 'the answer and the gate disagree');
+  assert.ok(baseline.global.lines >= 80, 'silver wants 80% of statements; the floor is lower');
 });

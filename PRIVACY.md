@@ -33,6 +33,7 @@ about you beyond what any HTTP request unavoidably reveals to the host it is sen
 | `raw.githubusercontent.com` | The mod catalog (`Dota2PornFxWeb`), the fingerprint map, and the remote config that lets a broken feature be switched off without a release | `src/catalog.js`, `src/fingerprints.js`, `src/remote-config.js` |
 | `github.com` | Update checks and downloading a new version from Releases | `electron-updater`, `main.js`, `src/portable-update.js` |
 | `cdn.dota2modmanager.com` | A copy of the catalog's mod archives and their preview pictures, the pinned toolchain, and since 2.6.5 the app's own updates, so all of that still works when GitHub is unreachable | `src/net.js`, `renderer/ui/media.js`, `src/portable-update.js` |
+| `huggingface.co` | Another copy of the catalog's mod archives, kept by the catalog's author, tried after `cdn.dota2modmanager.com`. It is named in the signed remote config rather than in the app, and a download from it counts only if it matches the hash the catalog publishes | `config/app.json`, `src/remote-config.js`, `src/net.js` |
 | `dota2modmanager.com` | A mirror of the small catalog files, same reason, and the one copy where a file and its signature are always from the same moment | `src/net.js`, `src/catalog.js` |
 | `cdn.jsdelivr.net`, `ghproxy.net`, `gh-proxy.com`, `ghfast.top` | Public GitHub mirrors, tried only when the ones above fail. The list itself is remote config, so a mirror that misbehaves can be dropped without a release | `src/net.js` |
 | `dota2.fandom.com`, `liquipedia.net` | Item and hero pictures for the free-cosmetics screen, when the game's own files do not have one | `src/icons.js` |
@@ -54,6 +55,26 @@ knows who made it. Everything else works without it.
   here for malware to lift later.
 - What is kept in `settings.json` afterwards: your Discord id, username, and the avatar as a small embedded picture rather than a link back to Discord. Signing
   out deletes them.
+
+## Your Discord status
+
+While the app is open, it tells the Discord client on your own computer what to put on your
+profile: the app's name, which tab you have open, how many mods are switched on, when the session
+started, and a button that opens dota2modmanager.com. The app sends that over the local
+connection Discord opens for games (a named pipe on Windows, a socket on Linux), not over the
+internet. Discord then shows it to the people who can see your profile, the way it shows any game
+you play. It is on unless you switch it off in Settings, and switching it off closes the
+connection. The code is `src/discord-presence.js`.
+
+## Preset links
+
+A shared preset link carries the preset after the `#` in the address. Browsers never send that
+part to a server, so the page that opens the link on dota2modmanager.com does not learn which
+mods anybody shared.
+
+## Children
+
+The app is not directed at children under 13.
 
 ## What is stored on your computer
 
@@ -93,11 +114,26 @@ analytics, no tag manager and no cookies. Fonts, styles and scripts are served f
 itself. Cloudflare keeps request logs the way any host does; nothing beyond that is collected,
 and there is nothing on the site that could identify a visitor to us.
 
+## Writing to hello@ or security@
+
+Both addresses are Cloudflare Email Routing, and a letter to either is handled in two steps, in
+this order. It is forwarded whole to the maintainer's own mailbox, so nothing is lost or
+rewritten on the way. Then a line about it is posted to a private channel the maintainer reads,
+so it is seen the same day rather than in a week.
+
+That line carries the headers and nothing else: who it is from, who it was addressed to, the
+subject, the size, and whether SPF and DKIM passed. Not the body, not attachments. The code is
+`tools/email-worker/worker.js` in this repository, which is the whole of it.
+
+The letter itself is in a Gmail mailbox after that, and Google's terms apply to it the way they
+apply to any mail sent to any Gmail address. If that matters for what you are writing, say so and
+ask for another way to continue.
+
 ## Changes
 
 This file changes when the app does. Its history is in this repository, so what it said on any
 date is a matter of record rather than of memory.
 
-Questions: [an issue](https://github.com/TheFleece/dota2-mod-manager/issues), or the
+Questions: [an issue](https://github.com/dota2modmanager/dota2-mod-manager/issues), or the
 [Discord](https://discord.gg/PBvG8D9MxT). Security reports go through [SECURITY.md](SECURITY.md)
 instead, privately.

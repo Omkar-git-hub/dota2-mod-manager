@@ -1,6 +1,6 @@
 /*
  * Dota 2 Mod Manager
- * Copyright (C) 2026 Mykhailo Lynnyk
+ * Copyright (C) 2026 TheFleece
  *
  * Free software under the GNU General Public License, version 3 or later. It comes with no
  * warranty whatsoever. LICENSE holds the terms; NOTICE holds the additional terms this
@@ -32,6 +32,8 @@ const { DiscordPresence } = require('./src/discord-presence');
 const { findDotaGamePath, validateGamePath } = require('./src/steam');
 const { createSchemaService } = require('./src/schema-service');
 const { createRemoteConfig } = require('./src/remote-config');
+// the download chain, so a mirror named in that signed file joins it (electron's own `net` is above)
+const { applyMirrors } = require('./src/net');
 const { createToolchain } = require('./src/toolchain');
 const { createGameIcons } = require('./src/game-icons');
 const { createModPreviews } = require('./src/mod-preview');
@@ -45,6 +47,7 @@ const gamelang = require('./src/gamelang');
 // handed to src/ipc-settings.js by name, the same one it has always been passed under
 const { moveLangFolder } = gamelang;
 const { uninstallFlow } = require('./src/uninstall-window');
+const { isUninstallRun } = require('./src/uninstall-args');
 const { presetsService } = require('./src/presets-service');
 const { registerPresetsIpc } = require('./src/ipc-presets');
 const { registerModsIpc } = require('./src/ipc-mods');
@@ -89,9 +92,9 @@ const IS_PORTABLE = !!process.env.PORTABLE_EXECUTABLE_DIR;
  * An update runs the old uninstaller with --updated and /KEEP_APP_DATA, and the NSIS side
  * already stops there. This is the second lock on the same door: it went wrong once, in front
  * of everybody, and the failure mode is a person being asked whether to delete their mods
- * while they are merely updating. Two cheap checks are worth more than one clever one. */
-const UNINSTALL_IS_UPDATE = process.argv.some((a) => /^(--updated|\/KEEP_APP_DATA|\/S)$/i.test(a));
-const IS_UNINSTALL = process.argv.includes('--uninstall') && !UNINSTALL_IS_UPDATE;
+ * while they are merely updating. Both locks and the reasoning are in src/uninstall-args.js,
+ * which takes a command line so the cases can be tested without being launched. */
+const IS_UNINSTALL = isUninstallRun(process.argv);
 if (IS_PORTABLE) {
   try {
     const beside = path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'Dota 2 Mod Manager Data');
@@ -112,6 +115,8 @@ let langFolder = gamelang.FALLBACK_FOLDER;
 // set when startup moved mods into that folder from wherever they were; the renderer
 // picks it up once with settings:get and tells the user what happened
 let langMigration = null;
+// how many mods the one-time layout of the load order moved (installer.migrateSlotZones)
+let slotMigration = null;
 // fonts and cursors Steam's file check took back and the app could not put back on its own
 // (the archive they came in is no longer cached), reported by mods:list
 let verifyStuck = [];
@@ -153,7 +158,9 @@ function clampZoom(v) {
 function windowFit() {
   const fallback = { width: 1360, height: 860, minWidth: 1020, minHeight: 640 };
   try {
-    const { width: aw, height: ah } = screen.getPrimaryDisplay().workAreaSize;
+    // dev: MM_WORKAREA=1366x728 stands in for a smaller screen (tools/sim profiles)
+    const fake = /^(\d+)x(\d+)$/.exec(process.env.MM_WORKAREA || '');
+    const { width: aw, height: ah } = fake ? { width: +fake[1], height: +fake[2] } : screen.getPrimaryDisplay().workAreaSize;
     if (!(aw > 0 && ah > 0)) return fallback;
     return {
       width: Math.min(fallback.width, aw),
@@ -378,6 +385,8 @@ function createWindow() {
     });
   }
 
+  // dev: MM_SIM=<scenarios> drives the window through tools/sim (tools/sim/driver.js attach)
+  if (process.env.MM_SIM) require('./tools/sim/driver').attach(win);
   // dev: MM_REC=<dir> films the app running a scripted scene, one webm per scene. The site
   // needs a clip of the app working and will need a fresh one every release, so it is a
   // script rather than something recorded by hand. MM_SCENE picks scenes by name.
@@ -461,14 +470,17 @@ app.whenReady().then(async () => {
     publishedHash: (categoryId, file) => catalog.publishedHash(categoryId, file),
   });
   presence = new DiscordPresence({ clientId: discordAuth.CLIENT_ID, onDiag: diag });
-  schemaService = createSchemaService({ settings, library, installer, userDataDir: userData });
+  schemaService = createSchemaService({ settings, library, installer, userDataDir: userData, log: diag });
   ({ isCursorRecord, disableOtherCursors, disableOtherCosmetics, applyMasterToCursors, reconcileCursors }
     = createCursors({ installer, library, settings }));
   ({ adoptImportedFiles, registerImportResults } = createAdopt({ installer, library, schemaService }));
   // what the app can be told after it shipped: a feature switched off with a reason, and
   // dated notices. Fire-and-forget, and everything it governs stays on until it says otherwise
   remoteConfig = createRemoteConfig({ userDataDir: userData, appVersion: () => app.getVersion(), log: diag });
-  remoteConfig.refresh();
+  /* The cached file is read before the fetch answers, so a second copy of the catalog arranged
+     after this build shipped is in the chain from the first download rather than the second run. */
+  applyMirrors(remoteConfig.mirrors());
+  remoteConfig.refresh().then(() => applyMirrors(remoteConfig.mirrors()));
   // pictures for the cosmetics picker come through Electron's network stack (see src/icons.js)
   icons = new Icons(userData, net.fetch);
   // ...unless the Source 2 toolchain is here, in which case they come out of the game itself
@@ -516,6 +528,26 @@ app.whenReady().then(async () => {
     installer.migrateLegacyPriorityPaks(library);
   } catch (e) {
     diag('legacy pak migration skipped: ' + e.message);
+  }
+
+  // The load order in two parts, once: the categories that load first in 02-29, the rest from
+  // 30 (installer.js, PRIORITY_SLOTS). Renames files the game holds open while it runs, so it
+  // waits for a start with Dota closed; a failure puts everything back and tries next time.
+  if (settings.get('slotZones') !== 1) {
+    try {
+      if (await dotaIsRunning()) {
+        diag('load order layout: Dota is running, trying on the next start');
+      } else {
+        const r = installer.migrateSlotZones(library);
+        settings.set('slotZones', 1);
+        if (r && r.moved) {
+          slotMigration = { moved: r.moved };
+          diag(`load order layout: ${r.moved} mod(s) moved into their part of the order`);
+        }
+      }
+    } catch (e) {
+      diag('load order layout skipped: ' + e.message);
+    }
   }
 
   // fold imports that predate single-file merging (pakNN_dir.vpk + pakNN_000.vpk)
@@ -623,6 +655,8 @@ app.whenReady().then(async () => {
   patchWatcher = createPatchWatcher({
     getGamePath: () => settings.get('dotaGamePath'),
     onPatch: (evt) => repairAfterPatch(evt),
+    // safe mode off: our search path belongs in the game, so Steam's file check taking it out is a patch too
+    expectsPatch: () => settings.get('schemaPatch') === true,
     log: diag,
   });
   patchWatcher.start(settings.get('gameStamp'));
@@ -830,7 +864,7 @@ function presenceActivity() {
   return {
     details: t(PRESENCE_VIEWS[presenceView] || PRESENCE_VIEWS.catalog),
     state,
-    buttons: [{ label: t('Скачать Mod Manager'), url: 'https://thefleece.github.io/dota2-mod-manager/' }],
+    buttons: [{ label: t('Скачать Mod Manager'), url: 'https://dota2modmanager.com/' }],
   };
 }
 
@@ -1017,6 +1051,7 @@ function registerIpc() {
     validateGamePath,
     langFolder: () => langFolder,
     takeMigration: () => { const m = langMigration; langMigration = null; return m; },
+    takeSlotMigration: () => { const m = slotMigration; slotMigration = null; return m; },
   });
 
   // ----- settings ----- (src/ipc-settings.js)

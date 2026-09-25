@@ -103,13 +103,15 @@ test('every file a document names in backticks is a file that is there', () => {
   assert.deepEqual([...new Set(missing)], [], [...new Set(missing)].join('; '));
 });
 
-test('the number of test files ARCHITECTURE.md gives is the number there are', () => {
-  /* It said 45 on 2026-09-15, when there were 58. Thirteen files had arrived since the sentence
-     was written, and nobody rereads a count to check it. */
-  const m = read('ARCHITECTURE.md').match(/no framework, (\d+) files/);
+test('there are more test files than ARCHITECTURE.md says there are at least', () => {
+  /* It said 45 on 2026-09-15, when there were 58: nobody rereads a count to check it. An exact
+     count was tried next, and every pull request that added a test file changed the number, so
+     two open at once conflicted on that line and the second failed in the merge queue on a count
+     the first had moved. A floor, as DECISIONS.md already has: raise it now and then. */
+  const m = read('ARCHITECTURE.md').match(/no framework, more than (\d+) files/);
   assert.ok(m, 'ARCHITECTURE.md no longer says how many test files there are');
   const real = fs.readdirSync(path.join(ROOT, 'test')).filter((f) => f.endsWith('.test.js')).length;
-  assert.equal(Number(m[1]), real, `ARCHITECTURE.md says ${m[1]} test files and test/ has ${real}: change the number`);
+  assert.ok(real > Number(m[1]), `ARCHITECTURE.md says more than ${m[1]} test files and test/ has ${real}`);
 });
 
 test('every relative link in a document points at something that exists', () => {
@@ -157,3 +159,19 @@ test('the Electron version the documents name is the one package.json installs',
   }
   assert.deepEqual([...new Set(wrong)], [], [...new Set(wrong)].join('; '));
 });
+
+test('the people who can merge are the same list in both places', () => {
+  /* Rights and the record of them drift apart in the direction that matters: somebody is added on
+     GitHub and the page saying who can merge still names one person. CODEOWNERS is what GitHub
+     acts on, GOVERNANCE.md is what a reader is told, and neither is allowed to be alone. */
+  const owners = new Set([...read('.github/CODEOWNERS').matchAll(/@([A-Za-z0-9-]+)/g)].map((m) => m[1]));
+  const table = read('GOVERNANCE.md').split('## Who can merge')[1] || '';
+  const named = new Set([...table.split('## Continuity')[0].matchAll(/\[@([A-Za-z0-9-]+)\]/g)].map((m) => m[1]));
+
+  assert.ok(owners.size > 0, '.github/CODEOWNERS names nobody');
+  assert.deepEqual([...owners].filter((h) => !named.has(h)), [],
+    'in CODEOWNERS and not in the GOVERNANCE.md table');
+  assert.deepEqual([...named].filter((h) => !owners.has(h)), [],
+    'in the GOVERNANCE.md table and not in CODEOWNERS');
+});
+

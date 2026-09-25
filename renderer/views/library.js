@@ -10,12 +10,13 @@
  * of in the shared store: no other screen has ever read them.
  */
 import { $ } from '../core/dom.js';
-import { COSMETIC_PREFIX, cosmeticMeta } from '../core/constants.js';
+import { COSMETIC_PREFIX } from '../core/constants.js';
 import { state } from '../core/store.js';
 import { registerView, render, pane } from '../core/router.js';
 import { matchLabel, applyInstalled, refreshInstalledIndex } from '../core/installed.js';
 import { catName, catIcon } from '../core/categories.js';
-import { isCursorRec, isFontRec, isCosmeticRec, isPackableRec } from '../core/records.js';
+import { isCursorRec, isFontRec, isCosmeticRec, isPackableRec, effectNames } from '../core/records.js';
+import { minifyNotice } from '../core/minify-notice.js';
 import { esc, fmtMB, plural } from '../ui/format.js';
 import { toast } from '../ui/toast.js';
 import { confirmDialog, promptDialog } from '../ui/dialog.js';
@@ -37,7 +38,6 @@ let libRecords = [];           // records as of the last draw
 let libExternal = [];          // foreign files found in the mods folder
 let libStuck = [];             // fonts/cursors Steam took back that need downloading again
 let libRepair = { state: 'idle' }; // what the app did about the last Dota patch
-let slotCount = 0;             // mods occupying a numbered pak, so the order arrows know the ends
 
 registerView('library', () => renderLibrary());
 
@@ -130,11 +130,11 @@ function packMenuItems(rec) {
     langDir && { label: L`Сохранить одним файлом`, icon: 'save', onPick: () => exportRecord(rec.id) },
     ordered && { separator: true },
     ordered && {
-      label: L`Загружать раньше`, icon: 'keyboard_arrow_up', disabled: rec.slotIndex === 0,
+      label: L`Загружать раньше`, icon: 'keyboard_arrow_up', disabled: rec.zoneFirst,
       onPick: () => moveRecord(rec.id, -1),
     },
     ordered && {
-      label: L`Загружать позже`, icon: 'keyboard_arrow_down', disabled: rec.slotIndex === slotCount - 1,
+      label: L`Загружать позже`, icon: 'keyboard_arrow_down', disabled: rec.zoneLast,
       onPick: () => moveRecord(rec.id, 1),
     },
     { separator: true },
@@ -201,13 +201,13 @@ function normalRowHtml(rec, i, masterOff) {
   // own preview, else the catalog's for the same mod, else a recognised hero's own portrait
   // (see libThumbHtml); a cosmetic pick's picture is fetched lazily by the same loader the
   // catalog cards use
-  const catLabel = cosmetic ? catName(COSMETIC_PREFIX + rec.slot) : catName(rec.categoryId);
+  const catLabel = cosmetic ? catName(COSMETIC_PREFIX + rec.slot) + effectNames(rec) : catName(rec.categoryId);
   return `
     <div class="lib-row ${rec.enabled ? '' : 'disabled'} ${selected ? 'selected' : ''}" data-row="${esc(rec.id)}" ${rec.slotIndex != null ? `data-order="${rec.slotIndex}"` : ''} style="--i:${Math.min(i, 20)}">
       ${gripHtml(rec)}
       ${selectable ? `<input type="checkbox" class="lib-check" data-check="${esc(rec.id)}" ${selected ? 'checked' : ''} aria-label="${L`Выбрать мод`}">` : '<span class="lib-check-gap"></span>'}
       ${cosmetic
-        ? `<div class="lib-thumb" data-name="${esc(rec.name)}"><span class="ms thumb-glyph">${cosmeticMeta(rec.slot).icon}</span></div>`
+        ? `<div class="lib-thumb" data-name="${esc(rec.name)}"><span class="ms thumb-glyph">${catIcon(COSMETIC_PREFIX + rec.slot)}</span></div>`
         : libThumbHtml(rec, 'lib-thumb')}
       <div class="lib-info">
         <div class="lib-name">${esc(rec.name)}${rec.styleLabel ? ` <span class="lib-style-label">(${esc(rec.styleLabel)})</span>` : ''}${rec.match ? ` <span class="lib-tag match">${esc(matchLabel(rec.match))}</span>` : rec.info ? ` <span class="lib-tag">${esc(rec.info)}</span>` : ''}${schemaTagHtml(rec)}${coveredTagHtml(rec)}</div>
@@ -235,11 +235,11 @@ function rowMenuItems(rec) {
   const ordered = rec.slotIndex != null;
   return [
     ordered && {
-      label: L`Загружать раньше`, icon: 'keyboard_arrow_up', disabled: rec.slotIndex === 0,
+      label: L`Загружать раньше`, icon: 'keyboard_arrow_up', disabled: rec.zoneFirst,
       onPick: () => moveRecord(rec.id, -1),
     },
     ordered && {
-      label: L`Загружать позже`, icon: 'keyboard_arrow_down', disabled: rec.slotIndex === slotCount - 1,
+      label: L`Загружать позже`, icon: 'keyboard_arrow_down', disabled: rec.zoneLast,
       onPick: () => moveRecord(rec.id, 1),
     },
     ordered && { separator: true },
@@ -819,54 +819,44 @@ function prelaunchBannerHtml(m) {
  * known, and the fix that belongs to it. See src/minify.js and src/gamelang.js.
  */
 function minifyBannerHtml(m, ourMods = 0) {
-  if (!m || !m.present) return '';
+  const note = minifyNotice(m, ourMods);
+  if (!note) return '';
   const one = L`Dota монтирует ровно одну языковую папку.`;
-  // installed, but building into a folder this version of the game cannot be pointed at
-  if (!m.mounts) {
-    return `
-      <div class="banner info">
-        <span class="ms">handshake</span>
-        <div class="banner-body">
-          <b>${L`Рядом установлен Minify`}</b>${L`. Он собирает в dota_${m.folder}, а ${one} Папку с таким именем игра не читает — его моды сейчас не грузятся, и на наши это не влияет. В свежих версиях Minify это решено переходом на голландский.`}
-        </div>
-      </div>`;
+  let body;
+  switch (note.case) {
+    // installed, but building into a folder this version of the game cannot be pointed at
+    case 'unmountable':
+      body = `<b>${L`Рядом установлен Minify`}</b>${L`. Он собирает в dota_${m.folder}, а ${one} Папку с таким именем игра не читает — его моды сейчас не грузятся, и на наши это не влияет. В свежих версиях Minify это решено переходом на голландский.`}`;
+      break;
+    // it holds the folder the game reads, so ours are the ones sitting dark
+    case 'minify-live':
+      body = `<b>${L`Игра читает моды Minify из dota_${m.mounted}`}</b>${L`, а наши ${ourMods} лежат в dota_${m.ourFolder} и сейчас не грузятся. ${one} Какую именно — решает параметр запуска Dota, и сейчас он указывает на папку Minify.`}`;
+      break;
+    case 'shared':
+      body = `<b>${L`Minify рядом, и обе программы работают`}</b>${L`: моды в одной папке dota_${m.mounted}, а слоты ${m.reservedLabel || 'pak65-67'}, куда он пишет, мы не занимаем.`}`;
+      break;
+    // the game reads our folder, whether or not anything of ours is in it yet
+    case 'ours-read':
+      body = `<b>${L`Рядом установлен Minify`}</b>${L`. Игра читает dota_${m.ourFolder}, куда ставятся наши моды. Minify собирает в dota_${m.folder}, поэтому его моды сейчас не грузятся. ${one}`}`;
+      break;
+    // the game reads Minify's folder, and there is nothing in it
+    case 'minify-empty':
+      body = `<b>${L`Игра читает папку Minify dota_${m.mounted}, а она пуста`}</b>${ourMods > 0
+        ? L`. Наши ${ourMods} лежат в dota_${m.ourFolder} и сейчас не грузятся. ${one} Какую читать, решает параметр запуска Dota.`
+        : L`. Наши моды ставятся в dota_${m.ourFolder}. ${one} Какую читать, решает параметр запуска Dota.`}`;
+      break;
+    // the game reads a folder neither of us filled
+    case 'elsewhere':
+      body = `<b>${L`Игра читает dota_${m.mounted}, а там нет ни наших модов, ни модов Minify`}</b>${L`. Наши ставятся в dota_${m.ourFolder}, Minify собирает в dota_${m.folder}. ${one}`}`;
+      break;
+    // which folder the game reads is not known yet: only what is
+    default:
+      body = `<b>${L`Рядом установлен Minify`}</b>${L`. Он собирает в dota_${m.folder}, наши моды ставятся в dota_${m.ourFolder}. ${one}`}`;
   }
-  // it holds the folder the game reads, so ours are the ones sitting dark
-  if (m.live === 'minify') {
-    return `
-      <div class="banner warn">
-        <span class="ms">warning</span>
-        <div class="banner-body">
-          <b>${L`Игра читает моды Minify из dota_${m.mounted}`}</b>${L`, а наши ${ourMods} лежат в dota_${m.ourFolder} и сейчас не грузятся. ${one} Какую именно — решает параметр запуска Dota, и сейчас он указывает на папку Minify.`}
-        </div>
-      </div>`;
-  }
-  if (m.live === 'both' || m.sharing) {
-    return `
-      <div class="banner info">
-        <span class="ms">handshake</span>
-        <div class="banner-body">
-          <b>${L`Minify рядом, и обе программы работают`}</b>${L`: моды в одной папке dota_${m.mounted}, а слоты ${m.reservedLabel || 'pak65-67'}, куда он пишет, мы не занимаем.`}
-        </div>
-      </div>`;
-  }
-  // the game reads a folder neither of us filled
-  if (m.live === 'neither') {
-    return `
-      <div class="banner warn">
-        <span class="ms">warning</span>
-        <div class="banner-body">
-          <b>${L`Игра читает папку dota_${m.mounted}, а модов там нет`}</b>${L`. Наши лежат в dota_${m.ourFolder}, Minify собирает в dota_${m.folder}. ${one}`}
-        </div>
-      </div>`;
-  }
-  // ours are the ones loading; its mods are the ones sitting dark
   return `
-    <div class="banner info">
-      <span class="ms">handshake</span>
-      <div class="banner-body">
-        <b>${L`Рядом установлен Minify`}</b>${L`. Игра читает нашу папку dota_${m.ourFolder}, а он собирает в dota_${m.folder} — его моды сейчас не грузятся. ${one}`}
-      </div>
+    <div class="banner ${note.kind}">
+      <span class="ms">${note.kind === 'warn' ? 'warning' : 'handshake'}</span>
+      <div class="banner-body">${body}</div>
     </div>`;
 }
 
@@ -910,8 +900,9 @@ async function renderLibrary() {
   // load order: the game mounts pakNN in numeric order, so that IS the priority. The list
   // is shown in it, and each row's arrows step through it (see orderBtnsHtml).
   const ordered = installedAll.filter((r) => slotOf(r) != null).sort((a, b) => slotOf(a) - slotOf(b));
-  slotCount = ordered.length;
   ordered.forEach((r, i) => { r.slot = slotOf(r); r.slotIndex = i; });
+  // the arrows stop at the ends of a mod's own part of the order (src/slot-zones.js)
+  ordered.forEach((r, i) => { r.zoneFirst = ordered[i - 1]?.zone !== r.zone; r.zoneLast = ordered[i + 1]?.zone !== r.zone; });
 
   await paint(() => { viewRoot.innerHTML = `
     <div class="view-header"><h1 class="view-title">${L`Мои моды`}</h1></div>

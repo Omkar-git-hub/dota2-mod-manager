@@ -17,6 +17,8 @@ export const ui = {
 
     'nav.docs': 'Docs',
     'nav.facts': 'Facts',
+    'nav.transparency': 'Transparency',
+    'nav.status': 'Status',
     'nav.heroes': 'Mods by hero',
     'nav.catalog': 'Catalog',
     'nav.faq': 'FAQ',
@@ -50,6 +52,8 @@ export const ui = {
 
     'nav.docs': 'Документация',
     'nav.facts': 'Цифры и факты',
+    'nav.transparency': 'Прозрачность',
+    'nav.status': 'Статус',
     'nav.heroes': 'Моды по героям',
     'nav.catalog': 'Каталог',
     'nav.faq': 'Вопросы',

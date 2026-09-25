@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import Legal from '../components/Legal.astro';
+import { fromMarkdown } from '../lib/legal';
+import * as source from '../../../PRIVACY.md';
+
+const doc = fromMarkdown(await source.compiledContent(), 'PRIVACY.md');
+---
+
+<Base title={doc.title} description={doc.description} path="/privacy/">
+  <Legal doc={doc} />
+</Base>

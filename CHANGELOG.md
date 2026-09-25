@@ -2,6 +2,148 @@
 
 What changed in each release. The app updates itself, so you get all of this without reinstalling.
 
+## 2.8.0-beta.1
+
+A beta for the testers on the list. Everything in it reaches everybody with 2.8.0.
+
+### Items: a hero's default items in the look of any of its wearables
+
+Cosmetics → Items lists every hero. Open one, pick a slot and choose any of that hero's
+wearables: the default item in that slot takes its look. Only you see it, and no mod file
+changes. You can add particle effects on top, one or several: fire, lightnings, frostbloom, snow,
+bubbles, sand storm and ghost. Frostbloom and snow do not hold on every model.
+
+Nothing reaches the game until you press Equip. The bar along the bottom of the window shows what
+goes on, and its button reads Equip, Save effects or Back to default. Each item you put on is a
+row in My mods with its effects named, and turns off like any mod.
+
+### Whole sets in one press
+
+A hero's window opens with Sets. Choose a set to see its pieces by slot, and Equip the whole set
+puts them all on at once, each as its own row in My mods. A set comes without effects: open a
+piece to add them. A piece the builder leaves alone, such as an arcana, stays in the window,
+dimmed, with the reason.
+
+### Heroes opens on a grid of heroes
+
+Heroes in the catalog used to be 463 mod cards in one run. It now opens on one tile per hero,
+with the hero's portrait, how many mods it has and whether you have one installed. Press a hero
+to see its mods. The switch in the toolbar brings the list back.
+
+### Shaders, trees and river load first
+
+Slots 02-29 now belong to shaders, trees, river, hero effects, ranged attacks, hero items and
+optimization, and every other mod starts at 30. Before, moving a hero mod above a shader could
+trade their slots. Moving and dragging now keep a mod inside its own part, and a mod you import
+and then link to the catalog moves to the part its category belongs in. If your order comes from
+an earlier version, the app lays it out once at start, while Dota is closed: it keeps your order
+inside each part and tells you the order changed.
+
+### Every author of a mod
+
+A mod's window credits everybody the catalog names on it: its authors, the people who reworked
+it and the people who sent it in, each linked to their page. Before, it named the first author,
+and the other two links opened a page that does not exist.
+
+### Fixes
+
+- Checking the game's files in Steam while the app was open turned your mods off until a
+  restart. The app now notices the check and puts its patch back.
+- A tab pressed right after switching screens could do nothing, and a search typed on another
+  screen opened the home screen with no results.
+- After switching to English, the sign-in button and the mods switch stayed in Russian until a
+  restart.
+- The download bar stayed on screen after Source 2 Viewer finished downloading, and froze where a
+  failed download stopped.
+- Next to Minify, My mods showed a yellow warning that contradicted itself even when nothing was
+  wrong. It now names the folder the game reads, and warns only when your mods are the ones not
+  loading.
+
+### Thanks
+
+h6rd wrote the item builder, and develops it further with TheFleece.
+
+## 2.7.1
+
+### The project moved to github.com/dota2modmanager
+
+The repository now belongs to an organization with two maintainers, and every change is read by
+the one who did not write it before it ships. This version looks for updates and for the
+project's notices at the new address, and its GitHub link goes there too. Older versions keep
+working: GitHub forwards the old address, so there is nothing for you to do.
+
+The Download button in your Discord status now opens dota2modmanager.com instead of the old page
+on GitHub.
+
+### Your Windows user name stays out of the diagnostic report
+
+The report listed the folders it looked at by their full path, and a path inside your home folder
+carries your Windows user name. That part is now written as `%USERPROFILE%` (`~` on Linux), so
+a report you paste into Discord shows the folder and not who you are.
+
+### Electron 44.4.3
+
+The engine the app runs on moves from 44.3.0 to 44.4.3, with the fixes Electron shipped in
+between.
+
+### Thanks
+
+Omkar Nikam wrote the diagnostic report change. It is the second pull request he has sent here.
+
+## 2.7.0
+
+### A beta channel, for the people who asked to be first
+
+A few accounts now get builds before everybody else. If yours is one of them, Settings has a
+switch under Discord; if it is not, there is nothing there and nothing to miss. Signing out of
+Discord gives up the beta with it.
+
+The list is held in a signed file the app reads on its own, so being added or taken off it does
+not wait for an update, and it holds a fingerprint of a Discord account rather than the account.
+
+Staged rollout was dropped here for a good reason: an urgent fix has to reach everybody at once.
+This is the other half of that argument, a few people who know they are running what has not been
+released yet.
+
+### The Download button works again in the portable build
+
+A portable copy that found an update answered "no update" when you pressed Download, and has
+done since 2.3.0. It read which version to fetch once at start-up, before any check had run, so
+the answer was always empty. Installed copies replace themselves and were never affected.
+
+### Fonts and cursors stop coming back after you remove them
+
+Since 2.0.0 the app put back any font or cursor that Steam's file check had replaced, and it
+decided what to put back by comparing files. A mod that ships some of Valve's files unchanged
+looked identical at once: one install logged the same cursor set as "restored after verify" 29
+times in August, and removing such a mod could leave its files behind as if they were the game's.
+
+Every font and cursor the app writes is now recorded by its hash. A file holding what the app
+wrote is the app's file, and it is no longer mistaken for the game's. A copy installed before this
+reports the old way once more, and putting it back writes the record.
+
+### A cosmetic pick, called what it actually is
+
+The window and the site used to say "free cosmetics". That was never quite true, and it hid the
+part worth knowing: the app takes the standard item your account already has and draws it with the
+look of another one, in its own copy of the game's item table. Nothing is bought, nothing enters
+your inventory, and only you see it. Every text now says that instead.
+
+### Every release is scanned, and the result is published
+
+Two false positives reached people before anybody here knew there was something to answer. Each
+release is now looked up on VirusTotal by the checksum it already carries, and the verdict goes
+into the release notes as a table with a link for every file, whatever it says.
+
+### Smaller things
+
+- The app can be told about another place to download mods from without shipping an update, which
+  matters on the day GitHub is unreachable.
+- A damaged VPK tree or archive is refused in this app's own words rather than crashing or
+  reaching you in a library's.
+- A language folder that has to be created is created in one step, so a slow disk cannot leave it
+  half made.
+
 ## 2.6.12
 
 ### A technical release

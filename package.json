@@ -1,7 +1,7 @@
 {
   "name": "dota2-mod-manager",
   "productName": "Dota 2 Mod Manager",
-  "version": "2.6.12",
+  "version": "2.8.0-beta.1",
   "description": "Desktop mod manager for Dota 2 — browse, install, toggle and preset 1100+ cosmetic mods from the D2PFX catalog",
   "main": "main.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "sandbox:status": "node tools/sandbox.js status",
     "start:sandbox": "electron . --user-data-dir=sandbox/userdata",
     "e2e": "node tools/e2e.mjs",
+    "sim": "node tools/sim/run.mjs",
     "fuzz": "node tools/fuzz-parsers.mjs",
     "mutate": "node tools/mutate.mjs",
     "rollback": "node tools/rollback.mjs",
@@ -28,15 +29,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TheFleece/dota2-mod-manager.git"
+    "url": "https://github.com/dota2modmanager/dota2-mod-manager.git"
   },
-  "author": "Mykhailo Lynnyk",
+  "author": "TheFleece",
   "license": "GPL-3.0-or-later",
-  "homepage": "https://github.com/TheFleece/dota2-mod-manager",
+  "homepage": "https://github.com/dota2modmanager/dota2-mod-manager",
   "devDependencies": {
-    "electron": "^44.3.0",
+    "electron": "^44.4.3",
     "electron-builder": "^26.15.3",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
+    "fast-check": "^4.10.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
@@ -107,7 +109,7 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "TheFleece",
+      "owner": "dota2modmanager",
       "repo": "dota2-mod-manager",
       "releaseType": "release"
     }

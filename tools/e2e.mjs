@@ -54,7 +54,7 @@ const OWNERSHIP = 'dota2modmanager.json';
 const appAt = process.argv.indexOf('--app');
 const APP = appAt > 0 && process.argv[appAt + 1] ? path.resolve(process.argv[appAt + 1]) : null;
 
-export const MOD = { categoryId: 'heroes', name: 'Brewmaster E2E Fixture', file: 'Brewmaster E2E Fixture.zip' };
+export const MOD = { categoryId: 'heroes', hero: 'Brewmaster', name: 'Brewmaster E2E Fixture', file: 'Brewmaster E2E Fixture.zip' };
 
 /** A zip holding one pak01_dir.vpk with one small file in it: the shape most catalog mods have. */
 export function fixtureArchive() {
@@ -143,6 +143,10 @@ export const EVAL_INSTALL = `
   ${HELPERS}
   await sleep(1000);
   if (!step('no dialog stands in front of the catalog', !dialogs().length, dialogs().join(' | '))) return out;
+  // Heroes opens on a grid of heroes (renderer/views/hero-grid.js): the mod is behind its hero
+  const tile = await until(() => document.querySelector('.hero-tile[data-hero=' + JSON.stringify(${JSON.stringify(MOD.hero)}) + ']'), 20000);
+  if (!step('its hero is on the heroes grid', tile, 'tiles on screen: ' + document.querySelectorAll('.hero-tile').length)) return out;
+  tile.click();
   const card = await until(() => [...document.querySelectorAll('.grid .card')].find((c) => c.textContent.includes(NAME)), 20000);
   if (!step('the fixture mod is in the catalog', card, 'cards on screen: ' + document.querySelectorAll('.grid .card').length)) return out;
   card.click();
@@ -181,6 +185,38 @@ export const EVAL_REMOVE = `
   return out;
 `;
 
+/* Runs in the removal window, which is a different window with a different preload.
+ *
+ * The window is opened by the uninstaller, so nothing a player does reaches it and no other
+ * check here comes near it. It opened once where it should not have - in the middle of an
+ * update, with the destructive boxes ticked, for everybody who updated to 2.6.1 - and what
+ * made that frightening rather than merely wrong was the ticks. So this reads the boxes. */
+export const EVAL_UNINSTALL_WINDOW = `
+  ${HELPERS}
+  await sleep(500);
+  const opts = [...document.querySelectorAll('.uninstall-opt input[type=checkbox]')];
+  if (!step('the removal window is up, with its questions', opts.length >= 2, 'checkboxes on screen: ' + opts.length)) return out;
+  const box = (id) => document.getElementById(id);
+  step('deleting the mods is not ticked for the person', box('optMods') && !box('optMods').checked, box('optMods') ? 'it was ticked' : 'the question is missing');
+  step('deleting the app data is not ticked for the person', box('optData') && !box('optData').checked, box('optData') ? 'it was ticked' : 'the question is missing');
+  if (box('optRevert')) step('putting the game back is ticked, because nothing else can do it later', box('optRevert').checked, 'it was not ticked');
+  // the numbers come from the main process reading the real library and the real folder,
+  // so a window that draws but is told nothing shows up here rather than looking fine
+  const notes = [...document.querySelectorAll('.uninstall-opt small')].map((n) => n.textContent).join(' | ');
+  step('it says how much it is talking about', /[0-9]/.test(notes), notes || '(no notes drawn)');
+  return out;
+`;
+
+/* Runs in whatever window an update's command line brings up, which must be the ordinary one. */
+export const EVAL_NOT_THE_REMOVAL_WINDOW = `
+  ${HELPERS}
+  await sleep(500);
+  const removal = document.querySelectorAll('.uninstall-opt').length;
+  step('an update does not get the removal window', removal === 0, 'the removal window came up with ' + removal + ' questions');
+  step('it gets the ordinary window', Boolean(document.querySelector('[data-view]')), 'neither window is on screen');
+  return out;
+`;
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function stop(child) {
@@ -194,11 +230,11 @@ function stop(child) {
 }
 
 /** One launch of the app with the screenshot harness, returning what the window script returned. */
-async function launch(label, env, timeoutMs = 180000) {
+async function launch(label, env, timeoutMs = 180000, extraArgs = []) {
   const shot = path.join(OUT, `${label}.png`);
   for (const f of [shot, `${shot}.eval.json`, `${shot}.err.txt`]) fs.rmSync(f, { force: true });
   const log = fs.openSync(path.join(OUT, `${label}.electron.log`), 'w');
-  const args = [`--user-data-dir=${USERDATA}`];
+  const args = [`--user-data-dir=${USERDATA}`, ...extraArgs];
   if (process.platform === 'linux') args.push('--no-sandbox');
   const child = spawn(APP || require('electron'), APP ? args : ['.', ...args], {
     cwd: root,
@@ -278,6 +314,23 @@ if (invokedDirectly) {
     }
   }
 
+  /* The removal window, which nothing else here reaches.
+     Last, because it must not disturb the run above it, and because by now the language folder
+     is back to what it was: if merely opening this window touches the game, that shows. */
+  if (passed) {
+    // the command line electron-builder uses when it replaces a version, flags and all
+    const update = await launch('3-update', { MM_EVAL: EVAL_NOT_THE_REMOVAL_WINDOW }, 180000,
+      ['--uninstall', '/S', '/KEEP_APP_DATA', '--updated']);
+    passed = windowSteps(update, 'an update') && passed;
+
+    const removal = await launch('4-uninstall', { MM_EVAL: EVAL_UNINSTALL_WINDOW }, 180000, ['--uninstall']);
+    passed = windowSteps(removal, 'the removal window') && passed;
+
+    const after = difference(before, snapshot(LANG_DIR));
+    passed = check('opening the removal window changed nothing in the game folder',
+      !after.added.length && !after.removed.length && !after.changed.length, JSON.stringify(after)) && passed;
+  }
+
   const appLog = path.join(USERDATA, 'logs', 'app.log');
   const logText = readIfThere(appLog);
   const unresolved = (logText || '').split('\n').filter((l) => /unhandledrejection|is not defined|is not a function/.test(l));
@@ -287,6 +340,6 @@ if (invokedDirectly) {
   report.passed = passed;
   fs.writeFileSync(path.join(OUT, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
   if (!keep) execFileSync(node, ['tools/sandbox.js', 'reset'], { cwd: root, stdio: 'ignore' });
-  console.log(passed ? 'end-to-end: a mod was installed, switched off and on, and removed through the window' : 'end-to-end: FAILED, see e2e-output/');
+  console.log(passed ? 'end-to-end: a mod was installed, switched off and on, and removed through the window, and the removal window opens only for a removal' : 'end-to-end: FAILED, see e2e-output/');
   process.exitCode = passed ? 0 : 1;
 }

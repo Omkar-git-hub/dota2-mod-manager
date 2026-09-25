@@ -41,6 +41,13 @@ const mustSay = [
   ['llms.txt', version],
   ['index.html', `"softwareVersion":"${version}"`],
   ['ru/index.html', `"softwareVersion":"${version}"`],
+  /* The privacy policy and the terms, which the Discord application links to. They are read out
+     of docs/ at build time (src/lib/legal.ts), so a page here that lost its heading means that
+     file changed shape. */
+  ['privacy/index.html', '<h1>Privacy</h1>'],
+  ['ru/privacy/index.html', '<h1>Конфиденциальность</h1>'],
+  ['terms/index.html', '<h1>Terms of Service</h1>'],
+  ['ru/terms/index.html', '<h1>Условия использования</h1>'],
 ];
 for (const [rel, text] of mustSay) {
   const body = read(rel);

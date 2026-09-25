@@ -62,7 +62,10 @@ or turning mods back on would resurrect the ones you had deliberately switched o
    own, so it is treated as a name and can never become a path.
 2. Download through `src/net.js`, which tries mirrors when `raw.githubusercontent.com` is
    unreachable, and keeps the archive in the download cache keyed by that name. A second install of
-   the same mod never leaves the disk.
+   the same mod never leaves the disk. The built-in chain can be extended after a build has
+   shipped: the signed `config/app.json` may name other places the archives are kept, which join
+   the chain after our own copy and before the proxies. None of them is ever the origin, so what a
+   host named there can do is serve a download or fail its checksum.
 3. Open the archive through `src/safe-zip.js`, the single door every foreign zip comes through.
 4. Compare its contents against what is already installed and report conflicts (see below).
 5. Pick a free slot: low ones for categories that must load early, otherwise the first free number
@@ -292,7 +295,7 @@ build next to the old one instead and says so (`src/portable-update.js`).
 answer whether a line will throw the first time somebody reaches it. It runs before the suite,
 because when it fails there is nothing below it worth reading.
 
-`npm test` is plain `node:test`, no framework, 80 files, run on every push and every pull request
+`npm test` is plain `node:test`, no framework, more than 80 files, run on every push and every pull request
 on Linux and on Windows. Five of them hold this project against itself rather than testing a
 module: the IPC contract (every channel has a handler, every handler runs, and `main.js` passes
 what each module unpacks), the renderer's imports, the release contract, `DECISIONS.md`
@@ -309,6 +312,27 @@ a fixture archive into the app's caches, starts the app twice, and clicks: insta
 restart, switch on, remove. After each launch it compares the language folder on disk with what
 should be there. No network is involved. `.github/workflows/e2e.yml` runs it on Linux and on
 Windows, and both jobs have to pass before a pull request merges and before a release builds.
+
+`tools/sim/` runs the app on simulated machines. A machine is a screen (the work area and the
+scale Windows would give the window) and a renderer (the Chromium switches that decide how the page
+reaches the graphics card), both listed in `tools/sim/profiles.json`. Scenarios drive the real
+window with real input events and check what a person would see: `scroll` flicks through the
+463 hero mods, then compares each resting frame with a forced repaint of it, which is how stale
+tiles on some graphics drivers show up, and checks that the end of the list is inside the window
+and the window inside the screen. `browse` visits every section, category, the search and the mod
+window. `mods` installs seven real mods from their cards, reorders two that replace the same file,
+switches them off and removes them. `presets` saves a preset, applies it over a changed state and
+again after one of its mods was deleted. `import` picks renamed catalog mods in the file dialog
+and a folder of them (the dialog's answer is played by `tools/sim/steps.js`), checks the app
+recognises and links them, and cancels once. `settings` switches the language and reads every screen
+for text left in the other one, and changes the scale and the switches. `game-session` plays the
+game starting, quitting and being updated or checked by Steam (`tools/sim/world.js`). The first
+machine of a set runs every scenario; the others run the ones a screen or a renderer can change
+(`looks` in the profiles). `tools/sim/dota.js` is a model of the game's
+loader, run over the sandbox after each step: what it mounts, which pack wins each file, whether
+our packs' bytes match their CRCs, and whether the item schema points at files the game can load.
+Every scenario also fails on an error in the page's console. `npm run sim` runs the set for this
+system and writes `e2e-output/sim/index.html`.
 
 ## On disk
 
@@ -364,7 +388,7 @@ that location is not writable.
 | `tools/e2e.mjs`, `test/fixtures/e2e/*` | Installing, switching and removing a mod by clicking through the real window, offline, in the sandbox |
 | `tools/r2-sync.mjs`, `tools/r2-release.mjs`, `tools/r2-client.js`, `tools/mirror-plan.js` | The archive mirror, the update mirror, the signing they share, and which archives the mirror copies again or refuses |
 | `tools/gen-fingerprints.js` | Regenerating the published fingerprint map |
-| `tools/seo-report.mjs`, `tools/seo-state.mjs` | The weekly reach and search report posted to [issue #3](https://github.com/TheFleece/dota2-mod-manager/issues/3), and the numbers it carries from one week to the next inside the comment |
+| `tools/seo-report.mjs`, `tools/seo-state.mjs` | The weekly reach and search report posted to [issue #3](https://github.com/dota2modmanager/dota2-mod-manager/issues/3), and the numbers it carries from one week to the next inside the comment |
 | `tools/release-gate.mjs` | First job of every release: waits until the tagged commit has passed the checks in `.github/required-checks.json`, and refuses it otherwise |
 | `tools/check-credentials.mjs`, `tools/google-auth.mjs` | Every morning before the radar: tries each secret against its service and writes what works, what fails and when each expires, for the radar to report |
 | `tools/virustotal.mjs` | Reads what the antivirus engines say about each published release and writes the report into its notes; skipped when no key is set |

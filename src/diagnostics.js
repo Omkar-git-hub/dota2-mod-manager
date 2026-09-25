@@ -24,13 +24,28 @@ function listFolder(dir) {
   }
 }
 
-function folderListingText(dir, filter) {
+function redactHome(dir, home = os.homedir()) {
+  if (!dir || !home) return dir;
+
+  const compareDir = process.platform === 'win32' ? dir.toLowerCase() : dir;
+  const compareHome = process.platform === 'win32' ? home.toLowerCase() : home;
+
+  if (compareDir !== compareHome && !compareDir.startsWith(`${compareHome}${path.sep}`)) {
+    return dir;
+  }
+
+  return process.platform === 'win32'
+    ? `%USERPROFILE%${dir.slice(home.length)}`
+    : `~${dir.slice(home.length)}`;
+}
+
+function folderListingText(dir, filter, home) {
   const list = listFolder(dir);
-  if (!list) return `${dir}\n(not found or unreadable)`;
+  if (!list) return `${redactHome(dir, home)}\n(not found or unreadable)`;
   const rows = filter ? list.filter(filter) : list;
   const lines = rows.map((f) =>
     `${f.dir ? 'DIR ' : '    '}${String(f.size).padStart(10)}  ${new Date(f.mtime).toISOString()}  ${f.name}`);
-  return `${dir}\n\n${lines.join('\n') || '(empty)'}`;
+  return `${redactHome(dir, home)}\n\n${lines.join('\n') || '(empty)'}`;
 }
 
 // The last chunk of a log file - a support conversation is almost always about what just
@@ -58,14 +73,15 @@ function tailLog(file, maxBytes) {
  * @param {import('./catalog').Catalog} deps.catalog
  * @param {import('./icons').Icons} [deps.icons]
  * @param {{version: string, logFile?: string, userDataDir?: string, updateError?: string}} deps.app
+ * @param {string} [deps.home]  the home directory to hide, for a test that cannot have one
  * @param {object} [deps.extra] facts only the main process can answer: whether Dota is
  *   running, the open windows, errors the interface has reported, the updater's state, the
  *   remote config and the toolchain. Passed in so this module stays free of Electron.
- * @returns {{report: object, files: Record<string, string>}}
+ * @returns {{report: object, files: object}}
  *   report: the structured data to write as report.json
  *   files: extra plain-text files to include verbatim, keyed by name inside the zip
  */
-function buildReport({ settings, library, installer, schemaService, catalog, icons, app, extra = {} }) {
+function buildReport({ settings, library, installer, schemaService, catalog, icons, app, extra = {}, home }) {
   const s = settings.all();
   const game = s.dotaGamePath;
   const gameValid = validateGamePath(game);
@@ -89,10 +105,11 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
       ...s,
       // the OAuth token never touches disk (see discord-auth.js) - what's left is fine to
       // send, but the Discord id and the avatar picture add nothing to a bug report
+      dotaGamePath: redactHome(s.dotaGamePath, home),
       account: s.account ? { signedIn: true, username: s.account.username || null } : null,
     },
     dota: {
-      path: game || null,
+      path: redactHome(game, home) || null,
       pathValid: gameValid,
       detectedLang: gameValid ? gamelang.detectLangSuffix(game) : null,
       bootLanguages: gameValid ? gamelang.bootLanguages(game) : null,
@@ -208,9 +225,9 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
     if (prev) files['app.previous.log'] = prev;
   }
   if (app.userDataDir) {
-    files['userdata-listing.txt'] = folderListingText(app.userDataDir);
-    files['downloads-listing.txt'] = folderListingText(path.join(app.userDataDir, 'downloads'));
-    files['backups-listing.txt'] = folderListingText(path.join(app.userDataDir, 'backups'));
+    files['userdata-listing.txt'] = folderListingText(app.userDataDir, null, home);
+    files['downloads-listing.txt'] = folderListingText(path.join(app.userDataDir, 'downloads'), null, home);
+    files['backups-listing.txt'] = folderListingText(path.join(app.userDataDir, 'backups'), null, home);
   }
 
   return { report, files };
@@ -222,7 +239,7 @@ function buildReport({ settings, library, installer, schemaService, catalog, ico
  * carries what to do about it. Severity is only two levels on purpose: something is broken,
  * or something is worth knowing. A third level would just be a place to hide things in.
  */
-function findProblems(r, { app } = {}) {
+function findProblems(r, { app } = /** @type {{app?: object}} */ ({})) {
   const out = [];
   const add = (level, what, detail) => out.push({ level, what, detail });
 
