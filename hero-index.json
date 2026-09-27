@@ -1,12 +1,13 @@
 {
   "heroes": 147,
-  "mods": 1413,
+  "mods": 1415,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
       "mods": [
         {"name":"Abaddon Bloody Fallen King","categoryId":"heroes","styleLabel":null,"slots":["back","head","mount","shoulder","weapon"]},
         {"name":"Abaddon Endless Night","categoryId":"heroes","styleLabel":null,"slots":["back","head","mount","shoulder","weapon"]},
+        {"name":"Abaddon Endless Night Reborn","categoryId":"heroes","styleLabel":null,"slots":["back","head","mount","shoulder","weapon"]},
         {"name":"Abaddon Fallen King","categoryId":"heroes","styleLabel":null,"slots":["back","head","mount","shoulder","weapon"]},
         {"name":"Abaddon Sayaka Miki","categoryId":"heroes","styleLabel":null,"slots":["misc","back","head","mount","shoulder","weapon","wings"]},
         {"name":"Red Abaddon","categoryId":"heroes","styleLabel":null,"slots":["back","head","mount","shoulder","weapon"]}
@@ -95,6 +96,7 @@
       "name": "Bane",
       "mods": [
         {"name":"Aghanim Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
+        {"name":"Bane Immortal","categoryId":"heroes","styleLabel":null,"slots":["head","shoulder"]},
         {"name":"Bane Komeiji Koishi","categoryId":"heroes","styleLabel":null,"slots":["head","shoulder","misc","arms","back"]},
         {"name":"Bane Origin of the Unmaking","categoryId":"hero-items","styleLabel":null,"slots":["head","misc"]},
         {"name":"Blue Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},

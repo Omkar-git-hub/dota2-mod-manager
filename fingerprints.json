@@ -1,5 +1,5 @@
 {
-  "count": 1439,
+  "count": 1442,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -591,6 +591,7 @@
     "6c654c327068ded1635c138b476fe17389788f10": [{"name":"Bloodseeker Thirst of Eztzhok","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "6c69809267d8b2f863cf2d59d24a281aaba18272": [{"name":"Clockwerk Paraflare Cannon","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "6ce9f3ef3c147dbb45b04cd7c5c105a7f8676b80": [{"name":"Brewmaster Wilding Tiger","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
+    "6d303eaf592ddba988619ba61a1f6a3e4e92d369": [{"name":"Bane Immortal","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "6d32236af73fa81302fd9cbf5cd17cfa93540f75": [{"name":"Drow Ranger Deny","categoryId":"creep-deny","styleLabel":"II","type":"vpk"}],
     "6d36114efeb05c66be5c0b05d350496379044306": [{"name":"Emblem of Divinity","categoryId":"emblems","styleLabel":null,"type":"vpk"}],
     "6d89f579983ea95fd7de185b32556dfaf1eff6ef": [{"name":"Nyx Assassin Latticean Hierarchy","categoryId":"hero-items","styleLabel":"Crimson","type":"vpk"}],
@@ -1196,6 +1197,7 @@
     "d9513cfb44c263173cf32e19ad7a98d2b95bc5d3": [{"name":"Phantom Lancer Humble Drifter","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "d9d3a87c36276c3b3ad0a9a103a6cbef1b3e9461": [{"name":"Ifrit Monkey King","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "da4c3488294af13d587524370c3a8d862b646b18": [{"name":"Shadow Fiend Taunt","categoryId":"hero-sounds","styleLabel":null,"type":"vpk"}],
+    "da60c0a71f43cfe5147fd0dfdf99ee770df94ad9": [{"name":"Dark Carnaval Pedestal","categoryId":"pedestal","styleLabel":null,"type":"vpk"}],
     "da8f65e34285bffc0efb4ce9eaba0e89c8930478": [{"name":"Naga Siren Snickers","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "db01233efabe5f04d78da1b4f18536db175830bc": [{"name":"Monkey King","categoryId":"mega-kill","styleLabel":null,"type":"vpk"}],
     "db1f0b7141e2c3b78d2581f111567068292072d0": [{"name":"Station","categoryId":"backgrounds","styleLabel":null,"type":"vpk"}],
@@ -1268,6 +1270,7 @@
     "e6158320f289a8d536519d900c8e8fd0d514a6f4": [{"name":"LowPoly","categoryId":"terrains","styleLabel":null,"type":"vpk"}],
     "e62f11c08a882554e728fb4896d842810f06b2c4": [{"name":"Default Wards","categoryId":"optimization","styleLabel":null,"type":"vpk"}],
     "e634677b47f0bb877976e2990e7131b4ff30de8b": [{"name":"Naga Siren 42 Bratuha","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
+    "e6797fc0ec51392b16d2203cfd708c831ac76a8f": [{"name":"Abaddon Endless Night Reborn","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "e67adae2b5111adedaf311c471c975eef0b79a5e": [{"name":"Spirit Breaker Beer","categoryId":"hero-sounds","styleLabel":null,"type":"vpk"}],
     "e67c1be92fe1324abbba506fdfedff66d1b079ab": [{"name":"Disruptor Resistive Pinfold","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "e6df540526a126767546f1ab7edb67e7d3434b77": [{"name":"Homelander Invoker","categoryId":"heroes","styleLabel":null,"type":"vpk"}],

@@ -1619,45 +1619,16 @@
       ]
     },
     {
-      "id": "ranks",
-      "mods": [
-        {"name":"Battle Icons","styleLabel":null,"image":{"src":"/mods/battle-icons.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790263250},
-        {"name":"Immortal Ranks","styleLabel":null,"image":{"src":"/mods/immortal-ranks.webp","width":854,"height":480},"author":"XIIIpsiblade","authorUrl":"https://t.me/XIIIpsiblade","date":1789988579},
-        {"name":"Normis Rank Icons","styleLabel":null,"image":{"src":"/mods/normis-rank-icons.webp","width":854,"height":480},"author":"palekid666","authorUrl":"https://t.me/ubiycasmerty","date":1781873451},
-        {"name":"Umbrella Medals","styleLabel":null,"image":{"src":"/mods/umbrella-medals.webp","width":854,"height":480},"author":"kebabmaker","authorUrl":null,"date":1777387078},
-        {
-          "name": "Slates of the Damned",
-          "styleLabel": null,
-          "image": {"src":"/mods/slates-of-the-damned.webp","width":854,"height":480},
-          "author": "ya_lyosha",
-          "authorUrl": "https://www.twitch.tv/ya_lyosha",
-          "date": 1775190022
-        },
-        {"name":"Azur Lane Medals","styleLabel":null,"image":{"src":"/mods/azur-lane-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1768005424},
-        {"name":"Bear Medals","styleLabel":null,"image":{"src":"/mods/bear-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1764543573},
-        {"name":"Void Medals","styleLabel":null,"image":{"src":"/mods/void-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1764541283},
-        {"name":"Flaming Medals","styleLabel":null,"image":{"src":"/mods/flaming-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1763129369},
-        {"name":"Imperial Medals","styleLabel":null,"image":{"src":"/mods/imperial-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1763129369}
-      ]
-    },
-    {
-      "id": "roshan",
-      "mods": [
-        {"name":"Cosmic Roshan","styleLabel":null,"image":{"src":"/mods/cosmic-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1770899849},
-        {"name":"Santa Hat Roshan","styleLabel":null,"image":{"src":"/mods/santa-hat-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1766555595},
-        {"name":"Aghanims Roshan","styleLabel":null,"image":{"src":"/mods/aghanims-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Desert Roshan","styleLabel":null,"image":{"src":"/mods/desert-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Gardens Roshan","styleLabel":null,"image":{"src":"/mods/gardens-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Golden Roshan","styleLabel":null,"image":{"src":"/mods/golden-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Greevil Grief Roshan","styleLabel":null,"image":{"src":"/mods/greevil-grief-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Journey Roshan","styleLabel":null,"image":{"src":"/mods/journey-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Reef Roshan","styleLabel":null,"image":{"src":"/mods/reef-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
-        {"name":"Winter Roshan","styleLabel":null,"image":{"src":"/mods/winter-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101}
-      ]
-    },
-    {
       "id": "pedestal",
       "mods": [
+        {
+          "name": "Dark Carnaval Pedestal",
+          "styleLabel": null,
+          "image": {"src":"/mods/dark-carnaval-pedestal.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790475709
+        },
         {
           "name": "Pedestal Feast Abscession",
           "styleLabel": null,
@@ -1702,6 +1673,43 @@
         {"name":"Earthshaker Pedestal","styleLabel":null,"image":{"src":"/mods/earthshaker-pedestal.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1788940775},
         {"name":"Snow Pedestal","styleLabel":null,"image":{"src":"/mods/snow-pedestal.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1788940775},
         {"name":"Windranger Pedestal","styleLabel":null,"image":{"src":"/mods/windranger-pedestal.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1788940775}
+      ]
+    },
+    {
+      "id": "ranks",
+      "mods": [
+        {"name":"Battle Icons","styleLabel":null,"image":{"src":"/mods/battle-icons.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790263250},
+        {"name":"Immortal Ranks","styleLabel":null,"image":{"src":"/mods/immortal-ranks.webp","width":854,"height":480},"author":"XIIIpsiblade","authorUrl":"https://t.me/XIIIpsiblade","date":1789988579},
+        {"name":"Normis Rank Icons","styleLabel":null,"image":{"src":"/mods/normis-rank-icons.webp","width":854,"height":480},"author":"palekid666","authorUrl":"https://t.me/ubiycasmerty","date":1781873451},
+        {"name":"Umbrella Medals","styleLabel":null,"image":{"src":"/mods/umbrella-medals.webp","width":854,"height":480},"author":"kebabmaker","authorUrl":null,"date":1777387078},
+        {
+          "name": "Slates of the Damned",
+          "styleLabel": null,
+          "image": {"src":"/mods/slates-of-the-damned.webp","width":854,"height":480},
+          "author": "ya_lyosha",
+          "authorUrl": "https://www.twitch.tv/ya_lyosha",
+          "date": 1775190022
+        },
+        {"name":"Azur Lane Medals","styleLabel":null,"image":{"src":"/mods/azur-lane-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1768005424},
+        {"name":"Bear Medals","styleLabel":null,"image":{"src":"/mods/bear-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1764543573},
+        {"name":"Void Medals","styleLabel":null,"image":{"src":"/mods/void-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1764541283},
+        {"name":"Flaming Medals","styleLabel":null,"image":{"src":"/mods/flaming-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1763129369},
+        {"name":"Imperial Medals","styleLabel":null,"image":{"src":"/mods/imperial-medals.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1763129369}
+      ]
+    },
+    {
+      "id": "roshan",
+      "mods": [
+        {"name":"Cosmic Roshan","styleLabel":null,"image":{"src":"/mods/cosmic-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1770899849},
+        {"name":"Santa Hat Roshan","styleLabel":null,"image":{"src":"/mods/santa-hat-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1766555595},
+        {"name":"Aghanims Roshan","styleLabel":null,"image":{"src":"/mods/aghanims-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Desert Roshan","styleLabel":null,"image":{"src":"/mods/desert-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Gardens Roshan","styleLabel":null,"image":{"src":"/mods/gardens-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Golden Roshan","styleLabel":null,"image":{"src":"/mods/golden-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Greevil Grief Roshan","styleLabel":null,"image":{"src":"/mods/greevil-grief-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Journey Roshan","styleLabel":null,"image":{"src":"/mods/journey-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Reef Roshan","styleLabel":null,"image":{"src":"/mods/reef-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101},
+        {"name":"Winter Roshan","styleLabel":null,"image":{"src":"/mods/winter-roshan.webp","width":854,"height":480},"author":null,"authorUrl":null,"date":1756467101}
       ]
     },
     {

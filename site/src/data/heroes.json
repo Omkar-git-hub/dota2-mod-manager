@@ -8336,6 +8336,133 @@
       ]
     },
     {
+      "id": "bane",
+      "name": "Bane",
+      "slug": "bane",
+      "mods": [
+        {
+          "name": "Bane Komeiji Koishi",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","shoulder","misc","arms","back"],
+          "image": {"src":"/mods/bane-komeiji-koishi.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1767093656
+        },
+        {
+          "name": "Bane Immortal",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","shoulder"],
+          "image": {"src":"/mods/bane-immortal.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1790475709
+        },
+        {
+          "name": "Bane Origin of the Unmaking",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["head","misc"],
+          "image": {"src":"/mods/bane-origin-of-the-unmaking.webp","width":854,"height":480},
+          "author": "keeper",
+          "authorUrl": "https://t.me/eternalsadism",
+          "date": 1788762686
+        },
+        {
+          "name": "Aghanim Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Blue Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Green Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Nemestice Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Red Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI10 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI12 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI9 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Yellow Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        }
+      ]
+    },
+    {
       "id": "broodmother",
       "name": "Broodmother",
       "slug": "broodmother",
@@ -10392,123 +10519,6 @@
           "author": "Kisilev",
           "authorUrl": "https://vk.com/id363951132",
           "date": 1780143296
-        },
-        {
-          "name": "Aghanim Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Blue Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Green Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Nemestice Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Red Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI10 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI12 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI9 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Yellow Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        }
-      ]
-    },
-    {
-      "id": "bane",
-      "name": "Bane",
-      "slug": "bane",
-      "mods": [
-        {
-          "name": "Bane Komeiji Koishi",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["head","shoulder","misc","arms","back"],
-          "image": {"src":"/mods/bane-komeiji-koishi.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1767093656
-        },
-        {
-          "name": "Bane Origin of the Unmaking",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["head","misc"],
-          "image": {"src":"/mods/bane-origin-of-the-unmaking.webp","width":854,"height":480},
-          "author": "keeper",
-          "authorUrl": "https://t.me/eternalsadism",
-          "date": 1788762686
         },
         {
           "name": "Aghanim Ranged Attack",
@@ -13660,6 +13670,73 @@
       ]
     },
     {
+      "id": "abaddon",
+      "name": "Abaddon",
+      "slug": "abaddon",
+      "mods": [
+        {
+          "name": "Abaddon Sayaka Miki",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","back","head","mount","shoulder","weapon","wings"],
+          "image": {"src":"/mods/abaddon-sayaka-miki.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1767093656
+        },
+        {
+          "name": "Abaddon Bloody Fallen King",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/abaddon-bloody-fallen-king.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1769266243
+        },
+        {
+          "name": "Abaddon Endless Night",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/abaddon-endless-night.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1788942404
+        },
+        {
+          "name": "Abaddon Endless Night Reborn",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/abaddon-endless-night-reborn.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790475709
+        },
+        {
+          "name": "Abaddon Fallen King",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/abaddon-fallen-king.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1768491259
+        },
+        {
+          "name": "Red Abaddon",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","head","mount","shoulder","weapon"],
+          "image": {"src":"/mods/red-abaddon.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1756972905
+        }
+      ]
+    },
+    {
       "id": "life_stealer",
       "name": "Lifestealer",
       "slug": "lifestealer",
@@ -13857,63 +13934,6 @@
           "author": "depex",
           "authorUrl": "https://t.me/depexfx",
           "date": 1788091261
-        }
-      ]
-    },
-    {
-      "id": "abaddon",
-      "name": "Abaddon",
-      "slug": "abaddon",
-      "mods": [
-        {
-          "name": "Abaddon Sayaka Miki",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","back","head","mount","shoulder","weapon","wings"],
-          "image": {"src":"/mods/abaddon-sayaka-miki.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1767093656
-        },
-        {
-          "name": "Abaddon Bloody Fallen King",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["back","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/abaddon-bloody-fallen-king.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1769266243
-        },
-        {
-          "name": "Abaddon Endless Night",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["back","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/abaddon-endless-night.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1788942404
-        },
-        {
-          "name": "Abaddon Fallen King",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["back","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/abaddon-fallen-king.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1768491259
-        },
-        {
-          "name": "Red Abaddon",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["back","head","mount","shoulder","weapon"],
-          "image": {"src":"/mods/red-abaddon.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1756972905
         }
       ]
     },
