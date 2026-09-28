@@ -1,5 +1,5 @@
 {
-  "count": 1449,
+  "count": 1451,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -628,6 +628,7 @@
     "70a99a4874595455c7eedf6ad1f8fb6a1ca482a5": [{"name":"Keeper Of The Light - Snowdrift","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "70ab409d724cb80b6b00c7e536435b0ed1e9f93c": [{"name":"Viper Stuffed Menace","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "70ac44fd085b9258613192909b3c9855611cfb00": [{"name":"Cosmic Spirit Breaker","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
+    "710c269da7e738ae17f886ba6e3535c0e1a41e7d": [{"name":"Arc Warden Frosty Toy","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "7122d78805b0415d8ce3e39fcfa069f22376ba94": [{"name":"Profile Graffiti & Phrases","categoryId":"other","styleLabel":null,"type":"vpk"}],
     "71576c651553a29176431b897541c333fd949945": [{"name":"Luna Twilight Schism","categoryId":"hero-items","styleLabel":"Golden","type":"vpk"}],
     "7185132cc1487e89ff5a8bbe0c44c154d68defc8": [{"name":"Floes Tower","categoryId":"wards","styleLabel":null,"type":"vpk"}],
@@ -645,6 +646,7 @@
     "7354d7c891c48cc5876e3a60ec6233c61bc7205d": [{"name":"Winter 2016 Force Staff","categoryId":"item-effects","styleLabel":null,"type":"vpk"}],
     "7383992ed12c527d3a1cf5b5324d694121d619bb": [{"name":"Bloody Ancient Apparition","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "7447a75fdf47e3df2116b170d03f353017748f8b": [{"name":"Reef Roshan","categoryId":"roshan","styleLabel":null,"type":"vpk"}],
+    "746afa877d181a8e380aba5cbfa51a32eb42b1db": [{"name":"Juggernaut Lineage Kantusa","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "7491b835a57fff1a4005c76898867d5deb2adf81": [{"name":"Dcveno Cursor","categoryId":"cursors","styleLabel":null,"type":"files"}],
     "749f22bfd26e559b956f526d577b3f4750fdb509": [{"name":"Juggernaut","categoryId":"mega-kill","styleLabel":null,"type":"vpk"}],
     "74d0c176f5817410ef650fd267767e99be7f2178": [{"name":"Lelouch Lamperouge","categoryId":"backgrounds","styleLabel":null,"type":"vpk"}],

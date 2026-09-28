@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1419,
+  "mods": 1421,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -66,6 +66,7 @@
         {"name":"Aghanim Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},
         {"name":"Arc Warden Ancient Gaoler","categoryId":"heroes","styleLabel":null,"slots":["back","arms","shoulder"]},
         {"name":"Arc Warden Black Hole","categoryId":"heroes","styleLabel":null,"slots":["back","arms","shoulder"]},
+        {"name":"Arc Warden Frosty Toy","categoryId":"heroes","styleLabel":null,"slots":["back","arms","shoulder","head"]},
         {"name":"Arc Warden Sakura Winter","categoryId":"heroes","styleLabel":null,"slots":["back","arms","shoulder","head"]},
         {"name":"Arc Warden Yin Yang","categoryId":"heroes","styleLabel":null,"slots":["back","arms","shoulder"]},
         {"name":"Ashes Arc Warden","categoryId":"heroes","styleLabel":null,"slots":["back","arms","shoulder"]},
@@ -710,6 +711,7 @@
         {"name":"Juggernaut Fireborn Assault","categoryId":"heroes","styleLabel":null,"slots":["weapon"]},
         {"name":"Juggernaut Ice and Fire","categoryId":"heroes","styleLabel":null,"slots":["misc","back","arms","head","weapon"]},
         {"name":"Juggernaut Jagged Honor","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon","legs"]},
+        {"name":"Juggernaut Lineage Kantusa","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon","legs"]},
         {"name":"Juggernaut Okita Souji","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon","legs"]},
         {"name":"Juggernaut Provocation Arcana","categoryId":"heroes","styleLabel":null,"slots":["misc","arms","back","head","weapon"]},
         {"name":"Juggernaut Samurai of Wind","categoryId":"heroes","styleLabel":null,"slots":["misc","head","back","weapon","arms"]},
