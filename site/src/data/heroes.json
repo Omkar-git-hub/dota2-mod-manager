@@ -2579,6 +2579,16 @@
           "date": 1756706697
         },
         {
+          "name": "Morphling Akulenok",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/morphling-akulenok.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1790623547
+        },
+        {
           "name": "Morphling Darktrench Purple",
           "categoryId": "heroes",
           "styleLabel": null,
@@ -5093,6 +5103,320 @@
       ]
     },
     {
+      "id": "dragon_knight",
+      "name": "Dragon Knight",
+      "slug": "dragon-knight",
+      "mods": [
+        {
+          "name": "Dragon Knight Burning Scale",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
+          "image": {"src":"/mods/dragon-knight-burning-scale.webp","width":854,"height":480},
+          "author": "Mopsyara",
+          "authorUrl": "https://t.me/+AM_aLD0x2TcwY2My",
+          "date": 1784328560
+        },
+        {
+          "name": "Dragon Knight Dragon Hold",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
+          "image": {"src":"/mods/dragon-knight-dragon-hold.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1788583664
+        },
+        {
+          "name": "Dragon Knight Fire",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
+          "image": {"src":"/mods/dragon-knight-fire.webp","width":854,"height":480},
+          "author": "твавт",
+          "authorUrl": "https://steamcommunity.com/id/myasu0/",
+          "date": 1790375737
+        },
+        {
+          "name": "Dragon Knight Persona Reborn",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
+          "image": {"src":"/mods/dragon-knight-persona-reborn.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790623547
+        },
+        {
+          "name": "Dragon Knight Silverwurm Sacrifice",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
+          "image": {"src":"/mods/dragon-knight-silverwurm-sacrifice.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1777812843
+        },
+        {
+          "name": "Emerald Dragon Knight",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","head","shield","shoulder","legs","weapon"],
+          "image": {"src":"/mods/emerald-dragon-knight.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1773392449
+        },
+        {
+          "name": "Aghanim Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Blue Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Green Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Nemestice Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Red Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI10 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI12 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI9 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Yellow Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        }
+      ]
+    },
+    {
+      "id": "juggernaut",
+      "name": "Juggernaut",
+      "slug": "juggernaut",
+      "mods": [
+        {
+          "name": "Juggernaut Ancient Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon","legs"],
+          "image": {"src":"/mods/juggernaut-ancient-arcana.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790528664
+        },
+        {
+          "name": "Juggernaut Jagged Honor",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon","legs"],
+          "image": {"src":"/mods/juggernaut-jagged-honor.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790260681
+        },
+        {
+          "name": "Juggernaut Lineage Kantusa",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon","legs"],
+          "image": {"src":"/mods/juggernaut-lineage-kantusa.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790558987
+        },
+        {
+          "name": "Juggernaut Okita Souji",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon","legs"],
+          "image": {"src":"/mods/juggernaut-okita-souji.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1771195327
+        },
+        {
+          "name": "Juggernaut Ancient Exile",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-ancient-exile.webp","width":854,"height":480},
+          "author": "Dota2VPK",
+          "authorUrl": "https://t.me/dota2freevpk",
+          "date": 1779803304
+        },
+        {
+          "name": "Juggernaut Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-arcana.webp","width":854,"height":480},
+          "author": "depex",
+          "authorUrl": "https://t.me/depexfx",
+          "date": 1787381478
+        },
+        {
+          "name": "Juggernaut Arcana Golden Edge",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","misc","arms","back","weapon"],
+          "image": {"src":"/mods/juggernaut-arcana-golden-edge.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1789915216
+        },
+        {
+          "name": "Juggernaut Arcana Purple",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["head","misc","weapon","back","arms"],
+          "image": {"src":"/mods/juggernaut-arcana-purple.webp","width":854,"height":480},
+          "author": "CeoMods",
+          "authorUrl": "https://t.me/modsceo",
+          "date": 1787156742
+        },
+        {
+          "name": "Juggernaut Aura",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-aura.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1790623547
+        },
+        {
+          "name": "Juggernaut Bladeform Aesthete",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-bladeform-aesthete.webp","width":854,"height":480},
+          "author": "Tenkay",
+          "authorUrl": "https://t.me/dota2Tenkay",
+          "date": 1786848392
+        },
+        {
+          "name": "Juggernaut Ice and Fire",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","back","arms","head","weapon"],
+          "image": {"src":"/mods/juggernaut-ice-and-fire.webp","width":854,"height":480},
+          "author": "Kisilev",
+          "authorUrl": "https://vk.com/id363951132",
+          "date": 1763212289
+        },
+        {
+          "name": "Juggernaut Provocation Arcana",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/juggernaut-provocation-arcana.webp","width":854,"height":480},
+          "author": "J0nathan550",
+          "authorUrl": "https://github.com/J0nathan550",
+          "date": 1790375737
+        },
+        {
+          "name": "Juggernaut Samurai of Wind",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","head","back","weapon","arms"],
+          "image": {"src":"/mods/juggernaut-samurai-of-wind.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1763624686
+        },
+        {
+          "name": "Lollipop Juggernaut",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","arms","back","head","weapon"],
+          "image": {"src":"/mods/lollipop-juggernaut.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1768632223
+        },
+        {
+          "name": "Juggernaut Fireborn Assault",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["weapon"],
+          "image": {"src":"/mods/juggernaut-fireborn-assault.webp","width":854,"height":480},
+          "author": "ibcsz",
+          "authorUrl": "http://t.me/nixwaretop",
+          "date": 1789278465
+        }
+      ]
+    },
+    {
       "id": "razor",
       "name": "Razor",
       "slug": "razor",
@@ -5849,153 +6173,6 @@
       ]
     },
     {
-      "id": "dragon_knight",
-      "name": "Dragon Knight",
-      "slug": "dragon-knight",
-      "mods": [
-        {
-          "name": "Dragon Knight Burning Scale",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
-          "image": {"src":"/mods/dragon-knight-burning-scale.webp","width":854,"height":480},
-          "author": "Mopsyara",
-          "authorUrl": "https://t.me/+AM_aLD0x2TcwY2My",
-          "date": 1784328560
-        },
-        {
-          "name": "Dragon Knight Dragon Hold",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
-          "image": {"src":"/mods/dragon-knight-dragon-hold.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1788583664
-        },
-        {
-          "name": "Dragon Knight Fire",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
-          "image": {"src":"/mods/dragon-knight-fire.webp","width":854,"height":480},
-          "author": "твавт",
-          "authorUrl": "https://steamcommunity.com/id/myasu0/",
-          "date": 1790375737
-        },
-        {
-          "name": "Dragon Knight Silverwurm Sacrifice",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","shield","shoulder","legs","weapon"],
-          "image": {"src":"/mods/dragon-knight-silverwurm-sacrifice.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1777812843
-        },
-        {
-          "name": "Emerald Dragon Knight",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","head","shield","shoulder","legs","weapon"],
-          "image": {"src":"/mods/emerald-dragon-knight.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1773392449
-        },
-        {
-          "name": "Aghanim Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Blue Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Green Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Nemestice Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Red Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI10 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI12 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI9 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Yellow Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        }
-      ]
-    },
-    {
       "id": "enigma",
       "name": "Enigma",
       "slug": "enigma",
@@ -6286,153 +6463,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1764003644
-        }
-      ]
-    },
-    {
-      "id": "juggernaut",
-      "name": "Juggernaut",
-      "slug": "juggernaut",
-      "mods": [
-        {
-          "name": "Juggernaut Ancient Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon","legs"],
-          "image": {"src":"/mods/juggernaut-ancient-arcana.webp","width":854,"height":480},
-          "author": "J0nathan550",
-          "authorUrl": "https://github.com/J0nathan550",
-          "date": 1790528664
-        },
-        {
-          "name": "Juggernaut Jagged Honor",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon","legs"],
-          "image": {"src":"/mods/juggernaut-jagged-honor.webp","width":854,"height":480},
-          "author": "J0nathan550",
-          "authorUrl": "https://github.com/J0nathan550",
-          "date": 1790260681
-        },
-        {
-          "name": "Juggernaut Lineage Kantusa",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon","legs"],
-          "image": {"src":"/mods/juggernaut-lineage-kantusa.webp","width":854,"height":480},
-          "author": "J0nathan550",
-          "authorUrl": "https://github.com/J0nathan550",
-          "date": 1790558987
-        },
-        {
-          "name": "Juggernaut Okita Souji",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon","legs"],
-          "image": {"src":"/mods/juggernaut-okita-souji.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1771195327
-        },
-        {
-          "name": "Juggernaut Ancient Exile",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-ancient-exile.webp","width":854,"height":480},
-          "author": "Dota2VPK",
-          "authorUrl": "https://t.me/dota2freevpk",
-          "date": 1779803304
-        },
-        {
-          "name": "Juggernaut Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-arcana.webp","width":854,"height":480},
-          "author": "depex",
-          "authorUrl": "https://t.me/depexfx",
-          "date": 1787381478
-        },
-        {
-          "name": "Juggernaut Arcana Golden Edge",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["head","misc","arms","back","weapon"],
-          "image": {"src":"/mods/juggernaut-arcana-golden-edge.webp","width":854,"height":480},
-          "author": "J0nathan550",
-          "authorUrl": "https://github.com/J0nathan550",
-          "date": 1789915216
-        },
-        {
-          "name": "Juggernaut Arcana Purple",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["head","misc","weapon","back","arms"],
-          "image": {"src":"/mods/juggernaut-arcana-purple.webp","width":854,"height":480},
-          "author": "CeoMods",
-          "authorUrl": "https://t.me/modsceo",
-          "date": 1787156742
-        },
-        {
-          "name": "Juggernaut Bladeform Aesthete",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-bladeform-aesthete.webp","width":854,"height":480},
-          "author": "Tenkay",
-          "authorUrl": "https://t.me/dota2Tenkay",
-          "date": 1786848392
-        },
-        {
-          "name": "Juggernaut Ice and Fire",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","back","arms","head","weapon"],
-          "image": {"src":"/mods/juggernaut-ice-and-fire.webp","width":854,"height":480},
-          "author": "Kisilev",
-          "authorUrl": "https://vk.com/id363951132",
-          "date": 1763212289
-        },
-        {
-          "name": "Juggernaut Provocation Arcana",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/juggernaut-provocation-arcana.webp","width":854,"height":480},
-          "author": "J0nathan550",
-          "authorUrl": "https://github.com/J0nathan550",
-          "date": 1790375737
-        },
-        {
-          "name": "Juggernaut Samurai of Wind",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","head","back","weapon","arms"],
-          "image": {"src":"/mods/juggernaut-samurai-of-wind.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1763624686
-        },
-        {
-          "name": "Lollipop Juggernaut",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","arms","back","head","weapon"],
-          "image": {"src":"/mods/lollipop-juggernaut.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1768632223
-        },
-        {
-          "name": "Juggernaut Fireborn Assault",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["weapon"],
-          "image": {"src":"/mods/juggernaut-fireborn-assault.webp","width":854,"height":480},
-          "author": "ibcsz",
-          "authorUrl": "http://t.me/nixwaretop",
-          "date": 1789278465
         }
       ]
     },
@@ -7606,6 +7636,143 @@
           "author": "Defiree",
           "authorUrl": "https://vk.com/defiree2mods",
           "date": 1756923920
+        },
+        {
+          "name": "Aghanim Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Blue Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Green Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Nemestice Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Red Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI10 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI12 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "TI9 Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        },
+        {
+          "name": "Yellow Diretide Ranged Attack",
+          "categoryId": "ranged-attack",
+          "styleLabel": null,
+          "slots": [],
+          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
+          "author": null,
+          "authorUrl": null,
+          "date": 1764003644
+        }
+      ]
+    },
+    {
+      "id": "enchantress",
+      "name": "Enchantress",
+      "slug": "enchantress",
+      "mods": [
+        {
+          "name": "Enchantress Shiro",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon","belt","shoulder","legs"],
+          "image": {"src":"/mods/enchantress-shiro.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1771195327
+        },
+        {
+          "name": "Enchantress Darkwood Witness",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/enchantress-darkwood-witness.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1771681325
+        },
+        {
+          "name": "Enchantress Golubika",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/enchantress-golubika.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1790623547
+        },
+        {
+          "name": "Enchantress Sematary",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","misc","head","weapon"],
+          "image": {"src":"/mods/enchantress-sematary.webp","width":854,"height":480},
+          "author": "XIIIpsiblade",
+          "authorUrl": "https://t.me/XIIIpsiblade",
+          "date": 1790202267
         },
         {
           "name": "Aghanim Ranged Attack",
@@ -9018,133 +9185,6 @@
           "author": "Ромчик",
           "authorUrl": "https://watchmy.bio/shidehara",
           "date": 1789310506
-        }
-      ]
-    },
-    {
-      "id": "enchantress",
-      "name": "Enchantress",
-      "slug": "enchantress",
-      "mods": [
-        {
-          "name": "Enchantress Shiro",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","weapon","belt","shoulder","legs"],
-          "image": {"src":"/mods/enchantress-shiro.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1771195327
-        },
-        {
-          "name": "Enchantress Darkwood Witness",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","weapon"],
-          "image": {"src":"/mods/enchantress-darkwood-witness.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1771681325
-        },
-        {
-          "name": "Enchantress Sematary",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","misc","head","weapon"],
-          "image": {"src":"/mods/enchantress-sematary.webp","width":854,"height":480},
-          "author": "XIIIpsiblade",
-          "authorUrl": "https://t.me/XIIIpsiblade",
-          "date": 1790202267
-        },
-        {
-          "name": "Aghanim Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/aghanim-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Blue Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/blue-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Green Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/green-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Nemestice Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/nemestice-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Red Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/red-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI10 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti10-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI12 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti12-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "TI9 Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/ti9-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
-        },
-        {
-          "name": "Yellow Diretide Ranged Attack",
-          "categoryId": "ranged-attack",
-          "styleLabel": null,
-          "slots": [],
-          "image": {"src":"/mods/yellow-diretide-ranged-attack.webp","width":1280,"height":720},
-          "author": null,
-          "authorUrl": null,
-          "date": 1764003644
         }
       ]
     },
@@ -12861,11 +12901,11 @@
           "name": "Axe Automaton Reborn",
           "categoryId": "heroes",
           "styleLabel": null,
-          "slots": ["weapon","base","back","tail","belt","arms"],
+          "slots": ["arms","belt","tail","weapon","back","base"],
           "image": {"src":"/mods/axe-automaton-reborn.webp","width":854,"height":480},
           "author": "J0nathan550",
           "authorUrl": "https://github.com/J0nathan550",
-          "date": 1790528261
+          "date": 1790622902
         },
         {
           "name": "Axe Immortal Bootblack",
@@ -14802,6 +14842,33 @@
       ]
     },
     {
+      "id": "bard",
+      "name": "Largo",
+      "slug": "largo",
+      "mods": [
+        {
+          "name": "Custom Largo",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","weapon"],
+          "image": {"src":"/mods/custom-largo.webp","width":854,"height":480},
+          "author": "Defiree",
+          "authorUrl": "https://vk.com/defiree2mods",
+          "date": 1768458923
+        },
+        {
+          "name": "Largo Largling",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["misc","weapon"],
+          "image": {"src":"/mods/largo-largling.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1790623547
+        }
+      ]
+    },
+    {
       "id": "sand_king",
       "name": "Sand King",
       "slug": "sand-king",
@@ -14879,23 +14946,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1766145785
-        }
-      ]
-    },
-    {
-      "id": "bard",
-      "name": "Largo",
-      "slug": "largo",
-      "mods": [
-        {
-          "name": "Custom Largo",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["misc","weapon"],
-          "image": {"src":"/mods/custom-largo.webp","width":854,"height":480},
-          "author": "Defiree",
-          "authorUrl": "https://vk.com/defiree2mods",
-          "date": 1768458923
         }
       ]
     },
