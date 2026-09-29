@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1426,
+  "mods": 1428,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -48,6 +48,7 @@
         {"name":"Anti-Mage Bloody Reaper","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
         {"name":"Anti-Mage Blue Illidan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
         {"name":"Anti-Mage Creep","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head"]},
+        {"name":"Anti-Mage Fervent Conscript","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon","shoulder","offhand"]},
         {"name":"Anti-Mage Forgotten Planes","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon","shoulder"]},
         {"name":"Anti-Mage Illidan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon","legs","offhand","shoulder"]},
         {"name":"Anti-Mage Illidan v2","categoryId":"heroes","styleLabel":null,"slots":["head","weapon","arms","misc","belt"]},
@@ -1075,6 +1076,7 @@
         {"name":"Morphling Darktrench Purple","categoryId":"heroes","styleLabel":null,"slots":[]},
         {"name":"Morphling Darktrench Tears","categoryId":"heroes","styleLabel":null,"slots":["weapon"]},
         {"name":"Morphling Fluid Frenzy","categoryId":"heroes","styleLabel":null,"slots":["misc"]},
+        {"name":"Morphling Green Immortal","categoryId":"heroes","styleLabel":null,"slots":["head","weapon"]},
         {"name":"Morphling Immortal Electro Gem","categoryId":"heroes","styleLabel":null,"slots":[]},
         {"name":"Morphling Megalodon","categoryId":"heroes","styleLabel":null,"slots":[]},
         {"name":"Nemestice Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"slots":[]},

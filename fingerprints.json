@@ -1,5 +1,5 @@
 {
-  "count": 1456,
+  "count": 1458,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -136,6 +136,7 @@
     "15f18defb0d37347490e82ea40ba8fc3fa15c587": [{"name":"IO Purple","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "1628c50b8f2be12cced7ef7635f1cbd00a8bdf88": [{"name":"Ursa Immortal Hallowed Hunt","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "1632e854d2243f4042dc712bf314722d2a4ae7d1": [{"name":"Yellow Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"type":"vpk"}],
+    "166d8b571d5e83d8ddb8577de763545de0edca51": [{"name":"Morphling Green Immortal","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "168695a798c118d3cbde2add9f22158c1f91b5d3": [{"name":"Blue Diretide Ranged Attack","categoryId":"ranged-attack","styleLabel":null,"type":"vpk"}],
     "16d5454974ae9b395db074302956aa12d4c0c3e9": [{"name":"Immortal Storm Spirit","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "16df4157dfa74b61b27ab3b29c0a5e0f22b5fa7a": [{"name":"Immortal Necrophos","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
@@ -397,6 +398,7 @@
     "47acc8499a8375e4e87a580cd1b8fa554c00e753": [{"name":"Twilight Hud","categoryId":"huds","styleLabel":null,"type":"vpk"}],
     "47e71775b9db8dd70f66672a8c2aeba08989cc51": [{"name":"Snapfire Desert Ardalan","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "47f3d7417d443563f30bf356387eb6513ea21430": [{"name":"Storm Spirit Stormborn Mandate","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
+    "483c3983f6b92c9dea2c3d2ef3904f2ad499d627": [{"name":"Anti-Mage Fervent Conscript","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "48468fac0be233dd6e2b146fcecb7f8284afd7f9": [{"name":"Dragon Knight Fire","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "487a9bbba26a2538fc80f4e549ce30ac2d8ead1f": [{"name":"Alchemist Radiance Blades","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "48de643c5b8e63a0fcfd58471ab13337714025b7": [{"name":"Cone Trees","categoryId":"trees","styleLabel":null,"type":"vpk"}],
