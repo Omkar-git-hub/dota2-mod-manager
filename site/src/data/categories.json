@@ -709,6 +709,16 @@
     {
       "id": "backgrounds",
       "mods": [
+        {
+          "name": "Gwardjan Tad Dawl Perfezzjoni",
+          "styleLabel": null,
+          "image": {"src":"/mods/gwardjan-tad-dawl-perfezzjoni.webp","width":854,"height":480},
+          "author": "драг",
+          "authorUrl": "https://t.me/dragvpk",
+          "date": 1790709328
+        },
+        {"name":"The Great Awakening","styleLabel":null,"image":{"src":"/mods/the-great-awakening.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790709328},
+        {"name":"Xvii","styleLabel":null,"image":{"src":"/mods/xvii.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790709328},
         {"name":"Bliss","styleLabel":null,"image":{"src":"/mods/bliss.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790528664},
         {"name":"Taghmel Ix-Xita","styleLabel":null,"image":{"src":"/mods/taghmel-ix-xita.webp","width":854,"height":480},"author":"драг","authorUrl":"https://t.me/dragvpk","date":1790375737},
         {"name":"Dark Tree","styleLabel":null,"image":{"src":"/mods/dark-tree.webp","width":854,"height":480},"author":"XIIIpsiblade","authorUrl":"https://t.me/XIIIpsiblade","date":1790299521},

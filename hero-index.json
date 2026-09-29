@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1428,
+  "mods": 1431,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -53,6 +53,7 @@
         {"name":"Anti-Mage Illidan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon","legs","offhand","shoulder"]},
         {"name":"Anti-Mage Illidan v2","categoryId":"heroes","styleLabel":null,"slots":["head","weapon","arms","misc","belt"]},
         {"name":"Anti-Mage Manta","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
+        {"name":"Anti-Mage Persona Sakura","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
         {"name":"Anti-Mage Prime","categoryId":"heroes","styleLabel":null,"slots":["weapon","misc","head","arms","belt"]},
         {"name":"Anti-Mage Ronin Warrior","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
         {"name":"Anti-Mage Shadow Slayer","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","weapon"]},
@@ -762,6 +763,7 @@
         {"name":"Kez 200","categoryId":"hero-items","styleLabel":null,"slots":["head"]},
         {"name":"Kez Bersexer","categoryId":"heroes","styleLabel":null,"slots":["belt","head","shoulder","weapon"]},
         {"name":"Kez Captain Anchorbeak","categoryId":"heroes","styleLabel":null,"slots":["belt","head","offhand","shoulder","weapon"]},
+        {"name":"Kez Chickez","categoryId":"heroes","styleLabel":null,"slots":["belt","misc","head","offhand","shoulder","weapon"]},
         {"name":"Kez Guts Sword","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Kez Nanami Yachiyo Kai","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","misc","head","offhand","shoulder","weapon","back"]},
         {"name":"Kez Peacock","categoryId":"heroes","styleLabel":null,"slots":["belt","head","offhand","shoulder","weapon","arms"]},
@@ -1235,6 +1237,7 @@
         {"name":"Phantom Assassin Avowance","categoryId":"hero-items","styleLabel":"Crimson","slots":["shoulder"]},
         {"name":"Phantom Assassin Avowance","categoryId":"hero-items","styleLabel":null,"slots":["shoulder"]},
         {"name":"Phantom Assassin Codicil","categoryId":"hero-items","styleLabel":null,"slots":["head"]},
+        {"name":"Phantom Assassin Gothic","categoryId":"heroes","styleLabel":null,"slots":["back","misc","head","shoulder","weapon"]},
         {"name":"Phantom Assassin Persona","categoryId":"heroes","styleLabel":null,"slots":["misc","back","head","shoulder","weapon","belt","arms"]},
         {"name":"Phantom Assassin Rory","categoryId":"heroes","styleLabel":null,"slots":["misc","weapon","back","head","shoulder","belt"]},
         {"name":"Phantom Assassin Skull Arcana","categoryId":"heroes","styleLabel":null,"slots":["back","misc","head","shoulder","weapon"]},
