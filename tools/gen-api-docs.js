@@ -70,11 +70,12 @@ function splitDoc(doc) {
 }
 
 /** Everything a module says it exports: in the order module.exports lists them, or, for a module
- *  written with export, in the order they appear. Types are left out: the reference is about what
- *  can be called. */
+ *  written with export, in the order they appear. A TypeScript module's exported types are listed
+ *  with the rest: the shape of what it hands over is as much its interface as its functions. */
 function exportsOf(text) {
-  const named = [...text.matchAll(/^export\s+(?:async\s+)?(?:function\*?|const|let|class)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]);
-  for (const list of text.matchAll(/^export\s*\{([^}]*)\}/gm)) {
+  const named = [...text.matchAll(/^export\s+(?:async\s+)?(?:function\*?|const|let|class|interface|type)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]);
+  // `export { a } from './x'` is not this module's own: see reexportsOf
+  for (const list of text.matchAll(/^export\s*\{([^}]*)\}(?!\s*from\b)/gm)) {
     for (const part of list[1].split(',')) {
       const name = part.trim().split(/\s+as\s+/).pop();
       if (name && /^[A-Za-z_$][\w$]*$/.test(name)) named.push(name);
@@ -90,6 +91,18 @@ function exportsOf(text) {
     .filter((s) => /^[A-Za-z_$][\w$]*$/.test(s));
 }
 
+/** Names a module hands on from another one (`export { a, b } from './x.ts'`), grouped by where they
+ *  come from. They are described where they are defined, so here they are a pointer, not a gap. */
+function reexportsOf(text) {
+  const groups = [];
+  for (const m of text.matchAll(/^export\s+(?:type\s+)?\{([^}]*)\}\s*from\s*['"]\.\/([^'"]+)['"]/gm)) {
+    const names = m[1].split(',').map((p) => p.trim().split(/\s+as\s+/).pop()).filter((n) => n && /^[A-Za-z_$][\w$]*$/.test(n));
+    const group = groups.find((g) => g.from === m[2]);
+    if (group) group.names.push(...names); else groups.push({ from: m[2], names });
+  }
+  return groups;
+}
+
 /** Where a name is defined in this file, and how it is written there. */
 function defineOf(lines, name) {
   const patterns = [
@@ -97,6 +110,7 @@ function defineOf(lines, name) {
     new RegExp(`^(?:export\\s+)?class\\s+${name}\\b`),
     new RegExp(`^(?:export\\s+)?const\\s+${name}\\s*[=:]`),
     new RegExp(`^(?:export\\s+)?let\\s+${name}\\s*[=:]`),
+    new RegExp(`^(?:export\\s+)?(?:interface|type)\\s+${name}\\b`),
   ];
   for (let i = 0; i < lines.length; i++) {
     if (patterns.some((re) => re.test(lines[i]))) return i;
@@ -142,7 +156,7 @@ function moduleDoc(file, source = fs.readFileSync(path.join(SRC, file), 'utf8'))
     if (at === -1) { items.push({ name, sig: null, doc: '' }); continue; }
     items.push({ name, sig: signature(lines, at), doc: commentAbove(lines, at), line: at + 1 });
   }
-  return { file, header, items, lang: file.endsWith('.ts') ? 'ts' : 'js' };
+  return { file, header, items, reexports: reexportsOf(text), lang: file.endsWith('.ts') ? 'ts' : 'js' };
 }
 
 function render(mods) {
@@ -175,7 +189,12 @@ function render(mods) {
     out.push(`## src/${m.file}`);
     out.push('');
     if (m.header) { out.push(m.header); out.push(''); }
-    if (!m.items.length) { out.push('_Exports nothing._'); out.push(''); continue; }
+    for (const r of m.reexports || []) {
+      const into = r.from.startsWith('.') || r.from.includes('/') ? r.from : `src/${r.from}`;
+      out.push(`Hands on from [\`${into}\`](#${into.replace(/[./]/g, '')}): ${r.names.map((n) => `\`${n}\``).join(', ')}.`);
+      out.push('');
+    }
+    if (!m.items.length) { if (!(m.reexports || []).length) { out.push('_Exports nothing._'); out.push(''); } continue; }
     for (const it of m.items) {
       out.push(`### \`${it.name}\``);
       out.push('');

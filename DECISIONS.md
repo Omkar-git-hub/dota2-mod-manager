@@ -97,7 +97,7 @@ and `npm run typecheck`
 It is proprietary, and a project that bundles it is not open source in the sense a code-signing
 programme means. Reading and writing VPK archives is this repository's own code.
 
-*Check:* `src/vpk.js`, and `test/vpk.test.js`, which runs the writer against the reader.
+*Check:* `src/vpk.ts`, and `test/vpk.test.ts`, which runs the writer against the reader.
 
 ### The window is built by Vite, and moves to TypeScript and React
 
@@ -145,7 +145,7 @@ cannot go: installed copies of the app fetch it from `raw.githubusercontent.com`
 has in `main`. Moving it breaks every copy already on somebody's machine, and no release fixes
 the ones already out there.
 
-*Check:* `src/fingerprints.js`, the `FP_URL` constant.
+*Check:* `src/fingerprints.ts`, the `FP_URL` constant.
 
 ### A quarter of the commits are made by a scheduled job, and they stay
 
@@ -266,14 +266,14 @@ where one `git add` stages the data and the signatures.
 
 `config/app.json` can turn a feature off after a release and put a notice in front of everyone
 who opens the app, and it travels the same public proxies as everything else. It is signed with a
-key of this project's own, pinned in `src/remote-config.js`.
+key of this project's own, pinned in `src/remote-config.ts`.
 
 A copy that does not verify is treated as no file at all, which is what that module already does
 with every other failure. Refusing to start would be the wrong trade: the worst an attacker gets
 from breaking the signature is that the notices stop arriving, and dropping the request achieved
 that already. What they no longer get is to put words on the screen in this project's name.
 
-*Check:* `test/remote-config-signature.test.js`, which fails the build when the committed file
+*Check:* `test/remote-config-signature.test.ts`, which fails the build when the committed file
 and its signature disagree - the failure an unsigned edit would otherwise cause in silence, on
 the day somebody reached for a switch and it did not work.
 
@@ -359,7 +359,7 @@ to do next, and turning it off would put back the wording that caused the issues
 never listed as a mod either, so nobody removes it by accident; the site says it is there, and
 the uninstaller takes it out.
 
-*Check:* `node --test test/notice-text.test.js`, and `src/notice-texts.js` for every word of it.
+*Check:* `node --test test/notice-text.test.ts`, and `src/notice-texts.ts` for every word of it.
 
 ---
 
@@ -399,7 +399,7 @@ The suite runs on both since 2026-09-09, which is what issue
 the coverage gate, `windows-latest` runs the same tests for correctness, and that job earned
 itself on its first run by finding a libuv abort Linux cannot see.
 
-What is still one-sided is the floor. `src/steam.js` takes a different half of itself on each
+What is still one-sided is the floor. `src/steam.ts` takes a different half of itself on each
 operating system, so the two platforms report different figures, and a number calibrated against
 one of them fails on the other.
 
@@ -414,7 +414,7 @@ to the aggregate and nothing else, and says so. The Linux numbers are taken by r
 that is manual because a baseline that rewrites itself on every push is not a ratchet.
 
 Per file, because the aggregate hid the thing worth catching: it read 76.10% on the day this
-changed, while `src/presets-service.js` sat at 13.8% of its lines and `src/installer.js` at 48.5%,
+changed, while `src/presets-service.ts` sat at 13.8% of its lines and `src/installer.ts` at 48.5%,
 and a new module with no tests at all moves the aggregate by a fraction of a point.
 
 *Check:* `.github/coverage-baseline.json`, `tools/coverage.mjs`, and the `test:coverage` script in
@@ -436,21 +436,21 @@ a proxy are the ones the catalog's author signed for, and that is the part worth
 Mods the list has not caught up with at all are a smaller version of the same thing: they fall
 back to the hash remembered from the first download.
 
-*Check:* `src/net.js`, `downloadFile`, and `test/net.test.js` for the four cases it separates - a
+*Check:* `src/net.ts`, `downloadFile`, and `test/net.test.ts` for the four cases it separates - a
 stale mirror, a stale list, a proxy inventing bytes, and a hash pinned in this repository, which
 is never waived.
 
 ### `main.js` still holds several jobs
 
 It went from 3,102 lines to about 1,300 when the IPC handlers moved into `src/ipc-*.js`, and to
-about 1,150 on 2026-09-16, when the cursor rules went to `src/cursors.js` and everything a freshly
-landed VPK goes through before it counts as a mod went to `src/adopt.js`. What is left is the
+about 1,150 on 2026-09-16, when the cursor rules went to `src/cursors.ts` and everything a freshly
+landed VPK goes through before it counts as a mod went to `src/adopt.ts`. What is left is the
 window, the log, auto-update, deep links, the import progress bar, Discord presence and the
 language folder, which is still more than one file's worth of subject.
 
 It is one of five files carrying 6,754 lines between them while the median module in `src/` is
-171: `src/installer.js`, `renderer/views/catalog.js`, `renderer/views/library.js`, this one and
-`src/vpk.js`. None of them arrived that size; each grew a hundred lines at a time with nobody
+171: `src/installer.ts`, `renderer/views/catalog.js`, `renderer/views/library.js`, this one and
+`src/vpk.ts`. None of them arrived that size; each grew a hundred lines at a time with nobody
 deciding to. Since 2026-09-16 each has its length written in `.github/size-budget.json`, and
 `tools/size-budget.mjs` fails a run where one grows, or where a file nobody listed crosses 800
 lines. The budget does not split anything: it stops the drift, and every split shows up in it as a

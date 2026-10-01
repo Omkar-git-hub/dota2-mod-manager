@@ -56,16 +56,48 @@ test('a TypeScript module is read by its export statements, its opening comment 
     'export { hidden as shown, late };',
   ].join('\n'));
   assert.equal(doc.header, 'What this module is for,\nin two lines.', 'the opening comment, not the first export\'s');
-  assert.deepEqual(doc.items.map((it) => it.name), ['FIRST', 'pick', 'Box', 'shown', 'late'], 'types are not listed');
-  assert.equal(doc.items[1].sig, 'export function pick<T>(list: T[]): T');
-  assert.equal(doc.items[1].doc, 'Called with a type parameter.');
+  assert.deepEqual(doc.items.map((it) => it.name), ['FIRST', 'Shape', 'pick', 'Box', 'shown', 'late'], 'types are listed too');
+  assert.equal(doc.items[1].sig, 'export interface Shape { a: number }');
+  assert.equal(doc.items[2].sig, 'export function pick<T>(list: T[]): T');
+  assert.equal(doc.items[2].doc, 'Called with a type parameter.');
   assert.equal(doc.lang, 'ts');
+});
+
+test('a JavaScript module is read by its module.exports list, a renamed entry under its public name', () => {
+  // no module in src/ is written this way any more, but the reader still is, for as long as one could be
+  const doc = moduleDoc('old.js', [
+    '// What this module was for.',
+    'function first() {}',
+    '/** The second, with a comment. */',
+    'function second() {}',
+    'module.exports = {',
+    '  first, // the plain one',
+    '  public: second,',
+    '};',
+  ].join('\n'));
+  assert.deepEqual(doc.items.map((it) => it.name), ['first', 'public']);
+  assert.equal(doc.lang, 'js');
+  assert.equal(doc.header, 'What this module was for.');
+});
+
+test('a module that hands on names from another points there instead of counting them as gaps', () => {
+  const doc = moduleDoc('door.ts', [
+    '// The door everything comes through.',
+    "export { read, list } from './door-read.ts';",
+    "export type { Entry } from './door-read.ts';",
+    "export {\n  build,\n} from './door-write.ts';",
+  ].join('\n'));
+  assert.deepEqual(doc.items, [], 'nothing of its own');
+  assert.deepEqual(doc.reexports, [
+    { from: 'door-read.ts', names: ['read', 'list', 'Entry'] },
+    { from: 'door-write.ts', names: ['build'] },
+  ]);
 });
 
 /* A ratchet, not a target. Every export with no comment above it is a gap in the source, and
  * this number is only ever allowed to go down: lower it when you document something, never
  * raise it to make a new undocumented export fit. */
-const UNDOCUMENTED_CEILING = 57;
+const UNDOCUMENTED_CEILING = 45;
 
 test('the number of exports nobody has explained does not grow', () => {
   const text = read(OUT);

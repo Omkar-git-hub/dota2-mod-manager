@@ -17,46 +17,46 @@ try {
   ({ autoUpdater } = require('electron-updater'));
 } catch { /* dev environment without the dependency installed yet */ }
 
-const { Settings } = require('./src/settings');
-const { Catalog } = require('./src/catalog');
-const { Installer } = require('./src/installer');
+const { Settings } = require('./src/settings.ts');
+const { Catalog } = require('./src/catalog.ts');
+const { Installer } = require('./src/installer.ts');
 // under one name: main.js has a wrapper of its own called importVpkBuffers
-const importer = require('./src/import');
-const { createCursors } = require('./src/cursors');
-const { createAdopt } = require('./src/adopt');
-const { Library } = require('./src/library');
-const { Fingerprints } = require('./src/fingerprints');
-const { SCHEME } = require('./src/preset-link');
-const discordAuth = require('./src/discord-auth');
-const { DiscordPresence } = require('./src/discord-presence');
-const { findDotaGamePath, validateGamePath } = require('./src/steam');
-const { createSchemaService } = require('./src/schema-service');
-const { createRemoteConfig } = require('./src/remote-config');
+const importer = require('./src/import.ts');
+const { createCursors } = require('./src/cursors.ts');
+const { createAdopt } = require('./src/adopt.ts');
+const { Library } = require('./src/library.ts');
+const { Fingerprints } = require('./src/fingerprints.ts');
+const { SCHEME } = require('./src/preset-link.ts');
+const discordAuth = require('./src/discord-auth.ts');
+const { DiscordPresence } = require('./src/discord-presence.ts');
+const { findDotaGamePath, validateGamePath } = require('./src/steam.ts');
+const { createSchemaService } = require('./src/schema-service.ts');
+const { createRemoteConfig } = require('./src/remote-config.ts');
 // the download chain, so a mirror named in that signed file joins it (electron's own `net` is above)
-const { applyMirrors } = require('./src/net');
-const { createToolchain } = require('./src/toolchain');
-const { createGameIcons } = require('./src/game-icons');
-const { createModPreviews } = require('./src/mod-preview');
-const { createModIdentity } = require('./src/mod-id');
-const portableUpdater = require('./src/portable-update');
-const { createUpdater } = require('./src/updater');
+const { applyMirrors } = require('./src/net.ts');
+const { createToolchain } = require('./src/toolchain.ts');
+const { createGameIcons } = require('./src/game-icons.ts');
+const { createModPreviews } = require('./src/mod-preview.ts');
+const { createModIdentity } = require('./src/mod-id.ts');
+const portableUpdater = require('./src/portable-update.ts');
+const { createUpdater } = require('./src/updater.ts');
 const { channelFor } = require('./src/beta.ts');
-const { gameStamp, createPatchWatcher } = require('./src/patch-watch');
-const { Icons } = require('./src/icons');
-const gamelang = require('./src/gamelang');
+const { gameStamp, createPatchWatcher } = require('./src/patch-watch.ts');
+const { Icons } = require('./src/icons.ts');
+const gamelang = require('./src/gamelang.ts');
 // handed to src/ipc-settings.js by name, the same one it has always been passed under
 const { moveLangFolder } = gamelang;
-const { uninstallFlow } = require('./src/uninstall-window');
+const { uninstallFlow } = require('./src/uninstall-window.ts');
 const { isUninstallRun } = require('./src/uninstall-args.ts');
-const { presetsService } = require('./src/presets-service');
+const { presetsService } = require('./src/presets-service.ts');
 const { registerPresetsIpc } = require('./src/ipc-presets');
 const { registerModsIpc } = require('./src/ipc-mods');
-const { createGate } = require('./src/feature-gate');
+const { createGate } = require('./src/feature-gate.ts');
 const { registerLibraryIpc } = require('./src/ipc-library');
 const { registerPacksIpc } = require('./src/ipc-packs');
 const { registerWindowIpc } = require('./src/ipc-window');
 const { registerMiscIpc } = require('./src/ipc-misc');
-const { settingsViewFor } = require('./src/settings-view');
+const { settingsViewFor } = require('./src/settings-view.ts');
 const { registerSettingsIpc } = require('./src/ipc-settings');
 const { registerGameIpc } = require('./src/ipc-game');
 const { registerDiagnosticsIpc } = require('./src/ipc-diagnostics');
@@ -68,7 +68,7 @@ let presets;
 // filled in once the services exist, below; the ipc modules are handed these by name
 let isCursorRecord, disableOtherCursors, disableOtherCosmetics, applyMasterToCursors, reconcileCursors;
 let adoptImportedFiles, registerImportResults;
-const i18n = require('./src/i18n');
+const i18n = require('./src/i18n.ts');
 const { t } = i18n;
 
 /* Portable mode (issue #2).
@@ -419,7 +419,7 @@ function createWindow() {
   }
 }
 
-// A small rotating log every install keeps, so a support report (see src/diagnostics.js and
+// A small rotating log every install keeps, so a support report (see src/diagnostics.ts and
 // the diag:export handler below) doesn't depend on reproducing the problem live. MM_DIAG is
 // a separate, opt-in mirror to an arbitrary path, used only by the screenshot test harness.
 let _logFile = null;
@@ -481,7 +481,7 @@ app.whenReady().then(async () => {
      after this build shipped is in the chain from the first download rather than the second run. */
   applyMirrors(remoteConfig.mirrors());
   remoteConfig.refresh().then(() => applyMirrors(remoteConfig.mirrors()));
-  // pictures for the cosmetics picker come through Electron's network stack (see src/icons.js)
+  // pictures for the cosmetics picker come through Electron's network stack (see src/icons.ts)
   icons = new Icons(userData, net.fetch);
   // ...unless the Source 2 toolchain is here, in which case they come out of the game itself
   toolchain = createToolchain({ userDataDir: userData, onProgress: sendProgress, log: diag });
@@ -664,7 +664,7 @@ app.whenReady().then(async () => {
 
 /* ---- auto-update (packaged builds only) ----
  *
- * src/updater.js holds it, including which channel this copy reads: the stable one, or the beta
+ * src/updater.ts holds it, including which channel this copy reads: the stable one, or the beta
  * for an account the signed config names. The channel is a function rather than a value, so a
  * tester taken off that list is back on stable at the next check.
  */
@@ -766,7 +766,7 @@ if (!app.requestSingleInstanceLock()) {
   app.on('open-url', (e, url) => { e.preventDefault(); handleDeepLink(url); }); // macOS
 }
 
-// register what src/import.js handed back into the library
+// register what src/import.ts handed back into the library
 /**
  * The changelog section for one version, in the app's language when there is a translation.
  * The same file CI puts on the release page, shipped with the build so the screen works
@@ -816,7 +816,7 @@ const importVpkBuffers = (items) => runImport(importer.importVpkBuffers, Array.i
 // ---------- item schema (game/dota_mods) ----------
 // The engine reads scripts/items/items_game.txt through the MOD path - the game's own dota
 // folder - so nothing in a language folder can override it. Mods therefore never ship their
-// copy: src/schema-service.js lifts the blocks they changed and splices them into the game's
+// copy: src/schema-service.ts lifts the blocks they changed and splices them into the game's
 // CURRENT table. Everything below is a thin call into that service.
 
 // Whether toggling/removing this record can change what belongs in the built schema: a mod
@@ -1042,7 +1042,7 @@ function registerIpc() {
     releaseNotes, sendProgress, settings, win: () => win,
   });
 
-  // What the Settings screen is told, computed in src/settings-view.js. The two pieces of
+  // What the Settings screen is told, computed in src/settings-view.ts. The two pieces of
   // state it reads are handed over as functions, because both change while the app runs.
   const settingsView = settingsViewFor({
     settings,

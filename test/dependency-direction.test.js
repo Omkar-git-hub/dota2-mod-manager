@@ -25,7 +25,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 
 const ELECTRON_USERS = [
-  'src/discord-auth.js',
+  'src/discord-auth.ts',
   'src/ipc-diagnostics.js',
   'src/ipc-game.js',
   'src/ipc-library.js',
@@ -35,9 +35,9 @@ const ELECTRON_USERS = [
   'src/ipc-presets.js',
   'src/ipc-settings.js',
   'src/ipc-window.js',
-  'src/mod-preview.js',
-  'src/presets-service.js',
-  'src/uninstall-window.js',
+  'src/mod-preview.ts',
+  'src/presets-service.ts',
+  'src/uninstall-window.ts',
 ];
 
 // require('x'), and the ESM forms the TypeScript modules use: import ... from 'x', import('x')
@@ -121,8 +121,9 @@ test('the parsers and everything that writes the game folder are nowhere near th
   /* The list could in principle grow to take one of these in. These are named so that it cannot
      happen by editing a single array: each of them reading or writing files is the reason the
      tests exist. */
-  const core = ['src/vpk.js', 'src/safe-zip.js', 'src/installer.js', 'src/import.js', 'src/schema.js',
-    'src/patcher.js', 'src/gamelang.js', 'src/file-tx.js', 'src/net.js', 'src/adopt.js', 'src/cursors.js'];
+  const core = ['src/vpk.ts', 'src/vpk-read.ts', 'src/vpk-write.ts', 'src/vpk-analyze.ts', 'src/safe-zip.ts', 'src/installer.ts', 'src/installer-files.ts', 'src/installer-downloads.ts', 'src/installer-slots.ts',
+    'src/installer-packs.ts', 'src/installer-repack.ts', 'src/installer-folder.ts', 'src/import.ts', 'src/schema.ts',
+    'src/patcher.ts', 'src/gamelang.ts', 'src/file-tx.ts', 'src/net.ts', 'src/adopt.ts', 'src/cursors.ts'];
   for (const file of core) {
     assert.ok(!ELECTRON_USERS.includes(file), `${file} is on the Electron list`);
     assert.equal(pathToElectron(ROOT, file), null, `${file} reaches Electron`);
