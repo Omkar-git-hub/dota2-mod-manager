@@ -1,5 +1,5 @@
 {
-  "count": 1478,
+  "count": 1479,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -1275,6 +1275,7 @@
     "e085737877bfa8cadbd3acbf10be3b4ab93b11ad": [{"name":"Invoker Dark Artistry","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "e0ec6f1e33fff2819f9499f0118129ac388ed288": [{"name":"Shadow Fiend Eternal Harvest","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "e1c25e11bf7fc93195e3fe33c6fa2a5f81e338ea": [{"name":"Sven Holy Paladin","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
+    "e1ce03bf1f675b62c6305ae7c7cd266fe6a9b67e": [{"name":"Grey Minimap","categoryId":"parts","styleLabel":null,"type":"vpk"}],
     "e1ded77ec1227408dde9cce1aa7618d7e23cb4ee": [{"name":"Legion Commander Holy Paladin","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "e26d7c1285f28384f31204dca547bc3153590611": [{"name":"Juggernaut Bladeform Aesthete","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "e2b0430c2b4747f4cc829e8c7f54da494ad28c7d": [{"name":"Doom Jeanne Alter","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
