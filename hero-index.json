@@ -1,6 +1,6 @@
 {
   "heroes": 147,
-  "mods": 1450,
+  "mods": 1452,
   "byHero": {
     "abaddon": {
       "name": "Abaddon",
@@ -963,6 +963,7 @@
         {"name":"Better Lycan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc","head"]},
         {"name":"Lycan Blood Beast","categoryId":"heroes","styleLabel":null,"slots":["belt","weapon"]},
         {"name":"Lycan Blood Moon","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc"]},
+        {"name":"Lycan Collector 2021","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc","head"]},
         {"name":"Lycan Frostbloom Claws","categoryId":"hero-items","styleLabel":null,"slots":["weapon"]},
         {"name":"Lycan Furrytrop","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc","head"]},
         {"name":"Lycan Red Wolf Clan","categoryId":"heroes","styleLabel":null,"slots":["arms","belt","weapon","misc","head"]},
@@ -1587,6 +1588,7 @@
       "name": "Slardar",
       "mods": [
         {"name":"Immortal Slardar","categoryId":"heroes","styleLabel":null,"slots":["back","weapon"]},
+        {"name":"Slardar Diretide Shimmer","categoryId":"heroes","styleLabel":null,"slots":["arms","back","weapon"]},
         {"name":"Slardar Naga Guardian","categoryId":"heroes","styleLabel":null,"slots":["back","weapon","misc","head","arms"]}
       ]
     },

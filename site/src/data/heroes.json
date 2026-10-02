@@ -13431,6 +13431,93 @@
       ]
     },
     {
+      "id": "lycan",
+      "name": "Lycan",
+      "slug": "lycan",
+      "mods": [
+        {
+          "name": "Better Lycan",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","belt","weapon","misc","head"],
+          "image": {"src":"/mods/better-lycan.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1790267695
+        },
+        {
+          "name": "Lycan Collector 2021",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","belt","weapon","misc","head"],
+          "image": {"src":"/mods/lycan-collector-2021.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://t.me/harlord_mods",
+          "date": 1790931352
+        },
+        {
+          "name": "Lycan Furrytrop",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","belt","weapon","misc","head"],
+          "image": {"src":"/mods/lycan-furrytrop.webp","width":854,"height":480},
+          "author": "Mopsyara",
+          "authorUrl": "https://t.me/+AM_aLD0x2TcwY2My",
+          "date": 1787564102
+        },
+        {
+          "name": "Lycan Red Wolf Clan",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","belt","weapon","misc","head"],
+          "image": {"src":"/mods/lycan-red-wolf-clan.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1763704289
+        },
+        {
+          "name": "Lycan Blood Moon",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","belt","weapon","misc"],
+          "image": {"src":"/mods/lycan-blood-moon.webp","width":854,"height":480},
+          "author": "Dota2VPK",
+          "authorUrl": "https://t.me/dota2freevpk",
+          "date": 1781974496
+        },
+        {
+          "name": "Winter Lycan",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","belt","weapon","misc"],
+          "image": {"src":"/mods/winter-lycan.webp","width":854,"height":480},
+          "author": "Darkness",
+          "authorUrl": "https://t.me/Darkness_Logovo",
+          "date": 1768802599
+        },
+        {
+          "name": "Lycan Blood Beast",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["belt","weapon"],
+          "image": {"src":"/mods/lycan-blood-beast.webp","width":854,"height":480},
+          "author": "frayserclick",
+          "authorUrl": "https://t.me/frayserclick",
+          "date": 1787470721
+        },
+        {
+          "name": "Lycan Frostbloom Claws",
+          "categoryId": "hero-items",
+          "styleLabel": null,
+          "slots": ["weapon"],
+          "image": {"src":"/mods/lycan-frostbloom-claws.webp","width":854,"height":480},
+          "author": "Harlord",
+          "authorUrl": "https://t.me/harlord_mods",
+          "date": 1790170612
+        }
+      ]
+    },
+    {
       "id": "night_stalker",
       "name": "Night Stalker",
       "slug": "night-stalker",
@@ -13668,83 +13755,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1780214981
-        }
-      ]
-    },
-    {
-      "id": "lycan",
-      "name": "Lycan",
-      "slug": "lycan",
-      "mods": [
-        {
-          "name": "Better Lycan",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","belt","weapon","misc","head"],
-          "image": {"src":"/mods/better-lycan.webp","width":854,"height":480},
-          "author": "Миша Талант",
-          "authorUrl": "https://t.me/madberserker",
-          "date": 1790267695
-        },
-        {
-          "name": "Lycan Furrytrop",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","belt","weapon","misc","head"],
-          "image": {"src":"/mods/lycan-furrytrop.webp","width":854,"height":480},
-          "author": "Mopsyara",
-          "authorUrl": "https://t.me/+AM_aLD0x2TcwY2My",
-          "date": 1787564102
-        },
-        {
-          "name": "Lycan Red Wolf Clan",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","belt","weapon","misc","head"],
-          "image": {"src":"/mods/lycan-red-wolf-clan.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1763704289
-        },
-        {
-          "name": "Lycan Blood Moon",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","belt","weapon","misc"],
-          "image": {"src":"/mods/lycan-blood-moon.webp","width":854,"height":480},
-          "author": "Dota2VPK",
-          "authorUrl": "https://t.me/dota2freevpk",
-          "date": 1781974496
-        },
-        {
-          "name": "Winter Lycan",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["arms","belt","weapon","misc"],
-          "image": {"src":"/mods/winter-lycan.webp","width":854,"height":480},
-          "author": "Darkness",
-          "authorUrl": "https://t.me/Darkness_Logovo",
-          "date": 1768802599
-        },
-        {
-          "name": "Lycan Blood Beast",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["belt","weapon"],
-          "image": {"src":"/mods/lycan-blood-beast.webp","width":854,"height":480},
-          "author": "frayserclick",
-          "authorUrl": "https://t.me/frayserclick",
-          "date": 1787470721
-        },
-        {
-          "name": "Lycan Frostbloom Claws",
-          "categoryId": "hero-items",
-          "styleLabel": null,
-          "slots": ["weapon"],
-          "image": {"src":"/mods/lycan-frostbloom-claws.webp","width":854,"height":480},
-          "author": "Harlord",
-          "authorUrl": "https://t.me/harlord_mods",
-          "date": 1790170612
         }
       ]
     },
@@ -14906,6 +14916,43 @@
       ]
     },
     {
+      "id": "slardar",
+      "name": "Slardar",
+      "slug": "slardar",
+      "mods": [
+        {
+          "name": "Slardar Naga Guardian",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","weapon","misc","head","arms"],
+          "image": {"src":"/mods/slardar-naga-guardian.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1765100855
+        },
+        {
+          "name": "Slardar Diretide Shimmer",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["arms","back","weapon"],
+          "image": {"src":"/mods/slardar-diretide-shimmer.webp","width":854,"height":480},
+          "author": "Миша Талант",
+          "authorUrl": "https://t.me/madberserker",
+          "date": 1790931352
+        },
+        {
+          "name": "Immortal Slardar",
+          "categoryId": "heroes",
+          "styleLabel": null,
+          "slots": ["back","weapon"],
+          "image": {"src":"/mods/immortal-slardar.webp","width":854,"height":480},
+          "author": null,
+          "authorUrl": null,
+          "date": 1783633485
+        }
+      ]
+    },
+    {
       "id": "tidehunter",
       "name": "Tidehunter",
       "slug": "tidehunter",
@@ -15159,33 +15206,6 @@
           "author": null,
           "authorUrl": null,
           "date": 1756539017
-        }
-      ]
-    },
-    {
-      "id": "slardar",
-      "name": "Slardar",
-      "slug": "slardar",
-      "mods": [
-        {
-          "name": "Slardar Naga Guardian",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["back","weapon","misc","head","arms"],
-          "image": {"src":"/mods/slardar-naga-guardian.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1765100855
-        },
-        {
-          "name": "Immortal Slardar",
-          "categoryId": "heroes",
-          "styleLabel": null,
-          "slots": ["back","weapon"],
-          "image": {"src":"/mods/immortal-slardar.webp","width":854,"height":480},
-          "author": null,
-          "authorUrl": null,
-          "date": 1783633485
         }
       ]
     },

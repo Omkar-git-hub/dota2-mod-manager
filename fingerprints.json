@@ -1,5 +1,5 @@
 {
-  "count": 1490,
+  "count": 1492,
   "mods": {
     "0000ecb27ee7db1063087b627a7cdb94651a4655": [{"name":"Windranger Autumn Arcana","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "002fe0eee5ace922f363486ddc1f979d8f2c232e": [{"name":"Gold River","categoryId":"river","styleLabel":null,"type":"vpk"}],
@@ -513,6 +513,7 @@
     "5d3ce09da6166e6d64bfa7cebb576054129b7440": [{"name":"Pine Forest","categoryId":"backgrounds","styleLabel":null,"type":"vpk"}],
     "5d93c1e852dd7423dcfef6980c294e29c9a79c23": [{"name":"Invoker Blackguard Magus","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "5de5f841d59eff3e8de7850c5d62cc2cb03f5e5c": [{"name":"Terrorblade Foulfell Corruptor","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
+    "5e01db4144d2a1bf55c8e8749a7c1441bdebcbde": [{"name":"Lycan Collector 2021","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "5e29d3c82b5f12161811a8798b6b91ea4bf6c5fd": [{"name":"Dragon Knight Burning Scale","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "5e472cf5f312fc274f3a83f0ebe89f4000f9ba0b": [{"name":"Phantom Lancer Pose","categoryId":"hero-items","styleLabel":null,"type":"vpk"}],
     "5e66a498620945029aee8af3b088a351dd810a78": [{"name":"Stariy Bog Mega-Kill","categoryId":"mega-kill","styleLabel":null,"type":"vpk"}],
@@ -628,6 +629,7 @@
     "6f11e96000961cfd205a5d4124b0b976c0a4c084": [{"name":"Magnus Ornate Cruelty","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "6f2051287375be50a1827a8f2e030bd105a35e84": [{"name":"Baby Roshan Crownfall","categoryId":"couriers","styleLabel":null,"type":"vpk"}],
     "6f35a7836b27db9012ba41b8f49ada6a1fa1d6a1": [{"name":"Azur Lane Cursor","categoryId":"cursors","styleLabel":null,"type":"files"}],
+    "6f5cdc008bd021e70b736765bb42e40de2acffff": [{"name":"Slardar Diretide Shimmer","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "6fa01fb52521d902d5f2f3c901d1ab4d7d68b216": [{"name":"Void Spirit Keqing","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
     "6ffb62f7de26bc7cc80af354ac1442db923b36a9": [{"name":"TI 2010 Battle Pass","categoryId":"ti-bp-effects","styleLabel":null,"type":"vpk"}],
     "70219fb47e04a91ed1fd585fb0826855c389b446": [{"name":"Kez Chickez","categoryId":"heroes","styleLabel":null,"type":"vpk"}],
