@@ -18,11 +18,15 @@ CommonJS JavaScript checked through their JSDoc. DECISIONS.md, "The window is bu
 says why.
 
 ```
-main.js            app lifecycle, window, auto-update. Nothing else belongs here
+src/main.ts        the order the app starts in, and auto-update. Nothing else belongs here
 preload.js         the only bridge the renderer gets. Every channel is listed once
+renderer/api/      its types: every name on window.api, and what each handler answers
 src/               everything that thinks: installer, vpk, schema, gamelang, catalog…
-src/ipc-*.js       one file per group of channels, each naming what it needs
+src/ipc-*.ts       one file per group of channels, each naming what it needs
 renderer/          the UI. views/ draw screens, ui/ are shared pieces, core/ is state
+renderer/shell/    what is not a screen: title bar, status bar, search, drops, updates
+renderer/catalog/  the catalog's React components, and the rules they draw in .ts with tests
+renderer/library/  the same for My mods; renderer/presets/ and renderer/settings/ for the rest
 test/              node:test, no framework, no mocks library
 tools/             scripts that are not shipped: fingerprints, i18n check, sandbox
 site/              the documentation site (Astro). Separate from the app
@@ -39,8 +43,8 @@ back after they stopped being true. Every entry carries a command that settles i
 here to review rather than to change something, that file is the whole brief.
 
 **Do not read whole source files to orient yourself.** Find the symbol, then read its slice.
-`main.js` and `src/installer.ts` are large and reading them end to end wastes more than it
-tells you.
+`src/schema.ts`, `src/item-builder.ts` and `src/icons.ts` are over 500 lines, and reading one end
+to end wastes more than it tells you.
 
 **The domain is unusual and the obvious assumption is usually wrong.** Three examples that have
 each cost real time:
@@ -69,8 +73,8 @@ mistake is expensive: `sandbox/` is a disposable copy of the game's folder shape
 `npm run start:sandbox` runs against it with its own user data.
 
 For a UI change, `MM_SHOT=<path>` takes a screenshot after load; `MM_EVAL=<js>` writes the
-answer to a question about the finished DOM beside it. Both are dev-only and documented at the
-top of `main.js`. A screenshot proves a layout; `MM_EVAL` proves the text, the language and the
+answer to a question about the finished DOM beside it. Both are dev-only and documented in
+`src/dev-harness.ts`. A screenshot proves a layout; `MM_EVAL` proves the text, the language and the
 state, and it is the one that catches real bugs.
 
 ## What the tests will not let you do
@@ -78,7 +82,7 @@ state, and it is the one that catches real bugs.
 Four of them check the project against itself rather than checking code:
 
 - `test/ipc-contract.test.js` — every channel the renderer can call has a handler, every
-  handler is reachable, none registered twice, every `src/ipc-*.js` wired into main.
+  handler is reachable, none registered twice, every `src/ipc-*.ts` wired into main.
 - `test/release-contract.test.js` — the version, both changelogs and what CI reads all agree.
 - `test/coverage.test.ts` — which mod supplies a file when two carry the same path.
 - `tools/check-i18n.js` — no Russian string without an English one.

@@ -16,21 +16,20 @@
  * nothing should be removed at all, anything else means carry on. 4 additionally means the
  * app's own folder goes with the program.
  *
- * It lives here rather than in main.js because it is a whole second application - its own
+ * It lives here rather than in src/main.ts because it is a whole second application - its own
  * window, its own preload, its own five IPC channels, its own exit protocol - that shares
  * nothing with the app except the services it borrows to do the removing.
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRequire } from 'node:module';
 
 import { removeNotice } from './notice-text.ts';
+import { electron } from './electron.ts';
+import { folderSize } from './folder-size.ts';
 import type { Settings } from './settings.ts';
 import type { Library } from './library.ts';
 import type { LibFile, LibRecord } from './types.ts';
 
-// electron through require, as before: under plain node, in tests, it is only a path
-const { app, BrowserWindow, ipcMain } = createRequire(import.meta.url)('electron') as typeof import('electron');
 
 /** What of the installer the removal asks: sizes, the language folder, and taking mods out. */
 export interface UninstallInstaller {
@@ -45,22 +44,6 @@ export const UNINSTALL_CANCELLED = 3;
 /** The exit code that tells it to take the app's own folder too. */
 export const UNINSTALL_WIPE_DATA = 4;
 
-/** Bytes under a folder, however deep. */
-export function folderSize(dir: string): number {
-  let bytes = 0;
-  const walk = (at: string) => {
-    let names: fs.Dirent[] = [];
-    try { names = fs.readdirSync(at, { withFileTypes: true }); } catch { return; }
-    for (const e of names) {
-      const full = path.join(at, e.name);
-      if (e.isDirectory()) walk(full);
-      else { try { bytes += fs.statSync(full).size; } catch { /* vanished mid-walk */ } }
-    }
-  };
-  walk(dir);
-  return bytes;
-}
-
 /**
  * The uninstall flow, given the app's own services.
  *
@@ -73,6 +56,7 @@ export function uninstallFlow({ settings, library, installer, schemaService, dia
   settings: Pick<Settings, 'get'>; library: Pick<Library, 'list' | 'removeRecord'>; installer: UninstallInstaller;
   schemaService: { setEnabled(on: boolean): unknown }; diag: (msg: string) => void; appRoot: string;
 }): { open: () => Electron.BrowserWindow } {
+  const { app, BrowserWindow, ipcMain } = electron();
   let answered = false;
 
   /** What there is to remove, so the window can say it rather than ask in the abstract. */

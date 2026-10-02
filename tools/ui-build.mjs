@@ -3,10 +3,10 @@
  * Builds the window's page into out/renderer when it is missing or older than its sources.
  *
  * Everything that starts the app from a checkout goes through here first: `npm start`, the
- * sandbox, the simulation and the end-to-end run. main.js loads the built page and nothing else,
- * so a run on a stale build would test yesterday's interface and pass. electron-builder rebuilds
- * it unconditionally before packing (tools/before-pack.cjs), so an installer never carries an
- * old one either.
+ * sandbox, the simulation and the end-to-end run. The main process loads the built page and
+ * nothing else, so a run on a stale build would test yesterday's interface and pass.
+ * electron-builder rebuilds it unconditionally before packing (tools/before-pack.cjs), so an
+ * installer never carries an old one either.
  *
  *   node tools/ui-build.mjs           build if stale
  *   node tools/ui-build.mjs --force   build anyway

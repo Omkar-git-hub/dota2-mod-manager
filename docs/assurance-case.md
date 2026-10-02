@@ -24,7 +24,7 @@ app can reach is short and public ([PRIVACY.md](../PRIVACY.md)).
 |---|---|---|---|
 | 1 | The network and the app | Catalog data, mod archives, the switches file, one external tool | `src/net.ts`, `src/catalog-signature.ts`, `src/remote-config.ts`, `src/toolchain.ts` |
 | 2 | Foreign archives and the disk | Zip and VPK contents, file names, paths | `src/safe-zip.ts`, `src/vpk.ts`, `src/file-tx.ts` |
-| 3 | The main process and the window | Every action the UI can ask for | `preload.js` and the `src/ipc-*.js` modules |
+| 3 | The main process and the window | Every action the UI can ask for | `preload.js` and the `src/ipc-*.ts` modules |
 | 4 | The app and the game folder | Mod packs, loose fonts and cursors, one patched text file | `src/installer.ts`, `src/overlays.ts`, `src/patcher.ts` |
 | 5 | The user and everything above | Files they drop, presets from other people | `src/import.ts`, `src/preset-share.ts`, `src/adopt.ts` |
 
@@ -67,13 +67,13 @@ write and put back byte for byte on revert.
 through an allowlist of tags, and the window runs under a content security policy with no remote
 scripts, no node integration and context isolation on, so text that got through would still have
 nothing to reach.
-*Check:* `renderer/ui/guide.js` (`sanitizeGuideHtml`), `renderer/index.html` (the policy itself),
+*Check:* `renderer/ui/guide.ts` (`sanitizeGuideHtml`), `renderer/index.html` (the policy itself),
 `main.js` (`contextIsolation: true`, `nodeIntegration: false`).
 
 **The window asking for something the app should not do.** The renderer cannot touch the
 filesystem or start a process, and the policy limits what it may fetch to pictures from two
 hosts. Everything else it does is a channel `preload.js` exposes, each one handled in an
-`src/ipc-*.js` module that checks its arguments on the main side.
+`src/ipc-*.ts` module that checks its arguments on the main side.
 *Check:* `test/ipc-contract.test.js`, which holds the channel list against what the renderer and
 the preload actually use.
 

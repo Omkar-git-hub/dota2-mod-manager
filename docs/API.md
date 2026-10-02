@@ -14,22 +14,30 @@ the code, not in this page.
 | Module | What it owns |
 |---|---|
 | [`src/adopt.ts`](#srcadoptts) | What a VPK has to go through before it counts as a mod. |
-| [`src/app-page.js`](#srcapp-pagejs) | The page the main window loads. |
+| [`src/app-context.ts`](#srcapp-contextts) | Everything the running app hands its IPC modules: the services src/main.ts builds at start, and the |
+| [`src/app-log.ts`](#srcapp-logts) | The app's own log: a small file every install keeps, so a support report (src/diagnostics.ts) |
+| [`src/app-page.ts`](#srcapp-pagets) | The page the main window loads. |
 | [`src/beta.ts`](#srcbetats) | The beta channel: who is let in, and which update feed this copy reads. |
 | [`src/capture.ts`](#srccapturets) | Take a screenshot of the window, and try again when Chromium has no frame to hand over yet. |
 | [`src/catalog-signature.ts`](#srccatalog-signaturets) | Making the catalog's own author the only person who can change the catalog. |
 | [`src/catalog.ts`](#srccatalogts) | Catalog: fetch + cache mods.json / constants.json / guides.json from the Dota2PornFx repo |
 | [`src/cursors.ts`](#srccursorsts) | Which cursor set is live, and which look a slot is wearing. |
+| [`src/deep-links.ts`](#srcdeep-linksts) | d2mm:// links: a preset link clicked anywhere on the system, and on Linux, telling the desktop |
+| [`src/dev-harness.ts`](#srcdev-harnessts) | The switches that let a script drive the window: a screenshot after some clicks (MM_SHOT and |
 | [`src/diagnostics.ts`](#srcdiagnosticsts) | A support report a user can send instead of a round of screenshots: Dota's own path and |
 | [`src/discord-auth.ts`](#srcdiscord-authts) | Sign in with Discord, without a server of our own. |
 | [`src/discord-presence.ts`](#srcdiscord-presencets) | "Playing Dota 2 Mod Manager" in Discord, via Discord's local IPC socket. |
+| [`src/electron.ts`](#srcelectronts) | Electron's main-process API, asked for at the moment it is used. |
+| [`src/error-text.ts`](#srcerror-textts) | What a caught error says, as one line of text. |
 | [`src/feature-gate.ts`](#srcfeature-gatets) | Is this feature switched off right now? |
 | [`src/file-tx.ts`](#srcfile-txts) | All of it, or none of it. |
 | [`src/fingerprints.ts`](#srcfingerprintsts) | Fingerprint index: fetch + cache the fp -> mod identity map published alongside the |
+| [`src/folder-size.ts`](#srcfolder-sizets) | Bytes under a folder: the number Settings shows beside each cache, and the one the removal |
 | [`src/game-icons.ts`](#srcgame-iconsts) | Item pictures taken from the installed game instead of scraped off a wiki. |
+| [`src/game-upkeep.ts`](#srcgame-upkeepts) | Keeping the game folder the way the user left it, while other programs change it underneath. |
 | [`src/gamelang.ts`](#srcgamelangts) | Which dota_<lang> folder the game actually mounts. |
 | [`src/hero-names.ts`](#srchero-namests) | Which hero a name means, in the three spellings this app meets: the game's folder id |
-| [`src/i18n.ts`](#srci18nts) | Minimal i18n for the main process (main.js, installer.js, vpk.js). |
+| [`src/i18n.ts`](#srci18nts) | Minimal i18n for the main process (src/). |
 | [`src/icons.ts`](#srciconsts) | Pictures for the cosmetics picker, and for the Library where a picture can be found for |
 | [`src/import.ts`](#srcimportts) | Taking in a mod the user already has: a .vpk, a .zip, a folder, or bytes off a drop. |
 | [`src/installer-downloads.ts`](#srcinstaller-downloadsts) | Getting a catalog mod onto this machine: where its archive lives, what it is called on disk, |
@@ -41,6 +49,7 @@ the code, not in this page.
 | [`src/installer.ts`](#srcinstallerts) | The installer: everything that writes a mod into the game folder or takes it out again. The |
 | [`src/item-builder.ts`](#srcitem-builderts) | The item builder: a hero's stock item built from one of its wearables, with an effect on top. |
 | [`src/library.ts`](#srclibraryts) | Library: manifest of installed mods + presets |
+| [`src/main-window.ts`](#srcmain-windowts) | The one window the app has: its size on the screen it opens on, the single page it may show, |
 | [`src/minify.ts`](#srcminifyts) | Living next to Minify. |
 | [`src/mod-id.ts`](#srcmod-idts) | What a mod actually replaces, asked of the game instead of guessed from folder names. |
 | [`src/mod-preview.ts`](#srcmod-previewts) | A picture for a mod that came with none, taken out of the mod itself. |
@@ -51,9 +60,11 @@ the code, not in this page.
 | [`src/patch-watch.ts`](#srcpatch-watchts) | Noticing that Dota was patched, while the app is open. |
 | [`src/patcher.ts`](#srcpatcherts) | Search-path patch: registers an extra content folder ahead of the game's own, which |
 | [`src/portable-update.ts`](#srcportable-updatets) | Updating a copy that was never installed. |
+| [`src/presence-status.ts`](#srcpresence-statusts) | What the user's Discord profile says while the app is open: which screen they are on, and how |
 | [`src/preset-link.ts`](#srcpreset-linkts) | Presets as a link: "d2mm://preset/<code>", where <code> is the whole preset squeezed |
 | [`src/preset-share.ts`](#srcpreset-sharets) | Shareable preset files (.d2mm) — a zip holding preset.json plus the VPK of every mod |
 | [`src/presets-service.ts`](#srcpresets-servicets) | Presets, and the two ways one travels to somebody else. |
+| [`src/release-notes.ts`](#srcrelease-notests) | The changelog section for one version, for the "What's new" window. |
 | [`src/remote-config.ts`](#srcremote-configts) | The one thing the app can be told after it has shipped. |
 | [`src/safe-zip.ts`](#srcsafe-zipts) | The one door every foreign archive comes through. |
 | [`src/schema-service.ts`](#srcschema-servicets) | Orchestration around the item schema: what goes into it, when it is rebuilt, and how a |
@@ -128,7 +139,69 @@ export function createAdopt({ installer, library, schemaService }: { installer: 
 @param ctx.schemaService  lifts the item blocks out, and splits a multi-hero pack
 ```
 
-## src/app-page.js
+## src/app-context.ts
+
+Everything the running app hands its IPC modules: the services src/main.ts builds at start, and the
+callbacks over its own state.
+
+Each src/ipc-*.ts takes a Pick of this, so what a module can reach is written at the top of it.
+Anything src/main.ts keeps changing while the app runs (the window, the patch watcher, the updater,
+the folder mods go into) is handed over as a function and read when it is needed: a value would
+be the one the app had at registration, and answer for the wrong moment from then on.
+
+### `AppProgress`
+
+```ts
+export type AppProgress =
+```
+
+Every kind of event the bar at the bottom of the window is sent.
+
+### `AppContext`
+
+```ts
+export interface AppContext
+```
+
+_No description in the source._
+
+## src/app-log.ts
+
+The app's own log: a small file every install keeps, so a support report (src/diagnostics.ts)
+does not depend on reproducing the problem live.
+
+Past a megabyte the file moves aside to app.log.1 and a new one starts, so the two together
+stay near two. MM_DIAG mirrors every line to a path of its own, which the screenshot harness
+reads. Nothing here throws: logging is never the reason the app crashes.
+
+### `LOG_MAX_BYTES`
+
+```ts
+export const LOG_MAX_BYTES = 1024 * 1024
+```
+
+Past this size the log moves to app.log.1 and starts again.
+
+### `AppLog`
+
+```ts
+export interface AppLog
+```
+
+Where the log is, and the one call everything in the main process writes to it with.
+
+### `createAppLog`
+
+```ts
+export function createAppLog({ dir, mirror = null, now = () => new Date() }: { dir: () => string; mirror?: string | null; now?: () => Date; }): AppLog
+```
+
+```
+@param dir     the userData folder, asked for on first use: a portable copy moves it at start
+@param mirror  a second file to copy every line to (MM_DIAG), or nothing
+```
+
+## src/app-page.ts
 
 The page the main window loads.
 
@@ -137,40 +210,30 @@ Normally the one Vite builds into out/renderer (vite.config.mjs). An unpackaged 
 a restart. A packaged app ignores MM_DEV_URL whatever it says: the variable would otherwise be
 a way to hand window.api to any page at all.
 
+### `LOCAL_DEV_URL`
+
+```ts
+export const LOCAL_DEV_URL = /^http:\/\/(127\.0\.0\.1|localhost):\d+\/$/
+```
+
+The only address `npm run dev` serves from (tools/dev.mjs, vite.config.mjs).
+
 ### `appPage`
 
-```js
-function appPage({ root, isPackaged, devUrl, exists = fs.existsSync })
+```ts
+export function appPage({ root, isPackaged, devUrl, exists = fs.existsSync }: { root: string; isPackaged: boolean; devUrl?: string; exists?: Exists; }): { kind: 'url' | 'file' | 'missing'; page: string; url: string }
 ```
 
 Where the window's page is, and whether there is one.
 
-```
-@param {{ root: string, isPackaged: boolean, devUrl?: string, exists?: (p: string) => boolean }} o
-@returns {{ kind: 'url' | 'file' | 'missing', page: string, url: string }}
-```
-
 ### `loadAppPage`
 
-```js
-function loadAppPage(win, { app, dialog, root, env = process.env })
+```ts
+export function loadAppPage(win: Pick<BrowserWindow, 'loadURL' | 'loadFile'>, { app, dialog, root, env = process.env, exists }: { app: Pick<App, 'isPackaged' | 'quit'>; dialog: Pick<Dialog, 'showErrorBox'>; root: string; env?: NodeJS.ProcessEnv; exists?: Exists; }): string | null
 ```
 
 Loads the page into the window and returns its address, the one the navigation guard lets
 through, or null when a checkout was never built (an installer always carries the page).
-
-```
-@param {import('electron').BrowserWindow} win
-@param {{ app: import('electron').App, dialog: import('electron').Dialog, root: string, env?: NodeJS.ProcessEnv }} deps
-```
-
-### `LOCAL_DEV_URL`
-
-```js
-const LOCAL_DEV_URL = /^http:\/\/(127\.0\.0\.1|localhost):\d+\/$/
-```
-
-The only address `npm run dev` serves from (tools/dev.mjs, vite.config.mjs).
 
 ## src/beta.ts
 
@@ -511,14 +574,108 @@ export function createCursors({ installer, library, settings }: { installer: Cur
 @param ctx.settings   read for the game path, which the repair needs
 ```
 
+## src/deep-links.ts
+
+d2mm:// links: a preset link clicked anywhere on the system, and on Linux, telling the desktop
+that this program opens them.
+
+Nothing installs from a link. It parks in the Presets tab exactly like a dropped file, and the
+user decides. A link reaches the app three ways: on the command line of a cold start, from a
+second copy started with it, which hands it to the first and quits, and on macOS as an
+open-url event.
+
+### `firstLink`
+
+```ts
+export function firstLink(argv: readonly unknown[] | null | undefined): string | undefined
+```
+
+The first d2mm:// link on a command line, if there is one.
+
+### `presetCode`
+
+```ts
+export function presetCode(url: string): string
+```
+
+The part of a link the preset importer reads: what follows d2mm://preset/.
+
+### `handleDeepLink`
+
+```ts
+export function handleDeepLink(url: string | null | undefined, { importPresetLink, win }: { importPresetLink: (code: string) => unknown; win: () => LinkWindow | null | undefined; }): void
+```
+
+Take a link in: the preset is parked, and the window comes forward and is told what arrived.
+Anything that is not a d2mm:// link is ignored.
+
+### `desktopEntry`
+
+```ts
+export function desktopEntry(exe: string): string
+```
+
+The .desktop file for `exe`: the program, and the scheme and file type it opens.
+
+### `installDesktopEntry`
+
+```ts
+export function installDesktopEntry({ platform, exe, home, diag, refresh = defaultRefresh }: { platform: string; exe: string; home: string; diag: (msg: string) => void; /** tells the desktop to reread the folder; missing on a minimal system, and harmless then */ refresh?: (dir: string) => void; }): void
+```
+
+Write the .desktop file on Linux when it is missing or says something else; elsewhere, nothing.
+
+## src/dev-harness.ts
+
+The switches that let a script drive the window: a screenshot after some clicks (MM_SHOT and
+the switches around it), a scenario run (MM_SIM) and a recording for the site (MM_REC).
+
+None of it does anything unless its variable is set, and a person running the app never sets
+one. It ships with the build all the same, because the release checks the installer it built by
+starting it with MM_SHOT and MM_EVAL (tools/e2e.mjs) before anybody downloads it. MM_SIM and
+MM_REC load their drivers out of tools/, which only a checkout has.
+
+### `DrivenWindow`
+
+```ts
+export type DrivenWindow = Pick<BrowserWindow, 'show' | 'focus'> &
+```
+
+The part of a window the harness drives.
+
+### `attachDevHarness`
+
+```ts
+export function attachDevHarness(win: DrivenWindow, { env = process.env, diag, appRoot, quit, wait = sleep }: { env?: Env; diag: (msg: string) => void; appRoot: string; quit: () => void; wait?: Wait; }): void
+```
+
+Wire whichever of the switches is set to the window, once its page has loaded.
+
+```
+@param appRoot  where tools/ is, for MM_SIM and MM_REC
+@param quit     ends the app when a recording is done
+```
+
+### `takeShot`
+
+```ts
+export async function takeShot(win: DrivenWindow, env: Env, { diag, wait = sleep }: { diag: (msg: string) => void; wait?: Wait }): Promise<void>
+```
+
+Walk the page to the state the switches describe, then save a picture of it at MM_SHOT: the
+view, the catalog category, a search, clicks, a hover, a drag, wheel ticks, an update bar, a
+scroll, a mod's card. MM_EVAL reads the finished page and writes the answer beside the picture,
+because a picture cannot say whether a fold opened with the right text in the right language.
+Whatever goes wrong is written to MM_SHOT.err.txt instead.
+
 ## src/diagnostics.ts
 
 A support report a user can send instead of a round of screenshots: Dota's own path and
 language settings, the app's settings and installed mods, the patch/schema state, a
 listing of the mod folder's pak files, and the app's own recent log.
 
-Pure data in, pure data out - no Electron here, no zip - so main.js decides how it is
-packaged (see the diag:export handler) and this stays exercisable on its own.
+Pure data in, pure data out - no Electron here, no zip - so src/ipc-diagnostics.ts decides how
+it is packaged (the diag:export handler) and this stays exercisable on its own.
 
 ### `Problem`
 
@@ -572,7 +729,7 @@ The last `maxBytes` of a log file, or null when it cannot be read.
 ### `buildReport`
 
 ```ts
-export function buildReport({ settings, library, installer, schemaService, catalog, icons, app, extra = {}, home }: { settings: Pick<Settings, 'all'>; library: Pick<Library, 'list' | 'listPresets'>; installer: ReportInstaller; schemaService: { state(): PatchState }; catalog: Pick<Catalog, 'cacheInfo'>; icons?: Pick<Icons, 'size'> | null; app: { version: string; logFile?: string; userDataDir?: string; updateError?: string }; extra?: ReportExtra; home?: string; }): { report: Report; files: Record<string, string> }
+export function buildReport({ settings, library, installer, schemaService, catalog, icons, app, extra = {}, home }: { settings: Pick<Settings, 'all'>; library: Pick<Library, 'list' | 'listPresets'>; installer: ReportInstaller; schemaService: { state(): PatchState }; catalog: Pick<Catalog, 'cacheInfo'>; icons?: Pick<Icons, 'size'> | null; app: { version: string; logFile?: string; userDataDir?: string; updateError?: string | null }; extra?: ReportExtra; home?: string; }): { report: Report; files: Record<string, string> }
 ```
 
 Everything a support report carries, gathered from the running services.
@@ -589,7 +746,7 @@ files: extra plain-text files to include verbatim, keyed by name inside the zip
 ### `findProblems`
 
 ```ts
-export function findProblems(r: Omit<Report, 'problems'>, { app }: { app?: { updateError?: string } } = {}): Problem[]
+export function findProblems(r: Omit<Report, 'problems'>, { app }: { app?: { updateError?: string | null } } = {}): Problem[]
 ```
 
 ---------- what is wrong, said out loud ----------
@@ -721,6 +878,41 @@ export class DiscordPresence
 
 _No description in the source._
 
+## src/electron.ts
+
+Electron's main-process API, asked for at the moment it is used.
+
+A module that imported electron at its top would take whatever it got the first time it was
+loaded, and an ES module is loaded once. The tests stand a small fake Electron under the IPC
+modules (test/load-order.test.js); read at load, every test after the first would register
+its channels into the first test's fake. Asked for through require on each use, it is whatever
+is standing there now: the real one in the app, the fake in a test, and under plain node, where
+the electron package is only a path to the binary, nothing that anything here calls.
+
+### `electron`
+
+```ts
+export function electron(): typeof import('electron')
+```
+
+The electron module, as it stands when this is called.
+
+## src/error-text.ts
+
+What a caught error says, as one line of text.
+
+A catch block gets `unknown`: usually an Error, sometimes a string somebody threw, now and then
+nothing at all. Every IPC answer and log line that reports a failure wants the same thing out of
+it, the message when there is one and the thrown value itself when there is not.
+
+### `errorText`
+
+```ts
+export function errorText(err: unknown): string
+```
+
+The error's message, or the thrown value as text when it carries none.
+
 ## src/feature-gate.ts
 
 Is this feature switched off right now?
@@ -844,6 +1036,23 @@ export class Fingerprints
 The fingerprint map, cached in userData: tells which catalog mod a VPK is from the hash of its
 content, and which font mod a set of font files is.
 
+## src/folder-size.ts
+
+Bytes under a folder: the number Settings shows beside each cache, and the one the removal
+window shows beside the app's data.
+
+Four modules walked a folder for this, each its own way, until 2026-10-01. One of them crashed on
+a file that disappeared between the listing and the stat, which a cache being cleared at the
+same moment makes likely. This one counts what it can read and skips what it cannot.
+
+### `folderSize`
+
+```ts
+export function folderSize(dir: string): number
+```
+
+Bytes under a folder, however deep. A folder that is not there holds nothing.
+
 ## src/game-icons.ts
 
 Item pictures taken from the installed game instead of scraped off a wiki.
@@ -876,6 +1085,76 @@ export function createGameIcons({ userDataDir, toolchain, getGamePath, log = () 
 ```
 
 Item and hero pictures out of the installed game, cached in userData.
+
+## src/game-upkeep.ts
+
+Keeping the game folder the way the user left it, while other programs change it underneath.
+
+Three things change a Dota install without asking the app. The game's audio language decides
+which folder the engine mounts, so mods have to follow it. Steam's file check puts back files a
+font or cursor mod replaced. A Dota patch overwrites the patched gameinfo and moves the item
+table. This module answers all three: once at start, before the window opens, and again the
+moment src/patch-watch.ts sees a patch land.
+
+Nothing is written while Dota is running. It holds gameinfo and its paks open, so a write would
+half-succeed, and the client has already read the files anyway. The app says it is waiting and
+tries again after the game exits.
+
+### `PatchRepair`
+
+```ts
+export type PatchRepair =
+```
+
+What the app did about the last Dota patch, shown as a banner in My mods.
+
+### `LangMigration`
+
+```ts
+export type LangMigration = { from: string; to: string; moved: number }
+```
+
+Mods moved into the folder the game mounts, told to the user once in Settings.
+
+### `Stuck`
+
+```ts
+export type Stuck = { id: string; name: string }
+```
+
+A mod Steam's file check took away that the app could not put back from what it holds.
+
+### `REPAIR_RETRY_MS`
+
+```ts
+export const REPAIR_RETRY_MS = 20000
+```
+
+How long a repair waits for Dota to close before it looks again.
+
+### `dotaIsRunning`
+
+```ts
+export function dotaIsRunning({ platform = process.platform, run = execFile as RunCommand } = {}): Promise<boolean>
+```
+
+Whether the Dota client is running on this machine right now.
+
+### `runSteps`
+
+```ts
+export async function runSteps(steps: Step[], diag: (msg: string) => void): Promise<void>
+```
+
+Run each step in order; one that throws is logged as skipped and the rest still run.
+
+### `createGameUpkeep`
+
+```ts
+export function createGameUpkeep({ settings, installer, library, schemaService, reconcileCursors, diag, send, isRunning = () => dotaIsRunning(), findGame, validGame, retryMs = REPAIR_RETRY_MS, now = Date.now, }: { settings: Pick<Settings, 'get' | 'set'>; installer: Pick<Installer, 'lostToVerify' | 'restoreDeployed' | 'migrateLegacyPriorityPaks' | 'migrateSlotZones' | 'mergeMultiPartRecords' | 'sweepStaged'>; library: Library; schemaService: Pick<ReturnType<typeof createSchemaService>, 'heal' | 'migrate' | 'migrateCosmeticSettings'>
+```
+
+_No description in the source._
 
 ## src/gamelang.ts
 
@@ -1187,7 +1466,7 @@ and offered to split it into parts that make no sense.
 
 ## src/i18n.ts
 
-Minimal i18n for the main process (main.js, installer.js, vpk.js).
+Minimal i18n for the main process (src/).
 Russian is the source language; English strings are keyed by the exact Russian text
 (with {0},{1}... placeholders for interpolated values). A missing key falls back to
 the Russian source, so the app never shows an empty/undefined string.
@@ -1198,7 +1477,7 @@ the Russian source, so the app never shows an empty/undefined string.
 export type Lang = 'en' | 'ru'
 ```
 
-Minimal i18n for the main process (main.js, installer.js, vpk.js).
+Minimal i18n for the main process (src/).
 Russian is the source language; English strings are keyed by the exact Russian text
 (with {0},{1}... placeholders for interpolated values). A missing key falls back to
 the Russian source, so the app never shows an empty/undefined string.
@@ -2179,6 +2458,82 @@ export class Library
 
 _No description in the source._
 
+## src/main-window.ts
+
+The one window the app has: its size on the screen it opens on, the single page it may show,
+and the keys that scale its content.
+
+The window shows one page and never another. A preload script is attached to the webContents,
+not to the document, so a page the window navigated to would inherit window.api: the whole IPC
+surface, install and runTool included. Nothing in the app navigates anywhere, but the catalog's
+own HTML lands in the interface (guides), and one <meta http-equiv="refresh"> in it would be
+enough to hand that surface to whoever wrote the markup. CSP does not cover navigation, so this
+does: the app's own file is the only thing the window may load, and a link that wants a browser
+gets the browser.
+
+### `ZOOM_MIN`
+
+```ts
+export const ZOOM_MIN = 0.7
+```
+
+The UI scale, kept inside a range where the layout still holds together.
+
+### `ZOOM_MAX`
+
+```ts
+export const ZOOM_MAX = 1.6
+```
+
+_No description in the source._
+
+### `clampZoom`
+
+```ts
+export function clampZoom(v: unknown): number
+```
+
+A scale the layout can take: anything else, including nonsense, becomes the nearest one or 1.
+
+### `windowFit`
+
+```ts
+export function windowFit(workArea: { width: number; height: number } | null | undefined): typeof DESIGNED
+```
+
+The window's size and minimums for a work area, or the designed size when there is none.
+
+### `workAreaFrom`
+
+```ts
+export function workAreaFrom(spec: string | undefined): { width: number; height: number } | null
+```
+
+A work area written "1366x728" (MM_WORKAREA, tools/sim profiles), standing in for a smaller screen.
+
+### `zoomFor`
+
+```ts
+export function zoomFor(key: string, current: number): number | null
+```
+
+The key a Ctrl chord turns into a new scale, or null for any other key.
+
+### `createMainWindow`
+
+```ts
+export function createMainWindow({ appRoot, settings, diag, workArea = null, quiet = false, pageExists }: { appRoot: string; settings: Pick<Settings, 'get' | 'set'>; diag: (msg: string) => void; workArea?: { width: number; height: number } | null; quiet?: boolean; pageExists?: (p: string) => boolean; }): BrowserWindow
+```
+
+Open the window on the app's page, locked to it, with Ctrl +/-/0 scaling the content.
+
+```
+@param appRoot    where out/renderer and preload.js are
+@param workArea   stands in for the screen's (MM_WORKAREA); otherwise the primary display is asked
+@param quiet      created hidden (MM_QUIET), so a measuring run never takes over the screen
+@param pageExists stands in for the disk when a test asks whether the page was built
+```
+
 ## src/minify.ts
 
 Living next to Minify.
@@ -2958,7 +3313,7 @@ Two files tell the whole story and both are Valve's:
 The signature digest is taken with our own appended line stripped, so applying our patch
 never looks like a game update - otherwise the app would keep waking itself up.
 
-This module only decides "the game changed"; what to do about it lives in main.js.
+This module only decides "the game changed"; what to do about it lives in src/game-upkeep.ts.
 
 ### `DEBOUNCE_MS`
 
@@ -3287,7 +3642,7 @@ day and for everybody was three hours on 2026-08-17.
 
 The second entry is not a proxy. It is this project's own bucket, reached with credentials
 only this project holds, which is the same trust as the release page itself - and the same
-reasoning as the update feed fallback in main.js. Manifest and binary both come from
+reasoning as the update feed fallback in src/updater.ts. Manifest and binary both come from
 whichever source answered, so the hash and the file it describes are always from one place.
 
 ### `parseManifest`
@@ -3326,6 +3681,44 @@ Fetch the new build and leave it beside the current one.
 @returns where it landed; already
 when the same build was fetched before
 ```
+
+## src/presence-status.ts
+
+What the user's Discord profile says while the app is open: which screen they are on, and how
+many mods are switched on.
+
+The status is written in the language the user chose for the app. Their friends read it, and
+that is the only language signal we have about them. The connection itself is
+src/discord-presence.ts; this decides what it says and when it is on at all.
+
+### `PRESENCE_VIEWS`
+
+```ts
+export const PRESENCE_VIEWS: Record<string, string> =
+```
+
+The first line of the status for each screen the window reports.
+
+### `presenceActivity`
+
+```ts
+export function presenceActivity({ view, mods, masterOff }: { view: string; mods: number; masterOff: boolean }): Activity
+```
+
+The status for one moment: the screen, and what is loading.
+
+```
+@param mods       switched-on mods
+@param masterOff  the master switch is off, so nothing loads whatever the records say
+```
+
+### `createPresenceStatus`
+
+```ts
+export function createPresenceStatus({ presence, settings, library, installer }: { presence: Pick<DiscordPresence, 'enabled' | 'set' | 'start' | 'stop'>; settings: Pick<Settings, 'get'>; library: Pick<Library, 'list'>; installer: Pick<Installer, 'masterIsOff'>; })
+```
+
+The status kept in step with the app: the setting that turns it off, and the screen it names.
 
 ## src/preset-link.ts
 
@@ -3505,7 +3898,7 @@ export function categoryModList(data: unknown): CatalogMod[]
 
 The mods of one catalog category. Most categories are a flat array, but some (creeps,
 towers, hero-items, item-effects, creep-deny) group theirs under `groups` - the same two
-shapes the catalog view walks (see categoryMods in renderer/app.js). Reading only the
+shapes the catalog view walks (see categoryMods in renderer/views/catalog/lists.ts). Reading only the
 flat ones meant every mod in a grouped category looked like it was not in the catalog:
 the share dialog called them the user's own and packed them into the file as bytes, and
 a preset link dropped them entirely.
@@ -3540,6 +3933,39 @@ Everything about presets that needs the running app's services.
 @param deps.library        the manifest of installed mods and saved presets
 @param deps.schemaService  rebuilds the item table when a preset changes it
 @param deps.deployAndApply  rebuilds one pack's VPK
+```
+
+## src/release-notes.ts
+
+The changelog section for one version, for the "What's new" window.
+
+The same files CI puts on the release page ship inside the build (package.json, build.files),
+so the window works offline and needs no GitHub call. A Russian interface reads
+CHANGELOG.ru.md first and falls back to the English one for a version it has no section for.
+
+A heading is "## <version>" followed by anything that cannot continue a version, so "2.8.0"
+does not find "## 2.8.0-beta.1". release.yml and tools/release-state.js look sections up the
+same way, and test/release-contract.test.js holds the three to it.
+
+### `changelogSection`
+
+```ts
+export function changelogSection(text: string, version: string): string | null
+```
+
+The section's text for `version` out of one changelog, or null when it has none.
+
+### `releaseNotes`
+
+```ts
+export function releaseNotes(version: string, lang: string, appPath: string): string | null
+```
+
+The notes for `version` in the interface's language when there is a translation.
+
+```
+@param appPath  where the build's files are (app.getAppPath())
+@returns markdown, or null when this version has no section anywhere
 ```
 
 ## src/remote-config.ts
@@ -3822,7 +4248,7 @@ Open a foreign archive with every claim in it checked first.
 ## src/schema-service.ts
 
 Orchestration around the item schema: what goes into it, when it is rebuilt, and how a
-game update is repaired. Kept out of main.js so the whole flow can be exercised without
+game update is repaired. Kept out of src/main.ts so the whole flow can be exercised without
 starting Electron.
 
 The rules it enforces:
@@ -4214,10 +4640,6 @@ export function isDeployed(gamePath: string, folder: string): boolean
 ```
 
 Whether a built schema is in the mod folder.
-
-### `crc32`
-
-_No description in the source._
 
 ## src/settings.ts
 
@@ -4642,6 +5064,23 @@ export function validPin(pin: unknown, name: string | null | undefined): boolean
 
 Whether a pin names a version, an executable, a digest, and a release of an owner listed above.
 
+### `TOOL_TIMEOUT_MS`
+
+```ts
+export const TOOL_TIMEOUT_MS = 60000
+```
+
+A tool that has not answered by now is not going to. The user waits on this: the item picker
+and the library show placeholders until it returns.
+
+### `runTool`
+
+```ts
+export function runTool(exe: string, args: string[], { timeoutMs = TOOL_TIMEOUT_MS } = {}): Promise<void>
+```
+
+Run one of the tools, hidden, and settle when it exits: resolved on 0, rejected otherwise.
+
 ### `createToolchain`
 
 ```ts
@@ -4726,7 +5165,7 @@ coming back; the other half is in build/installer.nsh, which never starts the ap
 those command lines. Two cheap checks beat one clever one, and they are cheap only while they
 agree, so a test holds this list to the flags that script tests for.
 
-It lives in its own file rather than inline in main.js so it can be called with a command line
+It lives in its own file rather than inline in src/main.ts so it can be called with a command line
 instead of the one this process happens to have been given.
 
 ### `UPDATE_FLAGS`
@@ -4879,14 +5318,6 @@ Classify what a mod's inner path list actually changes.
 ```
 @param paths lowercased inner VPK paths (from listVpkPaths)
 ```
-
-### `analyzeVpk`
-
-```ts
-export function analyzeVpk(buf: Buffer): Analysis
-```
-
-analyzeVpkPaths over the paths of one VPK.
 
 ### `describeHero`
 
@@ -5279,7 +5710,7 @@ The VPK format, in one place for everything that reads or writes one: the reader
 
 Hands on from [`src/vpk-read.ts`](#srcvpk-readts): `readVpkIndexFile`, `listVpkPaths`, `listVpkPathsFile`, `listVpkPathCrcs`, `listVpkPathCrcsFile`, `readVpkEntryFile`, `openVpkIndex`, `entryPath`, `readVpkEntries`, `listVpkEntries`, `fingerprintEntries`, `fingerprintVpk`, `fingerprintFiles`, `VpkEntry`, `VpkDirEntry`, `VpkIndex`.
 
-Hands on from [`src/vpk-analyze.ts`](#srcvpk-analyzets): `analyzeVpkPaths`, `analyzeVpk`, `slotDisplayName`, `describeHero`, `subjectHeroes`, `describeAnalysis`, `nameFromAnalysis`, `HeroHit`, `Analysis`.
+Hands on from [`src/vpk-analyze.ts`](#srcvpk-analyzets): `analyzeVpkPaths`, `slotDisplayName`, `describeHero`, `subjectHeroes`, `describeAnalysis`, `nameFromAnalysis`, `HeroHit`, `Analysis`.
 
 Hands on from [`src/vpk-write.ts`](#srcvpk-writets): `crc32`, `entryAt`, `buildVpk`, `findContentRoot`, `packFolder`, `buildVpkDir`, `combineVpksToFiles`, `mergeVpkToSingle`, `splitVpkByHero`.
 

@@ -35,7 +35,7 @@ const DEFAULTS: StoredSettings = {
   // folder mods are installed into: game/dota_<langSuffix>. Decided by Dota's own audio
   // language rather than by us, so Korean speech means dota_koreana and Chinese means
   // dota_schinese; English is the one that has no folder and borrows the Russian one
-  // (see keepModFolder in main.js). The value stays a setting because everything downstream
+  // (see keepModFolder in src/game-upkeep.ts). The value stays a setting because everything downstream
   // reads it, and because an upgrade has to be able to see what the folder used to be.
   langSuffix: 'russian',
   // app UI language: "en" | "ru". English is the default until the user picks otherwise.
@@ -79,7 +79,7 @@ const DEFAULTS: StoredSettings = {
   toolsPromptSeen: false,
   // Mods the catalog tags adult (18+): true once the user said they are 18 and want them,
   // false once they said no, null until they answer the one-time question
-  // (renderer/core/adult.js). Hidden until then.
+  // (renderer/core/adult.ts). Hidden until then.
   showAdult: null,
   // last version whose release notes the user was shown. Null on a fresh install, which is
   // why nobody gets a "what's new" popup for a version they just installed by hand.

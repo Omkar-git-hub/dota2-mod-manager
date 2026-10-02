@@ -708,19 +708,147 @@
     },
     {
       "name": "the portable Download button is handed a version nobody looked up",
-      "file": "src/ipc-window.js",
+      "file": "src/ipc-window.ts",
       "anchor": "ipcMain.handle('update:fetchPortable', async () => {",
       "from": "const version = portableUpdate();",
       "to": "const version = portableUpdate;",
-      "test": "test/ipc-window.test.js"
+      "test": "test/ipc-window.test.ts"
     },
     {
-      "name": "the crc32 table is walked one bit off",
-      "file": "src/vpk-write.ts",
-      "anchor": "export function crc32(buf: Buffer): number {",
-      "from": "c = CRC_TABLE[(c ^ buf[i]) & 0xff] ^ (c >>> 8);",
-      "to": "c = CRC_TABLE[(c ^ buf[i]) & 0xff] ^ (c >>> 7);",
-      "test": "test/properties.test.js"
+      "name": "the support report asks the toolchain for a function it never had",
+      "file": "src/ipc-diagnostics.ts",
+      "anchor": "toolchain: (() => {",
+      "from": "try { return toolchain.state(); }",
+      "to": "try { return toolchain.installed(); }",
+      "test": "test/ipc-diagnostics.test.ts"
+    },
+    {
+      "name": "combining mods leaves their standalone records in the library",
+      "file": "src/ipc-packs.ts",
+      "anchor": "// standalone mods -> new members (their own deployment is removed)",
+      "from": "        library.removeRecord(r.id);",
+      "to": "",
+      "test": "test/ipc-packs.test.ts"
+    },
+    {
+      "name": "a pack left with no members stays in the list",
+      "file": "src/ipc-packs.ts",
+      "anchor": "ipcMain.handle('packs:removeMember', (e, packId, memberId) => {",
+      "from": "if (!members.length) {",
+      "to": "if (members.length < 0) {",
+      "test": "test/ipc-packs.test.ts"
+    },
+    {
+      "name": "a resolved preset folds the cosmetic picks into the build",
+      "file": "src/ipc-presets.ts",
+      "anchor": "ipcMain.handle('presets:resolve', async (e, id) => {",
+      "from": ".filter((r): r is LibRecord => Library.inPreset(r));",
+      "to": ".filter((r): r is LibRecord => !!r);",
+      "test": "test/ipc-presets.test.ts"
+    },
+    {
+      "name": "picking the Steam folder saves it instead of game inside it",
+      "file": "src/ipc-settings.ts",
+      "anchor": "ipcMain.handle('settings:browseDota', async () => {",
+      "from": "if (!validateGamePath(p) && validateGamePath(path.join(p, 'game'))) p = path.join(p, 'game');",
+      "to": "",
+      "test": "test/ipc-settings.test.ts"
+    },
+    {
+      "name": "the log never moves aside, and grows for as long as the app is installed",
+      "file": "src/app-log.ts",
+      "anchor": "function append(line: string): void {",
+      "from": "size > LOG_MAX_BYTES)",
+      "to": "size > LOG_MAX_BYTES * 2)",
+      "test": "test/app-log.test.ts"
+    },
+    {
+      "name": "\"What's new\" for a release shows its beta's notes",
+      "file": "src/release-notes.ts",
+      "anchor": "export function changelogSection(text: string, version: string): string | null {",
+      "from": "(?:[^-0-9A-Za-z.].*)?$",
+      "to": "(?:[^0-9.].*)?$",
+      "test": "test/release-notes.test.ts"
+    },
+    {
+      "name": "the Discord status counts mods as on while the master switch is off",
+      "file": "src/presence-status.ts",
+      "anchor": "export function presenceActivity(",
+      "from": "if (masterOff) state = t('Моды выключены');",
+      "to": "if (false) state = t('Моды выключены');",
+      "test": "test/presence-status.test.ts"
+    },
+    {
+      "name": "the desktop entry is rewritten and the desktop reread on every start",
+      "file": "src/deep-links.ts",
+      "anchor": "export function installDesktopEntry(",
+      "from": "if (fs.existsSync(file) && fs.readFileSync(file, 'utf-8') === entry) return;",
+      "to": "if (false) return;",
+      "test": "test/deep-links.test.ts"
+    },
+    {
+      "name": "the window follows a link to another page and hands it window.api",
+      "file": "src/main-window.ts",
+      "anchor": "win.webContents.on('will-navigate', (event, url) => {",
+      "from": "event.preventDefault();",
+      "to": "void event;",
+      "test": "test/main-window.test.ts"
+    },
+    {
+      "name": "the window is as tall as it was designed, whatever the screen",
+      "file": "src/main-window.ts",
+      "anchor": "export function windowFit(",
+      "from": "height: Math.min(DESIGNED.height, ah),",
+      "to": "height: DESIGNED.height,",
+      "test": "test/main-window.test.ts"
+    },
+    {
+      "name": "the release check's screenshot misses the text it was asked about",
+      "file": "src/dev-harness.ts",
+      "anchor": "if (env.MM_EVAL) {",
+      "from": "fs.writeFileSync(`${shot}.eval.json`, JSON.stringify(out, null, 1));",
+      "to": "void out;",
+      "test": "test/dev-harness.test.ts"
+    },
+    {
+      "name": "a patch is repaired while Dota holds its files open",
+      "file": "src/game-upkeep.ts",
+      "anchor": "async function repairAfterPatch(reason?: unknown): Promise<void> {",
+      "from": "if (await isRunning()) {",
+      "to": "if (false) {",
+      "test": "test/game-upkeep.test.ts"
+    },
+    {
+      "name": "the voice language is rewritten under a running Dota, which writes it back on exit",
+      "file": "src/game-upkeep.ts",
+      "anchor": "async function keepModFolder(): Promise<void> {",
+      "from": "if (await isRunning()) {",
+      "to": "if (false) {",
+      "test": "test/game-upkeep.test.ts"
+    },
+    {
+      "name": "one step failing at start stops every step after it",
+      "file": "src/game-upkeep.ts",
+      "anchor": "export async function runSteps(",
+      "from": "diag(`${step.name} skipped: ${errorText(e)}`);",
+      "to": "throw e;",
+      "test": "test/game-upkeep.test.ts"
+    },
+    {
+      "name": "the load order is laid out again at every start",
+      "file": "src/game-upkeep.ts",
+      "anchor": "async function layoutSlotsOnce(): Promise<void> {",
+      "from": "if (settings.get('slotZones') === 1) return;",
+      "to": "",
+      "test": "test/game-upkeep.test.ts"
+    },
+    {
+      "name": "a module's channels are never registered, so every button it serves does nothing",
+      "file": "src/main.ts",
+      "anchor": "  registerPacksIpc(ctx);",
+      "from": "registerMiscIpc(ctx);",
+      "to": "void 0;",
+      "test": "test/ipc-contract.test.js"
     },
     {
       "name": "a preset link comes back with a name nobody chose",
@@ -777,6 +905,14 @@
       "from": "const parked = inst.moveToSlot(a, 'pak00', aBase, tx);",
       "to": "const parked = inst.moveToSlot(a, 'pak00', aBase);",
       "test": "test/installer.test.ts"
+    },
+    {
+      "name": "a Discord answer to somebody else's request is taken as ours",
+      "file": "src/discord-auth.ts",
+      "anchor": "function awaitToken(state: string): Promise<string> {",
+      "from": "if (q.get('state') !== state) return finish(",
+      "to": "if (false) return finish(",
+      "test": "test/discord-auth.test.ts"
     },
     {
       "name": "the load-order layout parks mods outside its transaction, so a refusal strands them",

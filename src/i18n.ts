@@ -1,4 +1,4 @@
-// Minimal i18n for the main process (main.js, installer.js, vpk.js).
+// Minimal i18n for the main process (src/).
 // Russian is the source language; English strings are keyed by the exact Russian text
 // (with {0},{1}... placeholders for interpolated values). A missing key falls back to
 // the Russian source, so the app never shows an empty/undefined string.
@@ -17,7 +17,7 @@ export function getLang(): Lang {
 
 // English dictionary. Key = canonical Russian string with {n} placeholders.
 const EN = {
-  // ---- errors / dialogs (main.js) ----
+  // ---- errors / dialogs (main process) ----
   'Выбери папку game внутри dota 2 beta': 'Pick the "game" folder inside "dota 2 beta"',
   'В этой папке не найдена Dota 2 (нет подпапки dota)': 'No Dota 2 here (there is no "dota" subfolder)',
   'Уже установлено': 'Already installed',
@@ -86,7 +86,7 @@ const EN = {
   'Сохранить отчёт для поддержки': 'Save the support report',
   'Отчёт диагностики': 'Diagnostics report',
 
-  // ---- installer.js ----
+  // ---- installer ----
   'Путь к Dota 2 не задан': 'Dota 2 path is not set',
   // ---- item schema / search-path patch ----
   'Закрой Dota 2 перед изменением файлов игры': 'Close Dota 2 before changing game files',
@@ -177,7 +177,7 @@ const EN = {
   'Моды выключены': 'Mods turned off',
   'Скачать Mod Manager': 'Get Mod Manager',
 
-  // ---- vpk.js (parse errors + content labels) ----
+  // ---- vpk (parse errors + content labels) ----
   'VPK: незакрытая строка в дереве': 'VPK: unterminated string in the tree',
   'VPK: неверная сигнатура': 'VPK: bad signature',
   'VPK: повреждённое дерево': 'VPK: damaged tree',

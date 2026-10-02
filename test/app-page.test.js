@@ -1,11 +1,11 @@
-/* The page the main window loads (src/app-page.js), and the three places that have to agree on
+/* The page the main window loads (src/app-page.ts), and the three places that have to agree on
  * where it lives: the loader, Vite's build and the list of files the installer packs. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { appPage, loadAppPage } = require('../src/app-page');
+const { appPage, loadAppPage } = require('../src/app-page.ts');
 
 const root = path.join(__dirname, '..');
 const DEV = 'http://127.0.0.1:5173/';
@@ -42,7 +42,7 @@ test('a checkout nobody built says so and quits instead of opening a blank windo
 
 test('the loader, the Vite build and the installer agree on out/renderer', () => {
   const vite = fs.readFileSync(path.join(root, 'vite.config.mjs'), 'utf8');
-  assert.match(vite, /outDir: path\.join\(here, 'out', 'renderer'\)/, 'Vite builds somewhere main.js does not look');
+  assert.match(vite, /outDir: path\.join\(here, 'out', 'renderer'\)/, 'Vite builds somewhere the main process does not look');
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
   assert.ok(pkg.build.files.includes('out/renderer/**/*'), 'the installer would ship without the page');
   assert.equal(pkg.build.beforePack, './tools/before-pack.cjs', 'an installer could pack a stale page');

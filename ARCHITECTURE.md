@@ -9,8 +9,8 @@ between them.
 Electron, three processes, one bridge.
 
 ```
-main.js          Electron lifecycle, the window, every ipcMain handler, auto-update, deep links
-  └─ src/*.js    everything that touches disk, network or the game folder
+src/main.ts      Electron lifecycle and the order the app starts in; everything else is a module
+  └─ src/*.ts    everything that touches disk, network or the game folder
 preload.js       the only channel between the two sides: window.api, built with contextBridge
 renderer/        the interface: plain HTML, CSS and JavaScript, no build step, no framework
 ```
@@ -22,30 +22,37 @@ control, so the renderer is treated as a place where hostile strings end up.
 
 ## Where a feature lives
 
-Anything a user can do to a mod touches three files, in this order:
+Anything a user can do to a mod touches four files, in this order:
 
-1. `main.js` gets an `ipcMain.handle('mods:something', ...)` that calls into `src/`
+1. A `src/ipc-*.ts` module gets an `ipcMain.handle('mods:something', ...)` that calls into `src/`
 2. `preload.js` exposes it as `api.mods.something`
-3. `renderer/views/*.js` calls it and draws the result
+3. `renderer/api/` gives it a type: what it takes and what its handler answers
+4. `renderer/views/` calls it and draws the result
 
-Miss the middle one and the button exists but does nothing. The renderer is split by view
-(`catalog.js`, `library.js`, `presets.js`, `settings.js`) with shared pieces under `renderer/ui/`.
+Miss the second and the button exists but does nothing; miss the third and TypeScript refuses the
+call. `test/ipc-contract.test.js` and `test/api-types.test.js` hold the four together. The renderer is split by view
+(`catalog.ts`, `library.ts`, `presets.ts` and `settings.ts`, the larger ones with their parts in a
+folder of the same name) with shared pieces under `renderer/ui/`. Each draws with React components
+from the folder of its name under `renderer/`: `catalog/`, `library/`, `presets/`, `settings/`.
 
 ## Where mods end up
 
 Dota mounts one folder named after the language of its **voices**, and that folder is mounted
 before the game's own content, which is what makes mods possible at all. The name comes from
 `AudioLanguage` in `game/dota/cfg/boot.vcfg`, so `src/gamelang.ts` reads that file rather than
-guessing. A launch option cannot change it: `-language` sets a preference inside the game, and the
-invented values older guides recommend (`dota_123`, `-language mods`) stopped mounting anything in
-July 2026.
+guessing. A `-language X` in Steam's launch options overrides it: when X is a language Dota knows,
+the engine mounts `dota_X` whatever boot.vcfg says, and the app follows it rather than fight it
+(`modFolderFor` in `src/gamelang.ts`). The invented values older guides recommend (`dota_123`,
+`-language mods`) stopped mounting anything in July 2026.
 
 Inside that folder:
 
 | What | Where it goes |
 |---|---|
-| A normal mod | `pakNN_dir.vpk`, slots 10 to 99 |
-| A mod whose category must load early (trees, river, shaders, hero fx, ranged attack, hero items, optimization) | slots `pak02` to `pak09`, because a lower number wins |
+| A normal mod | `pakNN_dir.vpk`, slots 30 to 99 |
+| A mod whose category must load early (trees, river, shaders, hero fx, ranged attack, hero items, optimization) | slots `pak02` to `pak29`, because a lower number wins; when those are full, the first free slot after them |
+| The app's own pak | `pak64_dir.vpk`, the game's anti-cheat notice in plain words (`src/notice-text.ts`), never given to a mod |
+| Minify's | `pak65` to `pak67` stay Minify's, so the two apps can share one folder |
 | A terrain | its paks, plus the `maps/` folder it ships |
 | A font | `game/dota/panorama/fonts`, originals backed up |
 | A cursor | `game/dota/resource/cursor`, originals backed up |
@@ -68,8 +75,8 @@ or turning mods back on would resurrect the ones you had deliberately switched o
    host named there can do is serve a download or fail its checksum.
 3. Open the archive through `src/safe-zip.ts`, the single door every foreign zip comes through.
 4. Compare its contents against what is already installed and report conflicts (see below).
-5. Pick a free slot: low ones for categories that must load early, otherwise the first free number
-   from 10 up. Combined packs exist for the same reason and are described in `src/vpk-write.ts`.
+5. Pick a free slot: 02 to 29 for categories that must load early, otherwise the first free number
+   from 30 up (`src/slot-zones.ts`). Combined packs exist for the same reason and are described in `src/vpk-write.ts`.
 6. Write everything through `src/file-tx.ts`.
 7. Record it in `manifest.json` through `src/library.ts`.
 
@@ -80,11 +87,14 @@ six writes, a removal is as many deletes, and switching a mod off renames every 
 A failure halfway through, a locked file because Dota just started, a full disk, an antivirus
 holding a handle, used to leave the folder in a state the game would happily load half of.
 
-Every change to the game folder now goes through one transaction that either lands completely or
-rolls back completely, including files that were displaced to make room. Nothing writes there
-while `dota2.exe` is running, and the app checks that the game files are actually present before
-it downloads anything, after a user moved his Steam library and had the app cheerfully install
-forty three mods into the empty folder Steam left behind.
+Every install, removal, switch and move between slots goes through one transaction that either
+lands completely or rolls back completely, including files that were displaced to make room. Moves
+between slots joined on 2026-10-01, after a test that refused each rename in turn found a swap that
+could write one mod over another. The master switch is the one sweep outside: it only ever adds or
+strips its own suffix, so a sweep that stops half way is finished by the next press. Nothing writes
+there while `dota2.exe` is running, and the app checks that the game files are actually present
+before it downloads anything, after a user moved their Steam library and had the app cheerfully
+install forty three mods into the empty folder Steam left behind.
 
 ## VPK
 
@@ -300,7 +310,7 @@ because when it fails there is nothing below it worth reading.
 
 `npm test` is plain `node:test`, no framework, more than 80 files, run on every push and every pull request
 on Linux and on Windows. Five of them hold this project against itself rather than testing a
-module: the IPC contract (every channel has a handler, every handler runs, and `main.js` passes
+module: the IPC contract (every channel has a handler, every handler runs, and `src/main.ts` passes
 what each module unpacks), the renderer's imports, the release contract, `DECISIONS.md`
 against the repository it describes, and the write-ups in `docs/incidents/` against the tests
 and workflow steps they name as guards.
@@ -356,8 +366,16 @@ that location is not writable.
 
 | File | What it owns |
 |---|---|
-| `main.js` | Electron lifecycle, window, deep links, auto-update, and wiring the rest together |
-| `src/ipc-*.js` | The IPC handlers, one file per group of channels, each naming what it needs |
+| `src/main.ts` | Electron lifecycle, auto-update, and wiring the rest together |
+| `src/main-window.ts` | The window: its size on the screen it opens on, the one page it may show, Ctrl +/-/0 |
+| `src/dev-harness.ts` | `MM_SHOT`, `MM_EVAL` and the other switches a script drives the window with |
+| `src/game-upkeep.ts` | The mod folder following the audio language, what Steam's file check took, repair after a Dota patch, and the work done at start |
+| `src/ipc-*.ts` | The IPC handlers, one file per group of channels, each naming what it needs |
+| `src/app-context.ts`, `src/electron.ts` | What src/main.ts hands the IPC modules, and Electron asked for when a module registers |
+| `src/app-log.ts`, `src/error-text.ts` | The app's own log, and what a caught error says as one line |
+| `src/deep-links.ts` | d2mm:// links, and the Linux desktop entry that lets them arrive |
+| `src/presence-status.ts` | What the Discord status says, and whether it is on |
+| `src/release-notes.ts` | The "What's new" text, out of the changelogs shipped with the build |
 | `src/feature-gate.ts` | Whether a feature has been switched off from `config/app.json`, asked once |
 | `preload.js` | The `window.api` surface, and nothing else crosses |
 | `src/installer.ts` | Download, slots, install, enable, remove, packs |

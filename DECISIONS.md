@@ -13,7 +13,7 @@ saying so is welcome.
 
 The countable claims are held to the code by `test/decisions.test.js`, and the wider ones by
 `test/docs-current.test.js`: between them they fail when this file and the repository disagree
-about how long `main.js` is, how many test files there are, what the app depends on, where the
+about how long the main process's entry file is, how many test files there are, what the app depends on, where the
 fingerprint index is fetched from, whether there is a linter, which npm scripts exist, or whether
 a link in any document points at a file that is gone. The date below is left out of that on
 purpose: it records when a person last read the whole file, and a test that kept it current would
@@ -102,7 +102,7 @@ programme means. Reading and writing VPK archives is this repository's own code.
 ### The window is built by Vite, and moves to TypeScript and React
 
 Until 2026-09-27 the renderer was plain JavaScript with no build step, so that a reviewer reading
-`renderer/app.js` read the program itself. That cost more every month. The catalog screen reached
+renderer/app.js read the program itself. That cost more every month. The catalog screen reached
 1,699 lines and the library 1,374, a redesign meant editing strings of HTML inside them, and an
 animation meant timing code written by hand. The size budget stopped the growth; it could not
 undo it.
@@ -127,7 +127,7 @@ reaches `main`.
 The uninstall window still loads `renderer/uninstall.html` as written. The documentation site
 under `site/` is a separate package, built by Astro.
 
-*Check:* `npm run build:ui`, `vite.config.mjs`, and `src/app-page.js`, which names the only page the
+*Check:* `npm run build:ui`, `vite.config.mjs`, and `src/app-page.ts`, which names the only page the
 window loads.
 
 ### The documentation site lives in this repository
@@ -324,27 +324,36 @@ to stop offering the major version until somebody does it.
 
 *Check:* `.github/dependabot.yml`, the `ignore` block for the app's dependencies.
 
-### The main process moves to TypeScript, with no build step
+### The main process is TypeScript, with no build step
 
-`src/` is moving from JavaScript checked through JSDoc to TypeScript, a few modules per pull
-request, leaves first. Nothing compiles it. Electron 44 runs on Node 24, which strips the types
-itself when it loads a `.ts` file, and it does so from inside `app.asar` as well: checked on
-2026-09-29 with a packed test app, before the first module moved. So the installer, the updater
+Every file of the main process is TypeScript since 2026-10-01, the entry included: package.json
+starts `src/main.ts`. Nothing compiles it. Electron 44 runs on Node 24, which strips the types
+itself when it loads a `.ts` file, and it does so from inside `app.asar` as well: checked with a
+packed test app before the first module moved, and again with the installer built from the last
+one, which installed, switched and removed a mod through the window. So the installer, the updater
 and the release pipeline see the same kind of files they always did, and there is no build output
 that can drift from the source.
 
 That rules some TypeScript out. Only syntax that can simply be erased is allowed (no enums, no
 namespaces, `erasableSyntaxOnly`), and imports name the `.ts` file, because that is the path Node
-loads. The moved modules are ES modules, since a CommonJS `.ts` file has no way to type a
-`require` without syntax that would need compiling. A module not moved yet is imported whole
-(`import old from './old.js'`), because Node cannot always see the names a CommonJS file exports.
+loads. The modules are ES modules, and `src/package.json` says so, so Node reads each one once
+instead of trying CommonJS first. A CommonJS `.ts` file has no way to type a `require` without
+syntax that would need compiling.
 
-Their tests move with them, to `.test.ts` importing the module. Node's coverage leaves out a `.ts`
-file that was only ever loaded through `require`, so a module whose tests still used `require`
-would drop out of the coverage baseline without anything else changing.
+The compiler is also the lint for these files. `eslint.config.js` reads the JavaScript; for the
+TypeScript, `src/tsconfig.json` turns on what strict leaves out: a name nobody reads, code nothing
+reaches, a switch case falling into the next. Adding `typescript-eslint` instead would be a second
+parser for rules the compiler already holds.
+
+The preload bridges stay JavaScript, because Electron runs them in the sandbox as CommonJS before
+the page. The tools and most tests stay JavaScript too. Neither ships, and rewriting them would be
+a diff nobody can review for no change in what runs. The exception is the tests of a module: they
+are `.test.ts` importing it, because Node's coverage leaves out a `.ts` file that was only ever
+loaded through `require`, and a module tested that way would drop out of the coverage baseline
+without anything else changing.
 
 *Check:* `src/tsconfig.json` and `test/tsconfig.json`, both strict and with nothing in the
-baseline, run by `npm run typecheck`; `ls src/*.ts` for how far it has got.
+baseline, run by `npm run typecheck`; `ls src/*.js` finds nothing.
 
 ### The anti-cheat notice is rewritten, and there is no switch for it
 
@@ -440,21 +449,26 @@ back to the hash remembered from the first download.
 stale mirror, a stale list, a proxy inventing bytes, and a hash pinned in this repository, which
 is never waived.
 
-### `main.js` still holds several jobs
+### The five biggest files are split, and a budget keeps them that way
 
-It went from 3,102 lines to about 1,300 when the IPC handlers moved into `src/ipc-*.js`, and to
-about 1,150 on 2026-09-16, when the cursor rules went to `src/cursors.ts` and everything a freshly
-landed VPK goes through before it counts as a mod went to `src/adopt.ts`. What is left is the
-window, the log, auto-update, deep links, the import progress bar, Discord presence and the
-language folder, which is still more than one file's worth of subject.
+`main.js` was the first file on this list. It went from 3,102 lines to about 1,300 when the IPC
+handlers moved into `src/ipc-*.ts`, and to about 1,150 on 2026-09-16, when the cursor rules went to
+`src/cursors.ts` and everything a freshly landed VPK goes through before it counts as a mod went to
+`src/adopt.ts`. On 2026-09-30 the log, the "What's new" text, the Discord status, d2mm:// links,
+the window, the screenshot harness and the upkeep of the game folder went to modules of their own,
+each with tests, which took it to about 450. What was left moved to `src/main.ts` the same day,
+TypeScript like the rest of the main process: the order the app starts in, which services exist,
+what each one is handed, and auto-update. That is one subject, and main.js no longer exists.
 
-It is one of five files carrying 6,754 lines between them while the median module in `src/` is
-171: `src/installer.ts`, `renderer/views/catalog.js`, `renderer/views/library.js`, this one and
-`src/vpk.ts`. None of them arrived that size; each grew a hundred lines at a time with nobody
-deciding to. Since 2026-09-16 each has its length written in `.github/size-budget.json`, and
-`tools/size-budget.mjs` fails a run where one grows, or where a file nobody listed crosses 800
-lines. The budget does not split anything: it stops the drift, and every split shows up in it as a
-number going down.
+On 2026-09-16 it was one of five files carrying 6,754 lines between them while the median module
+in `src/` was 171: src/installer.js, renderer/views/catalog.js, renderer/views/library.js, this one
+and src/vpk.js. All five have since been split along their subjects: the installer into
+`src/installer.ts` and `src/installer-*.ts`, the VPK code into `src/vpk-*.ts`, the two screens into
+`renderer/views/catalog/` and `renderer/views/library/` on 2026-09-28, and this file as told above.
+None of them arrived that size; each grew a hundred lines at a time with nobody deciding to. Each
+has its length written in `.github/size-budget.json`, and `tools/size-budget.mjs` fails a run
+where one grows, or where a file nobody listed crosses 300 lines. The budget does not split
+anything: it stops the drift, and every split shows up in it as a number going down.
 
 *Check:* `npm run size`, `.github/size-budget.json`, and `ARCHITECTURE.md` for what is supposed to
 live where.
@@ -514,7 +528,7 @@ Each of these has arrived in a review. Each is answered by one command.
 | Claim | What is true | Check |
 |---|---|---|
 | "The repository cannot be opened, so the open-source promise is unverifiable" | It is public and has been. A fetch failing at one moment is not a private repository | `gh repo view dota2modmanager/dota2-mod-manager --json visibility` |
-| "`main.js` is a 3,100 line monolith" | About 1,150 lines since 2026-09-06, with the IPC handlers in `src/ipc-*.js` and three more jobs moved out since | `wc -l main.js` |
+| "`main.js` is a 3,100 line monolith" | It is gone. The main process starts from `src/main.ts`, about 380 lines; since 2026-09-06 the IPC handlers went to `src/ipc-*.ts` and every other job to a module of its own, each with tests | `wc -l src/main.ts` |
 | "The catalog counts on the site disagree between pages" | They are counted when each page is built. Two pages built an hour apart show two numbers, and both were right when they were made | `site/src/lib/stats.ts` |
 | "The state files in the root are why the repository is 61 MB" | The generated JSON at the root is 1.3 MB of the pack. The preview images are 47.3 MB of 57.2 MB | the command under the open question above |
 | "It is a Windows-only app" | Every release since 2.4.0 also carries a Linux AppImage | `gh release view --json assets` |

@@ -14,15 +14,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { createRequire } from 'node:module';
 
-// electron through require, as before: under plain node, in tests, it is only a path and app stays undefined
-const { app } = createRequire(import.meta.url)('electron') as typeof import('electron');
 
 import { Library } from './library.ts';
 import { readPresetFile } from './preset-share.ts';
 import { decodePresetLink } from './preset-link.ts';
 import { t } from './i18n.ts';
+import { electron } from './electron.ts';
 import type { Catalog } from './catalog.ts';
 import type { LibFile, LibRecord, PackMember, Preset, PresetEntry } from './types.ts';
 
@@ -59,7 +57,7 @@ export interface PresetInstaller {
 
 // The mods of one catalog category. Most categories are a flat array, but some (creeps,
 // towers, hero-items, item-effects, creep-deny) group theirs under `groups` - the same two
-// shapes the catalog view walks (see categoryMods in renderer/app.js). Reading only the
+// shapes the catalog view walks (see categoryMods in renderer/views/catalog/lists.ts). Reading only the
 // flat ones meant every mod in a grouped category looked like it was not in the catalog:
 // the share dialog called them the user's own and packed them into the file as bytes, and
 // a preset link dropped them entirely.
@@ -98,7 +96,7 @@ export function presetsService({ catalog, installer, library, schemaService, dep
 
   // where an imported .d2mm waits until the user installs it
   function sharedPresetFile(presetId: string): string {
-    return path.join(app.getPath('userData'), 'shared-presets', `${presetId}.d2mm`);
+    return path.join(electron().app.getPath('userData'), 'shared-presets', `${presetId}.d2mm`);
   }
 
   function dropSharedPresetFile(preset: Preset | null | undefined): void {

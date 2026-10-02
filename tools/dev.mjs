@@ -3,7 +3,7 @@
  * `npm run dev`: the app with the page served by Vite, so an edit to a style, a component or an
  * animation shows in the open window without a restart.
  *
- * Only an unpackaged run honours MM_DEV_URL (main.js), and only for this machine. Arguments pass
+ * Only an unpackaged run honours MM_DEV_URL (src/app-page.ts), and only for this machine. Arguments pass
  * through to Electron: `npm run dev -- --user-data-dir=sandbox/userdata` runs against the sandbox.
  */
 import { spawn } from 'node:child_process';

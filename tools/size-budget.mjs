@@ -2,9 +2,9 @@
 /**
  * The big files may get smaller. They may not get bigger.
  *
- * Five files carry 7 155 lines between them while the median module in src/ is 171:
- * src/installer.js, renderer/views/catalog.js, renderer/views/library.js, main.js and src/vpk.js.
- * That is not a style, it is five outliers, and every one of them got there a hundred lines at a
+ * On 2026-09-16 five files carried 7 155 lines between them while the median module in src/ was
+ * 171: src/installer.js, renderer/views/catalog.js, renderer/views/library.js, main.js and src/vpk.js.
+ * That was not a style, it was five outliers, and every one of them got there a hundred lines at a
  * time with nobody deciding to.
  *
  * So each of them has its size written down, and a run fails when one grows. Any file that is not
@@ -31,7 +31,7 @@ export const WATCH_AT = 300;
 
 /** The app's own code: what ships in the build, plus the two preload bridges. */
 export function appFiles(readdir = fs.readdirSync, exists = fs.existsSync) {
-  const out = ['main.js', 'preload.js', 'preload-uninstall.js'];
+  const out = ['preload.js', 'preload-uninstall.js'];
   // every source file under src/ and renderer/, at any depth and in either language the window is
   // written in; renderer/public holds pictures, and nothing in it is code; a .d.ts ships nothing
   const walk = (dir) => {

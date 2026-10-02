@@ -7,7 +7,7 @@
  * most need testing quietly become the ones that cannot be.
  *
  * The same goes the other way for the window. renderer/ is ES modules in a browser; a path from
- * it into src/ or main.js would bundle main-process code into the page, or fail to load and
+ * it into src/ would bundle main-process code into the page, or fail to load and
  * leave the screen blank.
  *
  * Measured on 2026-09-16: thirteen modules in src/ reach Electron, every one of them directly
@@ -15,6 +15,13 @@
  * module reaches it through another. The list below is that measurement. It may shrink - a
  * module that stops needing Electron should come off it - and it may not grow without somebody
  * editing it and saying why.
+ *
+ * Since 2026-09-30 the ipc-* modules ask for Electron through src/electron.ts, when a channel is
+ * registered rather than when the file loads, so each of them reaches it through that one
+ * neighbour. The chain check below follows it there. src/main-window.ts joined the list the same
+ * day: it is the window main.js used to build itself, moved out so its navigation lock and its
+ * zoom keys could be tested, and a window cannot be made without Electron. src/main.ts is the
+ * main process itself, the file Electron starts.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -26,15 +33,18 @@ const ROOT = path.resolve(__dirname, '..');
 
 const ELECTRON_USERS = [
   'src/discord-auth.ts',
-  'src/ipc-diagnostics.js',
-  'src/ipc-game.js',
-  'src/ipc-library.js',
-  'src/ipc-misc.js',
-  'src/ipc-mods.js',
-  'src/ipc-packs.js',
-  'src/ipc-presets.js',
-  'src/ipc-settings.js',
-  'src/ipc-window.js',
+  'src/electron.ts',
+  'src/ipc-diagnostics.ts',
+  'src/ipc-game.ts',
+  'src/ipc-library.ts',
+  'src/ipc-misc.ts',
+  'src/ipc-mods.ts',
+  'src/ipc-packs.ts',
+  'src/ipc-presets.ts',
+  'src/ipc-settings.ts',
+  'src/ipc-window.ts',
+  'src/main-window.ts',
+  'src/main.ts',
   'src/mod-preview.ts',
   'src/presets-service.ts',
   'src/uninstall-window.ts',
@@ -42,6 +52,10 @@ const ELECTRON_USERS = [
 
 // require('x'), and the ESM forms the TypeScript modules use: import ... from 'x', import('x')
 const REQUIRE = /(?:require\(\s*|\bfrom\s+|\bimport\s*\(\s*|^import\s+)['"]([^'"]+)['"]/gm;
+// Types are erased before the code runs: `import type` and `typeof import('x')` load nothing.
+const TYPE_ONLY = /^import type [^;]+;|typeof import\(\s*['"][^'"]+['"]\s*\)/gm;
+// Electron through a require made by hand (createRequire, src/electron.ts): a call with its name.
+const ELECTRON_CALL = /\(\s*['"]electron['"]\s*\)/;
 
 // Comments load nothing: a JSDoc type such as {import('electron').BrowserWindow} is not a require.
 // A "//" right after a colon is a URL, not a comment, and stays.
@@ -50,7 +64,8 @@ const COMMENTS = /\/\*[\s\S]*?\*\/|(^|[^:])\/\/[^\n]*/g;
 /** What one file requires: 'electron', or repository-relative paths of local modules. */
 function requiresOf(root, file) {
   const out = [];
-  const text = fs.readFileSync(path.join(root, file), 'utf8').replace(COMMENTS, '$1');
+  const text = fs.readFileSync(path.join(root, file), 'utf8').replace(COMMENTS, '$1').replace(TYPE_ONLY, '');
+  if (ELECTRON_CALL.test(text)) out.push('electron');
   for (const m of text.matchAll(REQUIRE)) {
     const spec = m[1];
     if (spec === 'electron') { out.push('electron'); continue; }
@@ -87,11 +102,17 @@ test('the detection finds a chain two modules long, and reports it', () => {
     fs.writeFileSync(path.join(dir, 'src', 'parser.js'), "const { save } = require('./paths');\n");
     fs.writeFileSync(path.join(dir, 'src', 'paths.js'), "const { app } = require('electron');\n");
     fs.writeFileSync(path.join(dir, 'src', 'plain.js'), "const fs = require('fs');\n");
-    // Electron named only in a JSDoc type, as src/app-page.js does: nothing is loaded
+    // a type names Electron and loads nothing; a require made by hand loads it all the same
+    fs.writeFileSync(path.join(dir, 'src', 'shape.ts'), "import type { BrowserWindow } from 'electron';\nexport type E = typeof import('electron');\n");
+    fs.writeFileSync(path.join(dir, 'src', 'door.ts'), "const load = createRequire(import.meta.url);\nexport const e = () => load('electron');\n");
+    fs.writeFileSync(path.join(dir, 'src', 'user.ts'), "import { e } from './door.ts';\n");
+    // Electron named only in a JSDoc type: nothing is loaded
     fs.writeFileSync(path.join(dir, 'src', 'typed.js'), "/** @param {import('electron').BrowserWindow} win */\nconst fs = require('fs');\n");
 
     assert.deepEqual(pathToElectron(dir, 'src/parser.js'), ['src/parser.js', 'src/paths.js', 'electron']);
     assert.equal(pathToElectron(dir, 'src/plain.js'), null);
+    assert.equal(pathToElectron(dir, 'src/shape.ts'), null, 'types only');
+    assert.deepEqual(pathToElectron(dir, 'src/user.ts'), ['src/user.ts', 'src/door.ts', 'electron']);
     assert.equal(pathToElectron(dir, 'src/typed.js'), null, 'a type in a comment is not a require');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
@@ -123,7 +144,8 @@ test('the parsers and everything that writes the game folder are nowhere near th
      tests exist. */
   const core = ['src/vpk.ts', 'src/vpk-read.ts', 'src/vpk-write.ts', 'src/vpk-analyze.ts', 'src/safe-zip.ts', 'src/installer.ts', 'src/installer-files.ts', 'src/installer-downloads.ts', 'src/installer-slots.ts',
     'src/installer-packs.ts', 'src/installer-repack.ts', 'src/installer-folder.ts', 'src/import.ts', 'src/schema.ts',
-    'src/patcher.ts', 'src/gamelang.ts', 'src/file-tx.ts', 'src/net.ts', 'src/adopt.ts', 'src/cursors.ts'];
+    'src/patcher.ts', 'src/gamelang.ts', 'src/file-tx.ts', 'src/net.ts', 'src/adopt.ts', 'src/cursors.ts',
+    'src/game-upkeep.ts'];
   for (const file of core) {
     assert.ok(!ELECTRON_USERS.includes(file), `${file} is on the Electron list`);
     assert.equal(pathToElectron(ROOT, file), null, `${file} reaches Electron`);
@@ -132,13 +154,15 @@ test('the parsers and everything that writes the game folder are nowhere near th
 
 test('the window never reaches into the main process', () => {
   /* renderer/ is ES modules loaded by the page. An import that leaves renderer/ lands in code
-     written for Node: at best the screen stays blank, at worst main-process code runs in it. */
+     written for Node: at best the screen stays blank, at worst main-process code runs in it.
+     TypeScript too: reading only .js, this looked at fewer files with every screen that moved,
+     until it found almost nothing to read. */
   const files = [];
   const walk = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       const p = path.join(dir, e.name);
       if (e.isDirectory()) walk(p);
-      else if (e.name.endsWith('.js')) files.push(p);
+      else if (/\.(js|ts|tsx)$/.test(e.name)) files.push(p);
     }
   };
   walk(path.join(ROOT, 'renderer'));

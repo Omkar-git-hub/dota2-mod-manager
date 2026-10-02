@@ -2,7 +2,7 @@
    Russian is the source language and a missing key silently falls back to Russian,
    so an English user sees Russian text and nothing crashes. This finds those.
 
-   Scans call sites (L`...`, L('...'), tr('...') in renderer/, t('...') in main.js and src/)
+   Scans call sites (L`...`, L('...'), tr('...') in renderer/, t('...') in src/)
    and checks each canonical key against the EN dictionary of the matching i18n.js.
 
    `npm test` runs this through test/i18n.test.js, so a missing twin fails a pull request
@@ -186,21 +186,22 @@ function scan(src, names, baseLine = 1) {
 }
 
 // ---- what to check --------------------------------------------------------
-// .ts and .tsx too: the window's screens move to TypeScript and React, and a string written
-// there needs its English twin exactly as much as one written in plain JavaScript
+/* JavaScript and TypeScript both, .tsx included for the window's React screens. Until 2026-09-30
+ * this took .js only, and by then every module in src/ had become .ts: the main side of the check
+ * was reading main.js and nothing else, and saying every string had its twin. */
 function jsFiles(dir, skip) {
   const out = [];
   for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
     const p = `${dir}/${e.name}`;
     if (e.isDirectory()) out.push(...jsFiles(p, skip));
-    else if (/\.(js|ts|tsx)$/.test(e.name) && !e.name.endsWith('.d.ts') && !skip.includes(p)) out.push(p);
+    else if (/\.[jt]sx?$/.test(e.name) && !e.name.endsWith('.d.ts') && !skip.includes(p)) out.push(p);
   }
   return out;
 }
 
 const SIDES = [
   { name: 'renderer', dict: 'renderer/i18n.js', calls: ['L', 'tr'], files: jsFiles('renderer', ['renderer/i18n.js']) },
-  { name: 'main', dict: 'src/i18n.ts', calls: ['t'], files: ['main.js', ...jsFiles('src', ['src/i18n.ts'])] },
+  { name: 'main', dict: 'src/i18n.ts', calls: ['t'], files: jsFiles('src', ['src/i18n.ts']) },
 ];
 
 /* A key written twice in one dictionary.
@@ -300,4 +301,4 @@ function main() {
 // Run as a command; required by a test, it only hands over the functions above.
 if (require.main === module) main();
 
-module.exports = { checkTranslations, translationReport };
+module.exports = { checkTranslations, translationReport, SIDES };
