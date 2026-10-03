@@ -53,6 +53,7 @@ the code, not in this page.
 | [`src/installer-repack.ts`](#srcinstaller-repackts) | What is already installed, read and rewritten: what a mod is, its files merged into one or |
 | [`src/installer-slots.ts`](#srcinstaller-slotsts) | The load order: which pak slot a mod sits in, moving and swapping slots, and which mods are |
 | [`src/installer.ts`](#srcinstallerts) | The installer: everything that writes a mod into the game folder or takes it out again. The |
+| [`src/ipc.ts`](#srcipcts) | Every IPC module, registered in one place over the context src/main.ts builds. A new |
 | [`src/item-builder-effects.ts`](#srcitem-builder-effectsts) | The particle effects the item builder can put on top of an item: the effect's id, its name in |
 | [`src/item-builder-slots.ts`](#srcitem-builder-slotsts) | The item builder's offer: for each hero, the slots it can dress, the paid wearables that fit |
 | [`src/item-builder.ts`](#srcitem-builderts) | The item builder: a hero's stock item built from one of its wearables, with an effect on top. |
@@ -61,11 +62,16 @@ the code, not in this page.
 | [`src/minify.ts`](#srcminifyts) | Living next to Minify. |
 | [`src/mod-id.ts`](#srcmod-idts) | What a mod actually replaces, asked of the game instead of guessed from folder names. |
 | [`src/mod-preview.ts`](#srcmod-previewts) | A picture for a mod that came with none, taken out of the mod itself. |
+| [`src/net-download.ts`](#srcnet-downloadts) | A file downloaded to disk across the mirror chain (src/net.ts explains it): resumed where a |
+| [`src/net-fetch.ts`](#srcnet-fetchts) | A request across the mirror chain (src/net.ts explains it): each mirror of a URL in turn, a |
+| [`src/net-mirrors.ts`](#srcnet-mirrorsts) | The mirror chain (src/net.ts explains it): which hosts carry a copy of a GitHub file and how a |
 | [`src/net.ts`](#srcnetts) | Getting bytes from the internet, on a connection that may not want to cooperate. |
 | [`src/notice-text.ts`](#srcnotice-textts) | The game's anti-cheat notice, in words that say what to do. |
 | [`src/notice-texts.ts`](#srcnotice-textsts) | The game's anti-cheat notice, rewritten in every language Dota ships (src/notice-text.ts puts |
 | [`src/overlays.ts`](#srcoverlaysts) | Fonts and cursors: loose files written over the game's own. |
 | [`src/patch-watch.ts`](#srcpatch-watchts) | Noticing that Dota was patched, while the app is open. |
+| [`src/patcher-gameinfo.ts`](#srcpatcher-gameinfots) | The two gameinfo files (src/patcher.ts explains the patch): the SearchPaths block read out of |
+| [`src/patcher-signatures.ts`](#srcpatcher-signaturests) | The signature list, dota.signatures (src/patcher.ts explains the patch): the hashes the client |
 | [`src/patcher.ts`](#srcpatcherts) | Search-path patch: registers an extra content folder ahead of the game's own, which |
 | [`src/portable-update.ts`](#srcportable-updatets) | Updating a copy that was never installed. |
 | [`src/presence-status.ts`](#srcpresence-statusts) | What the user's Discord profile says while the app is open: which screen they are on, and how |
@@ -2513,6 +2519,19 @@ export class Installer
 
 _No description in the source._
 
+## src/ipc.ts
+
+Every IPC module, registered in one place over the context src/main.ts builds. A new
+src/ipc-*.ts module is imported and called here; test/ipc-contract.test.js fails until it is.
+
+### `registerIpc`
+
+```ts
+export function registerIpc(ctx: AppContext): void
+```
+
+Register every channel the window can call.
+
 ## src/item-builder-effects.ts
 
 The particle effects the item builder can put on top of an item: the effect's id, its name in
@@ -3199,24 +3218,94 @@ Pictures for mods that came with none, cached in userData.
 @param deps.images test seam for decode/resize
 ```
 
-## src/net.ts
+## src/net-download.ts
 
-Getting bytes from the internet, on a connection that may not want to cooperate.
+A file downloaded to disk across the mirror chain (src/net.ts explains it): resumed where a
+partial download stopped, checked against the hash the catalog published, and a mirror whose
+bytes do not match is treated as a mirror that failed.
 
-Everything the app downloads - the catalog JSON, the fingerprint map, every mod archive -
-sits in a GitHub repository, and raw.githubusercontent.com is exactly the host that is
-slow, throttled or plainly unreachable for a good part of the userbase. So each URL has
-mirrors of the same bytes, tried in order, and a host that keeps failing is stood down for
-a while instead of being asked again on every single file.
+### `Download`
 
-Which mirrors, measured rather than copied from another project (2026-08-07, from here):
-  raw.githubusercontent.com   210 ms, Range supported            - first choice
-  ghproxy.net                 300 ms, Range supported
-  gh-proxy.com                230 ms, Range supported
-  ghfast.top                 1100 ms, Range supported            - last, it is the slowest
-  cdn.jsdelivr.net            300 ms, Range supported, but 403 on a 64 MB file
-jsDelivr caps file size on /gh/, so it serves the small JSON and never the archives. That
-is the whole reason the chain depends on what is being fetched.
+```ts
+export interface Download
+```
+
+A file on disk, and how it got there.
+
+### `sha256`
+
+```ts
+export const sha256 = (file: string): Promise<string> => new Promise((resolve, reject) => { const hash = crypto.createHash('sha256'); fs.createReadStream(file) .on('data', (chunk) => hash.update(chunk)) .on('error', reject) .on('end', () => resolve(hash.digest('hex'))); })
+```
+
+_No description in the source._
+
+### `downloadFile`
+
+```ts
+export async function downloadFile(url: string, dest: string, { onProgress = () => {}, expectSha256 = null, fromPublishedList = false, log = () => {}, }: { onProgress?: (loaded: number, total: number) => void; expectSha256?: string | null; fromPublishedList?: boolean; log?: (msg: string) => void; } = {}): Promise<Download>
+```
+
+Download to a file, resuming where an interrupted attempt stopped.
+
+The half-finished file is kept as <dest>.part and picked up with a Range request. Every
+mirror measured supports it, and a mod archive is up to 300 MB: starting a 60 MB download
+over because a train went into a tunnel is the difference between a mod and a shrug.
+
+```
+@param opts.expectSha256 what this file should hash to; a mirror handing over
+something else is dropped and the next one is asked
+@param opts.fromPublishedList the expectation above came from a list somebody
+else maintains (the catalog's `mod-hashes.json`, or what this machine saw last time),
+rather than from a hash pinned in this project. Such a list can simply be wrong, and when
+it is, the file it names outranks it. Never pass this for the app's own update or for the
+toolchain: those hashes are pinned here and a mismatch there is the thing being guarded.
+```
+
+## src/net-fetch.ts
+
+A request across the mirror chain (src/net.ts explains it): each mirror of a URL in turn, a
+failure noted against its host, and the first good answer returned.
+
+### `FetchOptions`
+
+```ts
+export interface FetchOptions
+```
+
+How a fetch walks the mirrors (see fetchMirrored).
+
+### `fetchMirrored`
+
+```ts
+export async function fetchMirrored(url: string, { small = false, trustedOnly = false, headers = {}, exclude = [], onMirror = () => {}, log = () => {}, }: FetchOptions = {}): Promise<Response>
+```
+
+Fetch, walking the mirrors. Returns the Response of the first mirror that answers.
+
+```
+@param url               the canonical (raw.githubusercontent.com) URL
+@param opts.small        allow size-capped mirrors
+@param opts.trustedOnly  the canonical host and nothing else, for a file that is only ever
+trusted from where it was published
+@param opts.exclude      hosts already tried for this file and found wanting; a mirror that
+answered with the wrong bytes must not be offered again on the retry
+@param opts.onMirror     which mirror is answering, called just before the response is handed back
+```
+
+### `fetchText`
+
+```ts
+export async function fetchText(url: string, opts: FetchOptions = {}): Promise<string>
+```
+
+Text from the first mirror that answers (catalog JSON, fingerprint map).
+
+## src/net-mirrors.ts
+
+The mirror chain (src/net.ts explains it): which hosts carry a copy of a GitHub file and how a
+URL is written for each, which of them a file may come from, and how each host has been doing.
+A host that keeps failing is stood down for a while; that state lives here and nowhere else.
 
 ### `RAW_HOST`
 
@@ -3224,7 +3313,9 @@ is the whole reason the chain depends on what is being fetched.
 export const RAW_HOST = 'https://raw.githubusercontent.com/'
 ```
 
-_No description in the source._
+The mirror chain (src/net.ts explains it): which hosts carry a copy of a GitHub file and how a
+URL is written for each, which of them a file may come from, and how each host has been doing.
+A host that keeps failing is stood down for a while; that state lives here and nowhere else.
 
 ### `FAIL_THRESHOLD`
 
@@ -3260,26 +3351,42 @@ export interface Entry { url: string; host: string; origin: boolean }
 
 One URL worth trying for a file, and the mirror it came from.
 
-### `FetchOptions`
-
-```ts
-export interface FetchOptions
-```
-
-How a fetch walks the mirrors (see fetchMirrored).
-
-### `Download`
-
-```ts
-export interface Download
-```
-
-A file on disk, and how it got there.
-
 ### `DEFAULT_MIRRORS`
 
 ```ts
 export const DEFAULT_MIRRORS: readonly Mirror[] = [
+```
+
+_No description in the source._
+
+### `hostOf`
+
+```ts
+export function hostOf(url: string): string
+```
+
+_No description in the source._
+
+### `stoodDown`
+
+```ts
+export function stoodDown(host: string): boolean
+```
+
+_No description in the source._
+
+### `noteFailure`
+
+```ts
+export function noteFailure(host: string, why: string): void
+```
+
+_No description in the source._
+
+### `noteSuccess`
+
+```ts
+export function noteSuccess(host: string): void
 ```
 
 _No description in the source._
@@ -3305,61 +3412,13 @@ export function entriesFor(url: string, { small = false, trustedOnly = false }: 
 
 The same list, each entry still knowing which mirror it came from.
 
-### `fetchMirrored`
+### `liveOrder`
 
 ```ts
-export async function fetchMirrored(url: string, { small = false, trustedOnly = false, headers = {}, exclude = [], onMirror = () => {}, log = () => {}, }: FetchOptions = {}): Promise<Response>
+export function liveOrder(entries: Entry[]): Entry[]
 ```
 
-Fetch, walking the mirrors. Returns the Response of the first mirror that answers.
-
-```
-@param url               the canonical (raw.githubusercontent.com) URL
-@param opts.small        allow size-capped mirrors
-@param opts.trustedOnly  the canonical host and nothing else, for a file that is only ever
-trusted from where it was published
-@param opts.exclude      hosts already tried for this file and found wanting; a mirror that
-answered with the wrong bytes must not be offered again on the retry
-@param opts.onMirror     which mirror is answering, called just before the response is handed back
-```
-
-### `fetchText`
-
-```ts
-export async function fetchText(url: string, opts: FetchOptions = {}): Promise<string>
-```
-
-Text from the first mirror that answers (catalog JSON, fingerprint map).
-
-### `sha256`
-
-```ts
-export const sha256 = (file: string): Promise<string> => new Promise((resolve, reject) => { const hash = crypto.createHash('sha256'); fs.createReadStream(file) .on('data', (chunk) => hash.update(chunk)) .on('error', reject) .on('end', () => resolve(hash.digest('hex'))); })
-```
-
-_No description in the source._
-
-### `downloadFile`
-
-```ts
-export async function downloadFile(url: string, dest: string, { onProgress = () => {}, expectSha256 = null, fromPublishedList = false, log = () => {}, }: { onProgress?: (loaded: number, total: number) => void; expectSha256?: string | null; fromPublishedList?: boolean; log?: (msg: string) => void; } = {}): Promise<Download>
-```
-
-Download to a file, resuming where an interrupted attempt stopped.
-
-The half-finished file is kept as <dest>.part and picked up with a Range request. Every
-mirror measured supports it, and a mod archive is up to 300 MB: starting a 60 MB download
-over because a train went into a tunnel is the difference between a mod and a shrug.
-
-```
-@param opts.expectSha256 what this file should hash to; a mirror handing over
-something else is dropped and the next one is asked
-@param opts.fromPublishedList the expectation above came from a list somebody
-else maintains (the catalog's `mod-hashes.json`, or what this machine saw last time),
-rather than from a hash pinned in this project. Such a list can simply be wrong, and when
-it is, the file it names outranks it. Never pass this for the app's own update or for the
-toolchain: those hashes are pinned here and a mismatch there is the thing being guarded.
-```
+The mirrors in the order they should actually be tried right now: rested hosts first.
 
 ### `mirrorHealth`
 
@@ -3406,6 +3465,35 @@ other, which is also what happens to one that is named here after it stops exist
 ```
 @param list  from src/remote-config.ts
 ```
+
+## src/net.ts
+
+Getting bytes from the internet, on a connection that may not want to cooperate.
+
+Everything the app downloads - the catalog JSON, the fingerprint map, every mod archive -
+sits in a GitHub repository, and raw.githubusercontent.com is exactly the host that is
+slow, throttled or plainly unreachable for a good part of the userbase. So each URL has
+mirrors of the same bytes, tried in order, and a host that keeps failing is stood down for
+a while instead of being asked again on every single file.
+
+Which mirrors, measured rather than copied from another project (2026-08-07, from here):
+  raw.githubusercontent.com   210 ms, Range supported            - first choice
+  ghproxy.net                 300 ms, Range supported
+  gh-proxy.com                230 ms, Range supported
+  ghfast.top                 1100 ms, Range supported            - last, it is the slowest
+  cdn.jsdelivr.net            300 ms, Range supported, but 403 on a 64 MB file
+jsDelivr caps file size on /gh/, so it serves the small JSON and never the archives. That
+is the whole reason the chain depends on what is being fetched.
+
+The code is kept as three files: src/net-mirrors.ts is the chain and how each host is doing,
+src/net-fetch.ts asks along it, and src/net-download.ts brings a file to disk through it.
+Callers import from here.
+
+Hands on from [`src/net-mirrors.ts`](#srcnet-mirrorsts): `RAW_HOST`, `FAIL_THRESHOLD`, `COOLDOWN_MS`, `DEFAULT_MIRRORS`, `mirrorsFor`, `entriesFor`, `mirrorHealth`, `resetHealth`, `setMirrors`, `applyMirrors`, `Mirror`, `Entry`.
+
+Hands on from [`src/net-fetch.ts`](#srcnet-fetchts): `fetchMirrored`, `fetchText`, `FetchOptions`.
+
+Hands on from [`src/net-download.ts`](#srcnet-downloadts): `sha256`, `downloadFile`, `Download`.
 
 ## src/notice-text.ts
 
@@ -3648,21 +3736,11 @@ Watches the game folder and says when Dota was patched, or its files checked, wh
 @param deps.debounceMs shortened by tests, which cannot wait out a real patch
 ```
 
-## src/patcher.ts
+## src/patcher-gameinfo.ts
 
-Search-path patch: registers an extra content folder ahead of the game's own, which
-is the only way to override files the engine reads through the MOD path id -
-scripts/items/items_game.txt above all. Mods in a language folder can replace any
-ordinary asset, but never the item schema: MOD resolves to game/dota alone.
-
-Mechanics (same shape the community patchers use, rebuilt from the local files):
-  game/dota/gameinfo_branchspecific.gi  gets a FileSystem/SearchPaths block whose
-    content is derived from the CURRENT gameinfo.gi plus our folder, so a Valve
-    change to the search paths is carried over instead of silently dropped;
-  game/bin/win64/dota.signatures        gets a line with the patched file's SHA1+CRC,
-    because the client checks that file against the signature list.
-
-Everything is backed up before the first write and revert() puts the originals back.
+The two gameinfo files (src/patcher.ts explains the patch): the SearchPaths block read out of
+gameinfo.gi with our folder added, that block spliced into gameinfo_branchspecific.gi, and the
+same file taken back to what Valve shipped, byte for byte.
 
 ### `MARKER`
 
@@ -3671,62 +3749,6 @@ export const MARKER = 'Dota 2 Mod Manager'
 ```
 
 Written beside every line this app adds, so its own edit can be found and taken out again.
-
-### `FOLDER`
-
-```ts
-export const FOLDER = 'dota_mods'
-```
-
-The content folder registered next to the game's own "dota".
-
-### `Hashes`
-
-```ts
-export interface Hashes { sha1: string; crc: string }
-```
-
-A file's hashes as the signature list writes them, uppercase hex.
-
-### `PatchState`
-
-```ts
-export interface PatchState
-```
-
-What the install looks like right now; see state().
-
-### `paths`
-
-```ts
-export function paths(gamePath: string): { gameinfo: string; branch: string; signatures: string }
-```
-
-The three files the patch touches, for this platform's layout of the game.
-
-### `crc32`
-
-```ts
-export function crc32(buf: Buffer): number
-```
-
-CRC-32 as the signature list records it.
-
-### `fileHashes`
-
-```ts
-export function fileHashes(buf: Buffer): { sha1: string; crc: string }
-```
-
-The signature list stores the CRC little-endian, uppercase, like the SHA1 next to it.
-
-### `signatureLine`
-
-```ts
-export function signatureLine(buf: Buffer): string
-```
-
-The line the signature list needs for the patched file.
 
 ### `searchPathsBlock`
 
@@ -3773,6 +3795,57 @@ Used wherever a patched file could be mistaken for an original: a backup taken w
 patch was already applied would otherwise be useless, and telling the user to go repair
 game files by hand is not an answer the app is allowed to give.
 
+### `restoreBranch`
+
+```ts
+export function restoreBranch(text: string, want: Hashes | null): { text: string; verified: boolean }
+```
+
+The original branchspecific file, reconstructed and CHECKED against Valve's own list
+rather than trusted. A copy this app made in an older version can be a tab short of the
+real thing, and a wrong copy is worse than none: it loads, so nothing looks broken until
+the client quietly stops finding matches. The only thing a reconstruction can get wrong
+is the indent ahead of the FileSystem closing brace, so when the hash disagrees the few
+shapes that indent can take are tried and the one Valve signed is kept.
+
+## src/patcher-signatures.ts
+
+The signature list, dota.signatures (src/patcher.ts explains the patch): the hashes the client
+checks gameinfo_branchspecific.gi against, Valve's own entry for it, and the one line this app
+appends after the DIGEST and takes off again.
+
+### `Hashes`
+
+```ts
+export interface Hashes { sha1: string; crc: string }
+```
+
+A file's hashes as the signature list writes them, uppercase hex.
+
+### `crc32`
+
+```ts
+export function crc32(buf: Buffer): number
+```
+
+CRC-32 as the signature list records it.
+
+### `fileHashes`
+
+```ts
+export function fileHashes(buf: Buffer): { sha1: string; crc: string }
+```
+
+The signature list stores the CRC little-endian, uppercase, like the SHA1 next to it.
+
+### `signatureLine`
+
+```ts
+export function signatureLine(buf: Buffer): string
+```
+
+The line the signature list needs for the patched file.
+
 ### `vanillaBranchHashes`
 
 ```ts
@@ -3791,19 +3864,6 @@ export function matchesVanilla(text: string, want: Hashes | null): boolean
 ```
 
 Whether a file hashes to what Valve recorded; with no record there is nothing to contradict.
-
-### `restoreBranch`
-
-```ts
-export function restoreBranch(text: string, want: Hashes | null): { text: string; verified: boolean }
-```
-
-The original branchspecific file, reconstructed and CHECKED against Valve's own list
-rather than trusted. A copy this app made in an older version can be a tab short of the
-real thing, and a wrong copy is worse than none: it loads, so nothing looks broken until
-the client quietly stops finding matches. The only thing a reconstruction can get wrong
-is the indent ahead of the FileSystem closing brace, so when the hash disagrees the few
-shapes that indent can take are tried and the one Valve signed is kept.
 
 ### `hasSignaturePatch`
 
@@ -3825,6 +3885,50 @@ export function stripSignatures(text: string): string
 
 Same for the signature list: our line is appended after the DIGEST line, so anything of
 ours past that point comes off and the file the game shipped is left behind.
+
+## src/patcher.ts
+
+Search-path patch: registers an extra content folder ahead of the game's own, which
+is the only way to override files the engine reads through the MOD path id -
+scripts/items/items_game.txt above all. Mods in a language folder can replace any
+ordinary asset, but never the item schema: MOD resolves to game/dota alone.
+
+Mechanics (same shape the community patchers use, rebuilt from the local files):
+  game/dota/gameinfo_branchspecific.gi  gets a FileSystem/SearchPaths block whose
+    content is derived from the CURRENT gameinfo.gi plus our folder, so a Valve
+    change to the search paths is carried over instead of silently dropped;
+  game/bin/win64/dota.signatures        gets a line with the patched file's SHA1+CRC,
+    because the client checks that file against the signature list.
+
+Everything is backed up before the first write and revert() puts the originals back.
+
+Hands on from [`src/patcher-gameinfo.ts`](#srcpatcher-gameinfots): `MARKER`, `searchPathsBlock`, `withModFolder`, `patchedBranch`, `stripPatch`, `restoreBranch`.
+
+Hands on from [`src/patcher-signatures.ts`](#srcpatcher-signaturests): `crc32`, `fileHashes`, `signatureLine`, `vanillaBranchHashes`, `matchesVanilla`, `hasSignaturePatch`, `stripSignatures`, `Hashes`.
+
+### `FOLDER`
+
+```ts
+export const FOLDER = 'dota_mods'
+```
+
+The content folder registered next to the game's own "dota".
+
+### `PatchState`
+
+```ts
+export interface PatchState
+```
+
+What the install looks like right now; see state().
+
+### `paths`
+
+```ts
+export function paths(gamePath: string): { gameinfo: string; branch: string; signatures: string }
+```
+
+The three files the patch touches, for this platform's layout of the game.
 
 ### `state`
 
